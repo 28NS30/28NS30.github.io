@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <style>
+    .stator circle, .stator path { fill: none; }
+    .stator__rotor circle { stroke: #A9B1AA; stroke-width: 1.2; }
+    .stator__mag path { fill: #D1D6D0; stroke: #A9B1AA; stroke-width: 1.2; }
+    .stator__iron circle, .stator__iron path { stroke: #151917; stroke-width: 1.7; }
+    .stator__dim line { stroke: #1E4FD8; stroke-width: 1.1; }
+    .stator__dim text { fill: #1E4FD8; font-family: IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; letter-spacing: .05em; }
+  </style>
+
+  <rect width="1200" height="630" fill="#E6E9E5"/>
+
+  <!-- drafting graticule, 34px as on the site -->
+  <defs>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0 H0 V34" fill="none" stroke="#151917" stroke-opacity=".030" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- sheet frame + four corner registration ticks -->
+  <rect x="22.5" y="22.5" width="1155" height="585" fill="none" stroke="#A9B1AA"/>
+  <g stroke="#A9B1AA" stroke-width="1">
+    <line x1="22"   y1="60"  x2="60"   y2="22"/>
+    <line x1="1178" y1="60"  x2="1140" y2="22"/>
+    <line x1="1178" y1="570" x2="1140" y2="608"/>
+    <line x1="22"   y1="570" x2="60"   y2="608"/>
+  </g>
+
+  <!-- identity -->
+  <text x="76" y="128" font-family="IBM Plex Sans Condensed, IBM Plex Sans, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="600"
+        letter-spacing="3.2" fill="#151917">NEO SU</text>
+  <text x="76" y="168" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" letter-spacing="2.6"
+        fill="#545C57">TAIPEI &#183; MOTOR DESIGN, GEARBOXES, CONTROL</text>
+
+  <!-- The card used to carry "SIX BUILDS, AND HOW THEY CONNECT" over the
+       eyebrow "MOTORS - GEARBOXES - CONTROL". Two problems: it was the
+       catchphrase register Neo asked to be rid of, and "how they connect"
+       advertised the dependency graph, which has since been deleted. The card
+       now says what the site is and lists what is in it.
+       Sized for the Helvetica fallback: most scrapers rasterise this without
+       IBM Plex installed, and Helvetica sets wider than Plex Condensed. -->
+  <text x="76" y="268" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" letter-spacing="2.8"
+        fill="#1E4FD8">01</text>
+  <text x="76" y="352" font-family="IBM Plex Sans Condensed, IBM Plex Sans, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="66" font-weight="600"
+        letter-spacing="-1" fill="#151917">DRAWING INDEX</text>
+  <text x="76" y="404" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" letter-spacing="2.2"
+        fill="#545C57">C-02 &#183; M-02 &#183; B-01 &#183; E-01 &#183; M-01 &#183; C-01</text>
+
+  <!-- dimension line, the site's annotation device -->
+  <text x="76" y="492" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" letter-spacing="1.8"
+        fill="#1E4FD8">6 DRAWINGS &#183; 2024 &#8211; PRESENT</text>
+  <g stroke="#1E4FD8" stroke-width="1">
+    <line x1="76"  y1="508" x2="76"  y2="524"/>
+    <line x1="486" y1="508" x2="486" y2="524"/>
+    <line x1="76"  y1="516" x2="486" y2="516"/>
+  </g>
+
+  <!-- the drawing itself, 400x400 user units scaled into the right column -->
+  <g class="stator" transform="translate(812, 168) scale(0.83)">
+<g class="stator__rotor">
+            <circle cx="200" cy="200" r="191.0"/>
+            <circle cx="200" cy="200" r="174.0"/>
+          </g>
+          <g class="stator__mag">
+                <path data-pole="n" d="M169.29,30.76 A172.0,172.0 0 0 1 230.71,30.76 L228.21,44.54 A158.0,158.0 0 0 0 171.79,44.54 Z"/>
+            <path data-pole="s" d="M245.76,34.20 A172.0,172.0 0 0 1 301.10,60.85 L292.87,72.18 A158.0,158.0 0 0 0 242.03,47.69 Z"/>
+            <path data-pole="n" d="M313.17,70.47 A172.0,172.0 0 0 1 351.46,118.49 L339.13,125.13 A158.0,158.0 0 0 0 303.95,81.01 Z"/>
+            <path data-pole="s" d="M358.16,132.40 A172.0,172.0 0 0 1 371.83,192.28 L357.84,192.91 A158.0,158.0 0 0 0 345.29,137.90 Z"/>
+            <path data-pole="n" d="M371.83,207.72 A172.0,172.0 0 0 1 358.16,267.60 L345.29,262.10 A158.0,158.0 0 0 0 357.84,207.09 Z"/>
+            <path data-pole="s" d="M351.46,281.51 A172.0,172.0 0 0 1 313.17,329.53 L303.95,318.99 A158.0,158.0 0 0 0 339.13,274.87 Z"/>
+            <path data-pole="n" d="M301.10,339.15 A172.0,172.0 0 0 1 245.76,365.80 L242.03,352.31 A158.0,158.0 0 0 0 292.87,327.82 Z"/>
+            <path data-pole="s" d="M230.71,369.24 A172.0,172.0 0 0 1 169.29,369.24 L171.79,355.46 A158.0,158.0 0 0 0 228.21,355.46 Z"/>
+            <path data-pole="n" d="M154.24,365.80 A172.0,172.0 0 0 1 98.90,339.15 L107.13,327.82 A158.0,158.0 0 0 0 157.97,352.31 Z"/>
+            <path data-pole="s" d="M86.83,329.53 A172.0,172.0 0 0 1 48.54,281.51 L60.87,274.87 A158.0,158.0 0 0 0 96.05,318.99 Z"/>
+            <path data-pole="n" d="M41.84,267.60 A172.0,172.0 0 0 1 28.17,207.72 L42.16,207.09 A158.0,158.0 0 0 0 54.71,262.10 Z"/>
+            <path data-pole="s" d="M28.17,192.28 A172.0,172.0 0 0 1 41.84,132.40 L54.71,137.90 A158.0,158.0 0 0 0 42.16,192.91 Z"/>
+            <path data-pole="n" d="M48.54,118.49 A172.0,172.0 0 0 1 86.83,70.47 L96.05,81.01 A158.0,158.0 0 0 0 60.87,125.13 Z"/>
+            <path data-pole="s" d="M98.90,60.85 A172.0,172.0 0 0 1 154.24,34.20 L157.97,47.69 A158.0,158.0 0 0 0 107.13,72.18 Z"/>
+          
+            <g class="stator__poles"><text class="pole-lbl" data-pole="n" x="200.00" y="35.00">N</text><text class="pole-lbl" data-pole="s" x="271.59" y="51.34">S</text><text class="pole-lbl" data-pole="n" x="329.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="360.86" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="360.86" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="329.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="271.59" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="200.00" y="365.00">S</text><text class="pole-lbl" data-pole="n" x="128.41" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="71.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="39.14" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="39.14" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="71.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="128.41" y="51.34">S</text></g>
+          </g>
+          <g class="stator__iron">
+            <circle cx="200" cy="200" r="62.0"/>
+            <circle cx="200" cy="200" r="27.0"/>
+                <path class="ph ph--a" data-ph="a" data-dir="1" d="M191.58,138.57 L191.52,62.26 L181.15,49.17 L218.85,49.17 L208.48,62.26 L208.42,138.57 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M223.42,142.59 L261.52,76.47 L259.09,59.95 L291.74,78.81 L276.22,84.96 L238.01,151.01 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M248.99,161.99 L315.04,123.78 L321.19,108.26 L340.05,140.91 L323.53,138.48 L257.41,176.58 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M261.43,191.58 L337.74,191.52 L350.83,181.15 L350.83,218.85 L337.74,208.48 L261.43,208.42 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M257.41,223.42 L323.53,261.52 L340.05,259.09 L321.19,291.74 L315.04,276.22 L248.99,238.01 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M238.01,248.99 L276.22,315.04 L291.74,321.19 L259.09,340.05 L261.52,323.53 L223.42,257.41 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="1" d="M208.42,261.43 L208.48,337.74 L218.85,350.83 L181.15,350.83 L191.52,337.74 L191.58,261.43 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M176.58,257.41 L138.48,323.53 L140.91,340.05 L108.26,321.19 L123.78,315.04 L161.99,248.99 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M151.01,238.01 L84.96,276.22 L78.81,291.74 L59.95,259.09 L76.47,261.52 L142.59,223.42 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M138.57,208.42 L62.26,208.48 L49.17,218.85 L49.17,181.15 L62.26,191.52 L138.57,191.58 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M142.59,176.58 L76.47,138.48 L59.95,140.91 L78.81,108.26 L84.96,123.78 L151.01,161.99 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M161.99,151.01 L123.78,84.96 L108.26,78.81 L140.91,59.95 L138.48,76.47 L176.58,142.59 Z"/>
+          </g>
+          <g class="stator__dim">
+            <line x1="200" y1="200" x2="200" y2="9"/>
+            <line x1="193" y1="16" x2="207" y2="16"/>
+            <text x="212" y="20">&#8960; 12N14P</text>
+          </g>
+  </g>
+</svg>

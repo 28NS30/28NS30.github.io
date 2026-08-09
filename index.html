@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neo Su — Mechatronics &amp; Control</title>
+<meta name="description" content="Motor design, gearboxes, and control systems. Project index and build logs.">
+<!-- Update the two absolute URLs below if you move off GitHub Pages to a custom domain. -->
+<link rel="canonical" href="https://28ns30.github.io/">
+<meta property="og:title" content="Neo Su — Mechatronics &amp; Control">
+<meta property="og:description" content="Motor design, gearboxes, and control systems.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://28ns30.github.io/">
+<meta property="og:image" content="https://28ns30.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#E6E9E5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141816" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Neo Su",
+  "url": "https://28ns30.github.io/",
+  "email": "mailto:neolava2@gmail.com",
+  "description": "Motor design, gearboxes, and control systems.",
+  "affiliation": {
+    "@type": "EducationalOrganization",
+    "name": "Taipei American School"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Taipei",
+    "addressCountry": "TW"
+  },
+  "knowsAbout": ["Mechatronics", "Brushless motor design", "Control systems", "Robotics", "FIRST Robotics Competition"],
+  "sameAs": [
+    "https://github.com/28NS30",
+    "https://www.instagram.com/ne0._s/"
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#index">Skip to the drawing index</a>
+
+<svg class="sheet-frame" aria-hidden="true" focusable="false">
+  <rect x="0.5" y="0.5" width="99.5%" height="99.5%" pathLength="400"></rect>
+  <svg x="0"    y="0"   ><line x1="0"   y1="26"  x2="26" y2="0"  ></line></svg>
+  <svg x="100%" y="0"   ><line x1="-26" y1="0"   x2="0"  y2="26" ></line></svg>
+  <svg x="100%" y="100%"><line x1="-26" y1="0"   x2="0"  y2="-26"></line></svg>
+  <svg x="0"    y="100%"><line x1="0"   y1="-26" x2="26" y2="0"  ></line></svg>
+
+  <g class="sheet-frame__zones">
+    <text x="12.5%" y="16">1</text><text x="37.5%" y="16">2</text>
+    <text x="62.5%" y="16">3</text><text x="87.5%" y="16">4</text>
+    <svg y="100%">
+      <text x="12.5%" y="-8">1</text><text x="37.5%" y="-8">2</text>
+      <text x="62.5%" y="-8">3</text><text x="87.5%" y="-8">4</text>
+    </svg>
+    <text x="9" y="12.5%">A</text><text x="9" y="37.5%">B</text>
+    <text x="9" y="62.5%">C</text><text x="9" y="87.5%">D</text>
+    <svg x="100%">
+      <text x="-9" y="12.5%">A</text><text x="-9" y="37.5%">B</text>
+      <text x="-9" y="62.5%">C</text><text x="-9" y="87.5%">D</text>
+    </svg>
+  </g>
+</svg>
+
+<div class="plot-progress" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="masthead__id" href="index.html">Neo Su</a>
+    <nav class="masthead__nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Work</a>
+      <a href="about.html">About</a>
+      <a href="https://github.com/28NS30">GitHub</a>
+      <a href="mailto:neolava2@gmail.com">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <p class="eyebrow">Taipei &middot; Motor design, gearboxes, control systems</p>
+
+      <div class="hero__text">
+        <p class="hero__kicker">Current build</p>
+
+        <h1 class="hero__title"><a href="p-umv.html">Ultra-Mobility Vehicle, scaled</a></h1>
+
+        <p class="hero__note">
+          A scaled wheeled-legged vehicle and its balance controller. I design and
+          wind the motors, machine the gearboxes, and write the control firmware.
+        </p>
+
+        <dl class="tb__grid hero__tb">
+          <div class="tb__cell"><dt>Drawing</dt><dd>C&#8209;02</dd></div>
+          <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
+          <div class="tb__cell"><dt>Discipline</dt><dd>Controls</dd></div>
+          <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="hero__fig">
+        <svg class="stator" viewBox="0 0 400 400" role="img"
+             aria-label="Cross-section of a twelve-slot, fourteen-pole outrunner stator and rotor">
+          <g class="stator__rotor">
+            <circle cx="200" cy="200" r="191.0"/>
+            <circle cx="200" cy="200" r="174.0"/>
+          </g>
+          <g class="stator__mag">
+                <path data-pole="n" d="M169.29,30.76 A172.0,172.0 0 0 1 230.71,30.76 L228.21,44.54 A158.0,158.0 0 0 0 171.79,44.54 Z"/>
+            <path data-pole="s" d="M245.76,34.20 A172.0,172.0 0 0 1 301.10,60.85 L292.87,72.18 A158.0,158.0 0 0 0 242.03,47.69 Z"/>
+            <path data-pole="n" d="M313.17,70.47 A172.0,172.0 0 0 1 351.46,118.49 L339.13,125.13 A158.0,158.0 0 0 0 303.95,81.01 Z"/>
+            <path data-pole="s" d="M358.16,132.40 A172.0,172.0 0 0 1 371.83,192.28 L357.84,192.91 A158.0,158.0 0 0 0 345.29,137.90 Z"/>
+            <path data-pole="n" d="M371.83,207.72 A172.0,172.0 0 0 1 358.16,267.60 L345.29,262.10 A158.0,158.0 0 0 0 357.84,207.09 Z"/>
+            <path data-pole="s" d="M351.46,281.51 A172.0,172.0 0 0 1 313.17,329.53 L303.95,318.99 A158.0,158.0 0 0 0 339.13,274.87 Z"/>
+            <path data-pole="n" d="M301.10,339.15 A172.0,172.0 0 0 1 245.76,365.80 L242.03,352.31 A158.0,158.0 0 0 0 292.87,327.82 Z"/>
+            <path data-pole="s" d="M230.71,369.24 A172.0,172.0 0 0 1 169.29,369.24 L171.79,355.46 A158.0,158.0 0 0 0 228.21,355.46 Z"/>
+            <path data-pole="n" d="M154.24,365.80 A172.0,172.0 0 0 1 98.90,339.15 L107.13,327.82 A158.0,158.0 0 0 0 157.97,352.31 Z"/>
+            <path data-pole="s" d="M86.83,329.53 A172.0,172.0 0 0 1 48.54,281.51 L60.87,274.87 A158.0,158.0 0 0 0 96.05,318.99 Z"/>
+            <path data-pole="n" d="M41.84,267.60 A172.0,172.0 0 0 1 28.17,207.72 L42.16,207.09 A158.0,158.0 0 0 0 54.71,262.10 Z"/>
+            <path data-pole="s" d="M28.17,192.28 A172.0,172.0 0 0 1 41.84,132.40 L54.71,137.90 A158.0,158.0 0 0 0 42.16,192.91 Z"/>
+            <path data-pole="n" d="M48.54,118.49 A172.0,172.0 0 0 1 86.83,70.47 L96.05,81.01 A158.0,158.0 0 0 0 60.87,125.13 Z"/>
+            <path data-pole="s" d="M98.90,60.85 A172.0,172.0 0 0 1 154.24,34.20 L157.97,47.69 A158.0,158.0 0 0 0 107.13,72.18 Z"/>
+          
+            <g class="stator__poles"><text class="pole-lbl" data-pole="n" x="200.00" y="35.00">N</text><text class="pole-lbl" data-pole="s" x="271.59" y="51.34">S</text><text class="pole-lbl" data-pole="n" x="329.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="360.86" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="360.86" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="329.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="271.59" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="200.00" y="365.00">S</text><text class="pole-lbl" data-pole="n" x="128.41" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="71.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="39.14" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="39.14" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="71.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="128.41" y="51.34">S</text></g>
+          </g>
+          <g class="stator__iron">
+            <circle cx="200" cy="200" r="62.0"/>
+            <circle cx="200" cy="200" r="27.0"/>
+                <path class="ph ph--a" data-ph="a" data-dir="1" d="M191.58,138.57 L191.52,62.26 L181.15,49.17 L218.85,49.17 L208.48,62.26 L208.42,138.57 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M223.42,142.59 L261.52,76.47 L259.09,59.95 L291.74,78.81 L276.22,84.96 L238.01,151.01 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M248.99,161.99 L315.04,123.78 L321.19,108.26 L340.05,140.91 L323.53,138.48 L257.41,176.58 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M261.43,191.58 L337.74,191.52 L350.83,181.15 L350.83,218.85 L337.74,208.48 L261.43,208.42 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M257.41,223.42 L323.53,261.52 L340.05,259.09 L321.19,291.74 L315.04,276.22 L248.99,238.01 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M238.01,248.99 L276.22,315.04 L291.74,321.19 L259.09,340.05 L261.52,323.53 L223.42,257.41 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="1" d="M208.42,261.43 L208.48,337.74 L218.85,350.83 L181.15,350.83 L191.52,337.74 L191.58,261.43 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M176.58,257.41 L138.48,323.53 L140.91,340.05 L108.26,321.19 L123.78,315.04 L161.99,248.99 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M151.01,238.01 L84.96,276.22 L78.81,291.74 L59.95,259.09 L76.47,261.52 L142.59,223.42 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M138.57,208.42 L62.26,208.48 L49.17,218.85 L49.17,181.15 L62.26,191.52 L138.57,191.58 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M142.59,176.58 L76.47,138.48 L59.95,140.91 L78.81,108.26 L84.96,123.78 L151.01,161.99 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M161.99,151.01 L123.78,84.96 L108.26,78.81 L140.91,59.95 L138.48,76.47 L176.58,142.59 Z"/>
+          </g>
+          <g class="stator__dim">
+            <line x1="200" y1="200" x2="200" y2="9"/>
+            <line x1="193" y1="16" x2="207" y2="16"/>
+            <text x="212" y="20">&#8960; 12N14P</text>
+          </g>
+        </svg>
+
+        <p class="hero__figcap">
+          <a href="p-bldc.html">E&#8209;01 &middot; Stator, 12N14P</a>
+          <span class="hero__figcap-sub" data-hint>Drag the rotor &middot; commutation follows position</span>
+        </p>
+      </div>
+
+
+      <div class="dim">
+        <span class="dim__label">6 builds &middot; 2024 &ndash; present</span>
+        <span class="dim__bar" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <section class="sec" id="index">
+      <div class="sec__head">
+        <span class="sec__mark">01</span>
+        <h2 class="sec__title">Drawing index</h2>
+        <span class="sec__count">6 drawings &middot; newest first</span>
+      </div>
+
+      <div class="index">
+
+        <article class="dwg rise" data-no="C-02">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">C&#8209;02</span>
+              <h3 class="tb__name"><a href="p-umv.html">Ultra-Mobility Vehicle, scaled</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>A</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Controls</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise" data-no="M-02">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">M&#8209;02</span>
+              <h3 class="tb__name"><a href="p-shooter.html">FRC shooter subsystem</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>D</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Mechanical</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Competed</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise" data-no="B-01">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">B&#8209;01</span>
+              <h3 class="tb__name"><a href="p-drylab.html">Dry-lab model &amp; measurement</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>C</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2025</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Modeling</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip">In review</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise" data-no="E-01">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">E&#8209;01</span>
+              <h3 class="tb__name"><a href="p-bldc.html">Brushless DC motor</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>C</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2025</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Electromech.</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise" data-no="M-01">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">M&#8209;01</span>
+              <h3 class="tb__name"><a href="p-cycloidal.html">Cycloidal gearbox</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>B</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2025</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Mechanical</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise" data-no="C-01">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no">C&#8209;01</span>
+              <h3 class="tb__name"><a href="p-drone.html">Quadrotor</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Rev</dt><dd>B</dd></div>
+              <div class="tb__cell"><dt>Year</dt><dd>2024</dd></div>
+              <div class="tb__cell"><dt>Discipline</dt><dd>Controls</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Flown</span></dd></div>
+            </dl>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="colophon">
+    <dl class="colophon__grid">
+      <div class="colophon__cell"><dt>Modelled by</dt><dd>Neo Su</dd></div>
+      <div class="colophon__cell"><dt>Location</dt><dd>Taipei, Taiwan</dd></div>
+      <div class="colophon__cell"><dt>Code</dt><dd><a href="https://github.com/28NS30">github.com/28NS30</a></dd></div>
+      <div class="colophon__cell"><dt>Contact</dt><dd><a href="mailto:neolava2@gmail.com">neolava2@gmail.com</a></dd></div>
+      <div class="colophon__cell"><dt>Instagram</dt><dd><a href="https://www.instagram.com/ne0._s/">@ne0._s</a></dd></div>
+    </dl>
+    <p class="colophon__foot">Revised August 2026</p>
+  </footer>
+
+</div>
+
+<script>
+/* The reveals are CSS animations that run on their own. Script's only job here
+   is to stop the motor's animation when nobody can see it — a pure
+   optimisation, so if it never runs the page is unaffected. */
+(function () {
+  var plate = document.querySelector('.stator');
+  if (!plate || !('IntersectionObserver' in window)) return;
+  var onScreen = true;
+  function sync() { plate.classList.toggle('is-paused', !onScreen || document.hidden); }
+  new IntersectionObserver(function (entries) {
+    onScreen = entries[0].isIntersecting;
+    sync();
+  }, { threshold: 0.1 }).observe(plate);
+  document.addEventListener('visibilitychange', sync);
+})();
+
+
+</script>
+<script>
+/* ---------------------------------------------------------------------------
+   The drawing set.
+
+   The six cards in the DOM are the same six cards either way; this only adds a
+   class, so with scripting off, on a narrow screen, or under reduced motion the
+   plain grid stands and none of the fan exists.
+
+   Cursor X across the stage is a *parameter* — it widens and narrows the
+   spread. It is not a handle; there is nothing to drag. Choosing a sheet is a
+   click, and the sheet itself carries over into the next page via a
+   cross-document view transition, so the browser animates the hand-off. No
+   router, real URLs, working back button.
+   --------------------------------------------------------------------------- */
+(function () {
+  var set = document.querySelector('.index');
+  if (!set) return;
+  if (!matchMedia('(min-width: 900px)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  set.classList.add('index--fan');
+  var sheets = [].slice.call(set.querySelectorAll('.dwg'));
+
+  // The spread is bounded by the stage, not by a magic number: the widest the
+  // fan may open is the width that still lands every sheet inside the content
+  // column. Recomputed on resize, so it holds at any viewport.
+  var raf = 0, target = 0, closed = 0, open = 0;
+  var sheetW = 300, minStep = 0, maxStep = 0;
+  function measure() {
+    // Below the fan breakpoint the fan CSS drops out on its own, but the inline
+    // width/margin/height set below would survive and wreck the grid it falls
+    // back to. Clear them and stop.
+    if (!matchMedia('(min-width: 900px)').matches) {
+      set.style.width = set.style.marginLeft = set.style.height = '';
+      return;
+    }
+    var cs = getComputedStyle(set);
+    sheetW = parseFloat(cs.getPropertyValue('--sheet-w')) || 300;
+
+    // Bleed the stage past the text column out to the sheet frame. Done here
+    // rather than with 100vw, which counts the scrollbar and overflows.
+    // Read the column width from the PARENT, not from the stage: once the stage
+    // carries an explicit width, its own clientWidth is the bleed, so a resize
+    // would compound the offset instead of recomputing it.
+    var natural = set.parentElement ? set.parentElement.clientWidth : set.clientWidth;
+    var bleed = Math.min(1352, document.documentElement.clientWidth - 88);
+    if (bleed > natural) {
+      set.style.width = bleed + 'px';
+      set.style.marginLeft = Math.round((natural - bleed) / 2) + 'px';
+    } else {
+      set.style.width = set.style.marginLeft = '';
+    }
+    var marginW = parseFloat(cs.getPropertyValue('--margin-w')) || 116;
+    // 5 gaps between 6 sheets, less the width the outer sheets gain by rotating
+    // and the 2x52px the stack needs to part around a sheet being pulled out
+    maxStep = (set.clientWidth - sheetW - 76 - 104) / 5;
+    minStep = Math.min(maxStep, marginW + 10);    // never hide the binding margin
+    closed = minStep; open = maxStep;
+    target = closed;
+    apply();
+
+    // Fit the stage to the tallest sheet rather than a fixed height: the cards
+    // are absolutely positioned, so a sheet that grows (a photograph with a
+    // different aspect) would otherwise spill into the section below. The
+    // allowance covers the extra height the outer sheets gain by rotating.
+    var tallest = 0;
+    sheets.forEach(function (c) { tallest = Math.max(tallest, c.offsetHeight); });
+    if (tallest) set.style.height = Math.round(tallest + sheetW * 0.18) + 'px';
+  }
+  measure();
+  // ResizeObserver on the column rather than a window resize listener: a
+  // viewport can change without firing `resize` (zoom, a pane being dragged),
+  // and when that happened the stage kept an inline bleed width from the old
+  // viewport while the fan CSS had already dropped out — a grid forced 1352px
+  // wide inside a 375px screen.
+  if ('ResizeObserver' in window && set.parentElement) {
+    new ResizeObserver(function () { measure(); }).observe(set.parentElement);
+  } else {
+    addEventListener('resize', measure, { passive: true });
+  }
+
+  // The set fans open when you ARRIVE at it, not when you reach for it.
+  //
+  // Two earlier passes got this wrong. Mapping cursor X to the spread slid the
+  // sheets sideways under the cursor; opening on pointerenter was worse — a
+  // real click was measured landing in the gap, because every target moved the
+  // moment the pointer crossed into the stage. Tying the opening to scroll puts
+  // all of that motion before anyone aims at anything.
+  //
+  // Closed is a legitimate resting state — every margin shows its number and
+  // its name — so if this never runs, nothing is lost but the flourish.
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      target = open;
+      apply();
+      io.disconnect();
+    }, { threshold: .35 });
+    io.observe(set);
+  }
+
+  // No cursor handler on the stage any more. It used to shift the vanishing
+  // point for a depth parallax, which needed the sheets staggered in Z — and
+  // that Z stagger was what made the outer sheets render smaller than the
+  // middle ones. Uniform sheets are worth more than the parallax.
+
+  function apply() {
+    raf = 0;
+    set.style.setProperty('--step', target.toFixed(1) + 'px');
+  }
+
+  // Name the FIGURE, not the whole card: the destination is a figure well, so
+  // figure -> figure is a true morph rather than a card squashing into a panel.
+  // Named at click time only, because the name must be unique in the document.
+  sheets.forEach(function (card) {
+    card.addEventListener('click', function () {
+      if (!document.startViewTransition) return;
+      var fig = card.querySelector('.dwg__fig');
+      if (fig) fig.style.viewTransitionName = 'sheet';
+    });
+  });
+  addEventListener('pageshow', function () {
+    sheets.forEach(function (c) {
+      var f = c.querySelector('.dwg__fig');
+      if (f) f.style.viewTransitionName = '';
+    });
+  });
+})();
+</script>
+</body>
+</html>
