@@ -164,11 +164,51 @@
   --ease-plot: cubic-bezier(.65, 0, .35, 1);
   --t-draw: .9s;    /* a line being drawn */
   --t-wipe: .55s;   /* a block being laid down */
+  
+  /* Text animation timing */
+  --t-text-in: .6s;   /* text reveal */
+  --t-micro: .18s;    /* microinteraction duration */
 
   /* One six-step electrical cycle of the hero motor. The rotor period is seven
      times this, because fourteen poles is seven pole pairs. */
   --t-commutate: 1.2s;
   --t-rotor: 8.4s;
+}
+
+/* ---------- text animations ----------
+   Subtle entrance animations for text elements. Text arrives and settles,
+   like content being plotted, not faded in. These respect prefers-reduced-motion. */
+@keyframes text-in{
+  from{
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes text-draw{
+  from{
+    opacity: 0.6;
+    letter-spacing: .08em;
+  }
+  to{
+    opacity: 1;
+    letter-spacing: inherit;
+  }
+}
+
+@keyframes underline-draw{
+  from{
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to{
+    transform: scaleX(1);
+    opacity: 1;
+  }
 }
 
 /* ---------- choosing the theme ----------
@@ -360,7 +400,8 @@ body{
   text-decoration: none;
   padding-bottom: 2px;
   border-bottom: 1px solid transparent;
-  transition: color .16s ease, border-color .16s ease;
+  transition: color var(--t-micro) ease, border-color var(--t-micro) ease;
+  position: relative;
 }
 .masthead__nav a:hover,
 .masthead__nav a[aria-current="page"]{
@@ -402,6 +443,7 @@ body{
   text-transform: uppercase;
   color: var(--construct);
   margin: 0 0 var(--sp-xs);
+  animation: text-draw var(--t-text-in) var(--ease-plot) forwards;
 }
 .hero__title{
   font-family: var(--cond);
@@ -412,18 +454,21 @@ body{
   text-transform: uppercase;
   margin: 0;
   max-width: 18ch;
+  animation: text-in .7s var(--ease-plot) .1s forwards;
+  opacity: 0;
 }
 .hero__title a{
   color: inherit;
   text-decoration: none;
   border-bottom: 2px solid transparent;
-  transition: border-color .16s ease;
+  transition: border-color var(--t-micro) ease;
+  position: relative;
 }
 .hero__title a:hover{ border-bottom-color: var(--construct); }
 
 /* .tb__grid sets margin:0 and is declared later at equal specificity, so this
    needs the extra class to win. */
-.hero__text .hero__tb{ margin-top: var(--sp-m); max-width: var(--readw); }
+.hero__text .hero__tb{ margin-top: var(--sp-m); max-width: var(--readw); animation: text-in .7s var(--ease-plot) .25s forwards; opacity: 0; }
 
 /* The drawing beside the title is E-01, not the featured build. Label it, so it
    reads as a second entry into the index rather than a picture of the UMV. */
@@ -435,12 +480,13 @@ body{
   color: var(--graphite);
   text-align: right;
   margin: var(--sp-xs) 0 0;
+  animation: text-draw var(--t-text-in) var(--ease-plot) .2s forwards;
 }
 .hero__figcap a{
   color: inherit;
   text-decoration: none;
   border-bottom: 1px solid var(--rule);
-  transition: color .16s ease, border-color .16s ease;
+  transition: color var(--t-micro) ease, border-color var(--t-micro) ease;
 }
 .hero__figcap a:hover{ color: var(--ink); border-bottom-color: var(--construct); }
 .hero__figcap-sub{
@@ -603,6 +649,7 @@ body{
   text-transform: uppercase;
   color: var(--graphite);
   margin: 0 0 var(--sp-m);
+  animation: text-draw var(--t-text-in) var(--ease-plot) forwards;
 }
 
 /* Dimension line — annotation layer, drawn once. Label above its line, as on a
@@ -616,6 +663,8 @@ body{
   align-items: stretch;
   gap: var(--sp-3xs);
   color: var(--construct);
+  animation: text-in .6s var(--ease-plot) .35s forwards;
+  opacity: 0;
 }
 .dim__bar{
   width: 100%;
@@ -645,6 +694,8 @@ body{
   max-width: var(--readw);
   color: var(--graphite);
   font-size: 1.02rem;
+  animation: text-in .7s var(--ease-plot) .18s forwards;
+  opacity: 0;
 }
 
 /* ---------- section heads ---------- */
@@ -671,6 +722,8 @@ body{
   letter-spacing: .04em;
   text-transform: uppercase;
   margin: 0;
+  animation: text-in .6s var(--ease-plot) .15s forwards;
+  opacity: 0;
 }
 .sec__count{
   margin-left: auto;
@@ -694,9 +747,13 @@ body{
   color: inherit;
   border: 1px solid var(--rule);
   background: var(--film-2);
-  transition: border-color .18s ease, transform .18s ease;
+  transition: border-color var(--t-micro) ease, transform var(--t-micro) ease, box-shadow .24s ease;
 }
-.dwg:hover{ border-color: var(--ink); transform: translateY(-2px); }
+.dwg:hover{ 
+  border-color: var(--ink); 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 .dwg:focus-within{ border-color: var(--ink); }
 .dwg:hover .tb__no{ color: var(--construct); }
 
@@ -754,7 +811,7 @@ body{
   font-size: var(--t-meta);
   letter-spacing: .06em;
   color: var(--graphite);
-  transition: color .18s ease;
+  transition: color var(--t-micro) ease;
 }
 .tb__name{
   font-family: var(--cond);
@@ -818,8 +875,16 @@ body{
   color: var(--graphite);
   padding-block: var(--sp-m) 0;
 }
-.crumb a{ color: var(--construct); text-decoration: none; }
-.crumb a:hover{ text-decoration: underline; }
+.crumb a{ 
+  color: var(--construct); 
+  text-decoration: none;
+  transition: color var(--t-micro) ease;
+  border-bottom: 1px solid var(--construct);
+}
+.crumb a:hover{ 
+  text-decoration: underline;
+  color: var(--ink);
+}
 
 .proj__head{ padding-block: var(--sp-l) var(--sp-xl); }
 .proj__title{
@@ -831,6 +896,8 @@ body{
   text-transform: uppercase;
   margin: 0 0 var(--sp-s);
   max-width: 18ch;
+  animation: text-in .7s var(--ease-plot) .1s forwards;
+  opacity: 0;
 }
 .proj__standfirst{
   font-size: 1.16rem;
@@ -838,6 +905,8 @@ body{
   max-width: var(--readw);
   margin: 0;
   color: var(--graphite);
+  animation: text-in .7s var(--ease-plot) .2s forwards;
+  opacity: 0;
 }
 .proj__standfirst a{ color: var(--construct); }
 
@@ -902,7 +971,17 @@ body{
 .prose h2:first-child{ margin-top: 0; }
 .prose h2 .sec__mark{ margin-right: var(--sp-xs); }
 .prose p{ margin: 0 0 var(--sp-m); }
-.prose a{ color: var(--construct); }
+.prose a{ 
+  color: var(--construct);
+  position: relative;
+  text-decoration: none;
+  border-bottom: 1px solid var(--construct);
+  transition: color var(--t-micro) ease, border-color var(--t-micro) ease;
+}
+.prose a:hover{
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
 .prose strong{ font-weight: 300; }
 .prose figure{ margin: var(--sp-l) 0; }
 .prose figcaption{
@@ -1027,8 +1106,17 @@ body{
   font-size: .95rem;
   font-weight: 300;
 }
-.colophon__cell a{ color: var(--construct); text-decoration: none; }
-.colophon__cell a:hover{ text-decoration: underline; }
+.colophon__cell a{ 
+  color: var(--construct); 
+  text-decoration: none;
+  border-bottom: 1px solid var(--construct);
+  transition: color var(--t-micro) ease, border-color var(--t-micro) ease;
+}
+.colophon__cell a:hover{ 
+  text-decoration: underline;
+  color: var(--ink);
+  border-color: var(--ink);
+}
 .colophon__foot{
   font-family: var(--mono);
   font-size: var(--t-micro);
@@ -1145,6 +1233,15 @@ a:focus-visible, button:focus-visible{
   .stator__rotor, .stator__mag, .stator .ph{ animation: none !important; }
   .rev tbody tr td::after{ animation: none !important; transform: scaleX(1); }
   .stator .ph--a, .stator .ph--b{ stroke: var(--construct); fill-opacity: .16; }
+  
+  /* Disable text animations under reduced motion */
+  .hero__kicker, .hero__title, .hero__note, .hero__text .hero__tb,
+  .eyebrow, .dim, .sec__title, .hero__figcap,
+  .proj__title, .proj__standfirst{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 @media print{
