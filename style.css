@@ -22,7 +22,7 @@
 @font-face{
   font-family: "IBM Plex Sans Condensed";
   src: url("assets/fonts/ibm-plex-sans-condensed-500.woff2") format("woff2");
-  font-weight: 500;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -30,7 +30,7 @@
 @font-face{
   font-family: "IBM Plex Sans Condensed";
   src: url("assets/fonts/ibm-plex-sans-condensed-600.woff2") format("woff2");
-  font-weight: 600;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -38,7 +38,7 @@
 @font-face{
   font-family: "IBM Plex Mono";
   src: url("assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -341,7 +341,7 @@ body{
 .masthead__id{
   font-family: var(--cond);
   font-size: 1.02rem;
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: .1em;
   text-transform: uppercase;
   text-decoration: none;
@@ -406,7 +406,7 @@ body{
 .hero__title{
   font-family: var(--cond);
   font-size: var(--t-hero);
-  font-weight: 600;
+  font-weight: 300;
   line-height: .98;
   letter-spacing: -.01em;
   text-transform: uppercase;
@@ -667,7 +667,7 @@ body{
 .sec__title{
   font-family: var(--cond);
   font-size: var(--t-h2);
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: .04em;
   text-transform: uppercase;
   margin: 0;
@@ -759,7 +759,7 @@ body{
 .tb__name{
   font-family: var(--cond);
   font-size: var(--t-h3);
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: .01em;
   margin: 0;
   line-height: 1.2;
@@ -794,7 +794,7 @@ body{
   margin: 0;
   font-family: var(--cond);
   font-size: .875rem;
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: .015em;
 }
 
@@ -825,7 +825,7 @@ body{
 .proj__title{
   font-family: var(--cond);
   font-size: clamp(2.1rem, 6vw, 4.1rem);
-  font-weight: 600;
+  font-weight: 300;
   line-height: .98;
   letter-spacing: -.01em;
   text-transform: uppercase;
@@ -892,7 +892,7 @@ body{
 .prose h2{
   font-family: var(--cond);
   font-size: var(--t-h2);
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: .04em;
   text-transform: uppercase;
   margin: var(--sp-xl) 0 var(--sp-s);
@@ -903,7 +903,7 @@ body{
 .prose h2 .sec__mark{ margin-right: var(--sp-xs); }
 .prose p{ margin: 0 0 var(--sp-m); }
 .prose a{ color: var(--construct); }
-.prose strong{ font-weight: 600; }
+.prose strong{ font-weight: 300; }
 .prose figure{ margin: var(--sp-l) 0; }
 .prose figcaption{
   font-family: var(--mono);
@@ -974,7 +974,7 @@ body{
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--graphite);
-  font-weight: 400;
+  font-weight: 300;
   border-bottom-color: var(--rule);
 }
 .rev td:first-child{
@@ -1025,7 +1025,7 @@ body{
   margin: 0;
   font-family: var(--cond);
   font-size: .95rem;
-  font-weight: 500;
+  font-weight: 300;
 }
 .colophon__cell a{ color: var(--construct); text-decoration: none; }
 .colophon__cell a:hover{ text-decoration: underline; }
@@ -1233,7 +1233,7 @@ a:focus-visible, button:focus-visible{
 .pending-note h2{
   font-family: var(--cond);
   font-size: var(--t-h3);
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: .04em;
   text-transform: uppercase;
   margin: 0 0 var(--sp-xs);
@@ -1396,7 +1396,7 @@ a:focus-visible, button:focus-visible{
     top: 16px;
     font-family: var(--cond);
     font-size: 2.2rem;
-    font-weight: 600;
+    font-weight: 300;
     line-height: 1;
     letter-spacing: -.01em;
     color: var(--ink);
