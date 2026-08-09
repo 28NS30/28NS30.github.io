@@ -23,11 +23,22 @@
 (function () {
   'use strict';
 
+  /* aPos arrives as uint16 read back normalised to 0..1, so the shader undoes
+     the quantisation. Positions ship at 16 bits per axis because the assembly
+     spans ~520mm and is drawn ~600px wide: a pixel is most of a millimetre and
+     16 bits resolves 0.008mm. float32 would spend twice the bytes on precision
+     nobody can see, and those bytes buy triangles instead. */
   var VS = `#version 300 es
 in vec3 aPos;
 uniform mat4 uMVP;
+uniform vec3 uQOrg;
+uniform float uQSpan;
 out vec3 vObj;
-void main(){ vObj = aPos; gl_Position = uMVP * vec4(aPos, 1.0); }`;
+void main(){
+  vec3 p = uQOrg + aPos * uQSpan;
+  vObj = p;
+  gl_Position = uMVP * vec4(p, 1.0);
+}`;
 
   var FS_FILL = `#version 300 es
 precision highp float;
@@ -96,17 +107,20 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
 
   function parse(buf) {
     var dv = new DataView(buf);
-    if (String.fromCharCode(dv.getUint8(0),dv.getUint8(1),dv.getUint8(2),dv.getUint8(3)) !== 'NSM2')
-      throw new Error('not an NSM2 mesh');
+    var magic = String.fromCharCode(dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3));
+    if (magic !== 'NSM3') throw new Error('expected an NSM3 mesh, got "' + magic + '"');
     var vc = dv.getUint32(4, true), ic = dv.getUint32(8, true), ec = dv.getUint32(12, true);
     var lo = [dv.getFloat32(16, true), dv.getFloat32(20, true), dv.getFloat32(24, true)];
     var hi = [dv.getFloat32(28, true), dv.getFloat32(32, true), dv.getFloat32(36, true)];
-    var o = 40;
-    var verts = new Float32Array(buf, o, vc * 3); o += vc * 12;
+    var qorg = [dv.getFloat32(40, true), dv.getFloat32(44, true), dv.getFloat32(48, true)];
+    var qspan = dv.getFloat32(52, true);
+    var o = 56;
+    var verts = new Uint16Array(buf, o, vc * 3); o += vc * 6;
     var Arr = vc > 65535 ? Uint32Array : Uint16Array, w = vc > 65535 ? 4 : 2;
     var tris = new Arr(buf, o, ic); o += ic * w;
     var edges = new Arr(buf, o, ec);
-    return { verts: verts, tris: tris, edges: edges, wide: vc > 65535, lo: lo, hi: hi };
+    return { verts: verts, tris: tris, edges: edges, wide: vc > 65535,
+             lo: lo, hi: hi, qorg: qorg, qspan: qspan, vcount: vc };
   }
 
   function program(gl, vsrc, fsrc) {
@@ -180,10 +194,38 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     var FRICTION    = 0.94;              // per frame after release
     var STOP        = 0.00025;           // below this it has stopped
 
-    fetch(canvas.dataset.mesh).then(function (r) {
-      if (!r.ok) throw new Error(r.status + ' ' + canvas.dataset.mesh);
-      return r.arrayBuffer();
-    }).then(function (buf) {
+    /* GitHub Pages gzips text but not model/mesh, so the mesh would go out at
+       its full size while the stylesheet next to it is compressed. Fetching a
+       pre-compressed copy and inflating it here recovers that: 909 KB becomes
+       586 KB over the wire. DecompressionStream is not everywhere, and a proxy
+       may transparently inflate the response, so both failures fall back to the
+       plain file rather than breaking. */
+    var transferred = 0;
+    function load(url) {
+      return fetch(url + '.gz').then(function (r) {
+        if (!r.ok) throw new Error('no .gz');
+        return r.arrayBuffer();
+      }).then(function (buf) {
+        transferred = buf.byteLength;
+        var b = new Uint8Array(buf, 0, 2);
+        // Some hosts label .gz with Content-Encoding, in which case the browser
+        // has already inflated it and what arrives is the mesh itself. Deciding
+        // on the gzip magic rather than on a header covers both, in one request,
+        // because fetch does not reliably expose Content-Encoding to script.
+        if (!(b[0] === 0x1f && b[1] === 0x8b)) return buf;
+        if (typeof DecompressionStream !== 'function') throw new Error('cannot inflate');
+        var stream = new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));
+        return new Response(stream).arrayBuffer();
+      }).catch(function () { return plain(url); });
+    }
+    function plain(url) {
+      return fetch(url).then(function (r) {
+        if (!r.ok) throw new Error(r.status + ' ' + url);
+        return r.arrayBuffer();
+      }).then(function (buf) { transferred = buf.byteLength; return buf; });
+    }
+
+    load(canvas.dataset.mesh).then(function (buf) {
       mesh = parse(buf);
       fill = program(gl, VS, FS_FILL);
       line = program(gl, VS, FS_LINE);
@@ -201,7 +243,8 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
         gl.bindVertexArray(a);
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
         gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        // normalised: the shader receives 0..1 and undoes the quantisation
+        gl.vertexAttribPointer(0, 3, gl.UNSIGNED_SHORT, true, 0, 0);
         var ib = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
@@ -221,10 +264,12 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       // nearer the camera than its centre. Dividing by tan made the fit about
       // 0.8% too tight; under the old pitch clamp that never showed, but once
       // the part could tumble freely it touched the edge at some poses.
-      var r2 = 0;
+      var r2 = 0, K = mesh.qspan / 65535;
       for (var i = 0; i < mesh.verts.length; i += 3) {
-        var d2 = mesh.verts[i]*mesh.verts[i] + mesh.verts[i+1]*mesh.verts[i+1]
-               + mesh.verts[i+2]*mesh.verts[i+2];
+        var x = mesh.qorg[0] + mesh.verts[i]   * K,
+            y = mesh.qorg[1] + mesh.verts[i+1] * K,
+            z = mesh.qorg[2] + mesh.verts[i+2] * K;
+        var d2 = x*x + y*y + z*z;
         if (d2 > r2) r2 = d2;
       }
       dist = Math.sqrt(r2) / Math.sin(FOVY / 2) * 1.06;
@@ -252,11 +297,12 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
         bubbles: true,
         detail: {
           triangles: mesh.tris.length / 3,
-          vertices: mesh.verts.length / 3,
+          vertices: mesh.vcount,
           edges: mesh.edges.length / 2,
           lo: mesh.lo, hi: mesh.hi,
           extent: [mesh.hi[0] - mesh.lo[0], mesh.hi[1] - mesh.lo[1], mesh.hi[2] - mesh.lo[2]],
-          bytes: buf.byteLength
+          bytes: buf.byteLength,
+          transferred: transferred || buf.byteLength
         }
       }));
     }).catch(function (err) {
@@ -315,6 +361,8 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       gl.useProgram(fill);
       gl.uniformMatrix4fv(gl.getUniformLocation(fill, 'uMVP'), false, new Float32Array(M));
       gl.uniformMatrix3fv(gl.getUniformLocation(fill, 'uNM'), false, new Float32Array(rot));
+      gl.uniform3fv(gl.getUniformLocation(fill, 'uQOrg'), mesh.qorg);
+      gl.uniform1f(gl.getUniformLocation(fill, 'uQSpan'), mesh.qspan);
       gl.uniform3fv(gl.getUniformLocation(fill, 'uT1'), t1);
       gl.uniform3fv(gl.getUniformLocation(fill, 'uT2'), t2);
       gl.uniform3fv(gl.getUniformLocation(fill, 'uT3'), t3);
@@ -327,6 +375,8 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       gl.bindVertexArray(ebo);
       gl.useProgram(line);
       gl.uniformMatrix4fv(gl.getUniformLocation(line, 'uMVP'), false, new Float32Array(M));
+      gl.uniform3fv(gl.getUniformLocation(line, 'uQOrg'), mesh.qorg);
+      gl.uniform1f(gl.getUniformLocation(line, 'uQSpan'), mesh.qspan);
       gl.uniform3fv(gl.getUniformLocation(line, 'uInk'), ink);
       gl.drawElements(gl.LINES, mesh.edges.length, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
 
