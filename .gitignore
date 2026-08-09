@@ -19,3 +19,7 @@ stl2mesh.py
 todo.py
 consistency.py
 gen_og.py
+
+# bytecode cache from running the local scripts
+__pycache__/
+*.pyc
