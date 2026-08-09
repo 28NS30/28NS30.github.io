@@ -410,7 +410,12 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     });
 
     addEventListener('resize', function () { resize(); draw(); }, { passive: true });
+    // The part paints its own pixels from the CSS tokens, so it has to be told
+    // when they change. The media query only covers the system flipping; a
+    // manual choice in the masthead never fires it, and the part would keep the
+    // old theme's tones on a page that had already switched.
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { draw(); });
+    document.addEventListener('themechange', function () { draw(); });
 
     // Off screen or in a background tab, stop scheduling frames. Note this only
     // pauses motion — the last drawn image stays on the canvas either way.
