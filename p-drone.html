@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quadrotor — Neo Su</title>
+<meta name="description" content="A quadrotor, built and flown. Frame, stack, and attitude loop.">
+<link rel="canonical" href="https://28ns30.github.io/p-drone.html">
+<meta property="og:title" content="Quadrotor — Neo Su">
+<meta property="og:description" content="A quadrotor, built and flown. Frame, stack, and attitude loop.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://28ns30.github.io/p-drone.html">
+<meta property="og:image" content="https://28ns30.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#E6E9E5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141816" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the write-up</a>
+
+<svg class="sheet-frame" aria-hidden="true" focusable="false">
+  <rect x="0.5" y="0.5" width="99.5%" height="99.5%" pathLength="400"></rect>
+  <svg x="0"    y="0"   ><line x1="0"   y1="26"  x2="26" y2="0"  ></line></svg>
+  <svg x="100%" y="0"   ><line x1="-26" y1="0"   x2="0"  y2="26" ></line></svg>
+  <svg x="100%" y="100%"><line x1="-26" y1="0"   x2="0"  y2="-26"></line></svg>
+  <svg x="0"    y="100%"><line x1="0"   y1="-26" x2="26" y2="0"  ></line></svg>
+
+  <g class="sheet-frame__zones">
+    <text x="12.5%" y="16">1</text><text x="37.5%" y="16">2</text>
+    <text x="62.5%" y="16">3</text><text x="87.5%" y="16">4</text>
+    <svg y="100%">
+      <text x="12.5%" y="-8">1</text><text x="37.5%" y="-8">2</text>
+      <text x="62.5%" y="-8">3</text><text x="87.5%" y="-8">4</text>
+    </svg>
+    <text x="9" y="12.5%">A</text><text x="9" y="37.5%">B</text>
+    <text x="9" y="62.5%">C</text><text x="9" y="87.5%">D</text>
+    <svg x="100%">
+      <text x="-9" y="12.5%">A</text><text x="-9" y="37.5%">B</text>
+      <text x="-9" y="62.5%">C</text><text x="-9" y="87.5%">D</text>
+    </svg>
+  </g>
+</svg>
+
+<div class="plot-progress" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="masthead__id" href="index.html">Neo Su</a>
+    <nav class="masthead__nav" aria-label="Primary">
+      <a href="index.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="https://github.com/28NS30">GitHub</a>
+      <a href="mailto:neolava2@gmail.com">Contact</a>
+    </nav>
+  </header>
+
+  <p class="crumb"><a href="index.html">Index</a> &nbsp;/&nbsp; C-01</p>
+
+  <main id="body">
+
+    <div class="proj__head">
+      <h1 class="proj__title">Quadrotor</h1>
+      <!-- Draft standfirst. Verify against the actual build before publishing. -->
+      <p class="proj__standfirst">
+        A quadrotor, built and flown. The first project where I worked on a control loop rather than a mechanism.
+      </p>
+    </div>
+
+    <div class="proj__layout">
+
+      <article class="prose">
+
+        <figure>
+          <div class="fig-well fig--pending"><span>Figure pending</span></div>
+          <figcaption>Fig. 1 &mdash; Schematic airframe.</figcaption>
+        </figure>
+
+        <div class="pending-note">
+          <h2>Write-up pending</h2>
+          <p>
+            This page is not written yet. It will follow the same five sections
+            as <a href="p-bldc.html">E-01</a>:
+          </p>
+          <ol>
+            <li>Why build it</li>
+            <li>Design decisions</li>
+            <li>What went wrong</li>
+            <li>Measured result</li>
+            <li>Files</li>
+          </ol>
+        </div>
+
+      </article>
+
+      <aside class="spec" aria-label="Parameters">
+        <p class="spec__cap">Parameters</p>
+        <dl>
+          <div class="spec__row"><dt>Drawing</dt><dd>C-01</dd></div>
+          <div class="spec__row"><dt>Discipline</dt><dd>Controls</dd></div>
+          <div class="spec__row"><dt>Status</dt><dd>Flown</dd></div>
+          <div class="spec__row"><dt>Year</dt><dd>2024</dd></div>
+          <div class="spec__row"><dt>Frame</dt><dd class="fill">[N] mm</dd></div>
+          <div class="spec__row"><dt>Flight controller</dt><dd class="fill">[board / firmware]</dd></div>
+          <div class="spec__row"><dt>Loop</dt><dd class="fill">[rate / angle, PID gains]</dd></div>
+          <div class="spec__row"><dt>AUW</dt><dd class="fill">[N] g</dd></div>
+          <div class="spec__row"><dt>Flight time</dt><dd class="fill">[N] min</dd></div>
+        </dl>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <footer class="colophon">
+    <dl class="colophon__grid">
+      <div class="colophon__cell"><dt>Modelled by</dt><dd>Neo Su</dd></div>
+      <div class="colophon__cell"><dt>Location</dt><dd>Taipei, Taiwan</dd></div>
+      <div class="colophon__cell"><dt>Code</dt><dd><a href="https://github.com/28NS30">github.com/28NS30</a></dd></div>
+      <div class="colophon__cell"><dt>Contact</dt><dd><a href="mailto:neolava2@gmail.com">neolava2@gmail.com</a></dd></div>
+      <div class="colophon__cell"><dt>Instagram</dt><dd><a href="https://www.instagram.com/ne0._s/">@ne0._s</a></dd></div>
+    </dl>
+    <p class="colophon__foot">C-01</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

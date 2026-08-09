@@ -1,0 +1,1444 @@
+/* ============================================================
+   PORTFOLIO — drafting sheet system
+   Palette derives from drafting film + CAD sketch conventions.
+   One superfamily (IBM Plex) at three widths, as a drawing uses
+   one lettering standard at several sizes.
+   ============================================================ */
+
+/* ---------- type, self-hosted ----------
+   IBM Plex, SIL Open Font License 1.1 (see assets/fonts/LICENSE.md).
+   Latin subset only, which is everything this site sets. Plex Sans ships as a
+   single variable file covering 100-700; the condensed and mono cuts are static.
+   Four files, 84 KB, no third-party request. */
+@font-face{
+  font-family: "IBM Plex Sans";
+  src: url("assets/fonts/ibm-plex-sans-var.woff2") format("woff2-variations"),
+       url("assets/fonts/ibm-plex-sans-var.woff2") format("woff2");
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: "IBM Plex Sans Condensed";
+  src: url("assets/fonts/ibm-plex-sans-condensed-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: "IBM Plex Sans Condensed";
+  src: url("assets/fonts/ibm-plex-sans-condensed-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: "IBM Plex Mono";
+  src: url("assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root{
+  /* --- surface --- */
+  --film:      #E6E9E5;   /* drafting film */
+  --film-2:    #DCE0DB;   /* recessed panel */
+  --film-3:    #D1D6D0;   /* figure well */
+
+  /* --- ink --- */
+  --ink:       #151917;
+  --graphite:  #545C57;
+  --rule:      #A9B1AA;
+  --rule-soft: #C6CCC5;
+
+  /* --- annotation layer (single accent) --- */
+  --construct: #1E4FD8;
+  --construct-tint: rgba(30, 79, 216, .07);
+
+  /* --- magnetic polarity. Used ONLY inside the motor drawing, never as UI.
+         Every pole also carries an N or S letter, so the colour is a second
+         channel rather than the only one. --- */
+  --pole-n: #1E4FD8;
+  --pole-s: #9C3822;   /* darkened from #B4432B: the S letters sit on the
+                          figure well, where the lighter red measured 3.77:1 */
+  --pole-n-tint: rgba(30, 79, 216, .18);
+  --pole-s-tint: rgba(156, 56, 34, .18);
+
+  /* --- status only. appears on <=2 elements per page --- */
+  --hazard:    #D99B0B;
+
+  /* --- the graticule ruled across the field --- */
+  --grid-line: rgba(21, 25, 23, .030);
+
+  color-scheme: light dark;
+
+  /* --- type --- */
+  --sans:  "IBM Plex Sans", system-ui, sans-serif;
+  --cond:  "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --mono:  "IBM Plex Mono", ui-monospace, monospace;
+
+  /* One scale, each step visibly different from its neighbours. --t-meta and
+     --t-micro used to sit 2% apart, which is two tokens doing one job; they
+     are now 14% apart. --t-h3 was 8% above body, too close for a card title
+     to read as a heading, and is now 18% above it. */
+  /* Sized for a project name, not a statement. The old 6.5rem billboard read as
+     a slogan whatever words went in it. */
+  --t-hero:  clamp(2rem, 4.6vw, 3.5rem);
+  --t-h2:    clamp(1.35rem, 2.6vw, 1.9rem);
+  --t-h3:    1.25rem;
+  --t-body:  1.0625rem;
+  --t-meta:  0.8rem;
+  --t-micro: 0.7rem;
+
+  /* ---------- spacing scale ----------
+     Was sixteen ad-hoc multipliers of an 8px unit, including 6/7/9/10px and
+     16/18/20px — distinctions no eye resolves. Nine steps, each a clear
+     increment on the last, so a new component has an obvious value to reach
+     for instead of a new fraction. */
+  --sp-3xs: 4px;
+  --sp-2xs: 8px;
+  --sp-xs:  12px;
+  --sp-s:   16px;
+  --sp-m:   24px;
+  --sp-l:   32px;
+  --sp-xl:  48px;
+  --sp-2xl: 64px;
+
+  /* rhythm */
+  --gut: clamp(20px, 5vw, 68px);
+  --maxw: 1240px;
+  /* Reading measure, ~66 characters. Held in rem rather than ch for two
+     reasons: ch is the width of "0" (10.2px in Plex Sans against an 8.6px
+     average character, so 68ch silently bought 81 characters), and ch is
+     relative to each element's own size, so a standfirst and the body copy
+     below it resolved to different widths and misaligned by 21px. */
+  --readw: 35.5rem;
+
+  /* ---------- motion ----------
+     Four verbs and no fifth: draw (stroke-dashoffset), wipe (clip-path),
+     step (discrete keyframes), turn (rotation at a true ratio). Nothing fades
+     in — content arrives the way a plotter lays it down. */
+  --ease-plot: cubic-bezier(.65, 0, .35, 1);
+  --t-draw: .9s;    /* a line being drawn */
+  --t-wipe: .55s;   /* a block being laid down */
+
+  /* One six-step electrical cycle of the hero motor. The rotor period is seven
+     times this, because fourteen poles is seven pole pairs. */
+  --t-commutate: 1.2s;
+  --t-rotor: 8.4s;
+}
+
+/* ---------- dark: the same sheet on a backlit table ----------
+   Not an inversion. The film becomes the dark field of a CAD viewport and the
+   ink becomes the drawn line, which is how the drawing reads at night. The
+   accent lifts to #7BA0FF because #1E4FD8 is unreadable on a dark ground.
+   Every text pair here measures past WCAG AA; the weakest is 6.1:1. */
+@media (prefers-color-scheme: dark){
+  :root{
+    --film:      #141816;
+    --film-2:    #1B211E;
+    --film-3:    #222925;
+
+    --ink:       #E4E8E3;
+    --graphite:  #9FA9A2;
+    --rule:      #3A423D;
+    --rule-soft: #2A312D;
+
+    --construct: #7BA0FF;
+    --construct-tint: rgba(123, 160, 255, .10);
+
+    --pole-n: #7BA0FF;
+    --pole-s: #E1795C;
+    --pole-n-tint: rgba(123, 160, 255, .22);
+    --pole-s-tint: rgba(225, 121, 92, .22);
+
+    --hazard:    #E0AC38;
+
+    --grid-line: rgba(228, 232, 227, .035);
+  }
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+/* The hidden attribute must win. Several components here set an explicit
+   display (.stator is display:block), which silently beats [hidden]'s UA
+   display:none — so a hidden fallback kept rendering underneath its
+   replacement. */
+[hidden]{ display: none !important; }
+
+html{ -webkit-text-size-adjust: 100%; }
+
+body{
+  margin: 0;
+  color: var(--ink);
+  /* drafting graticule over the film field */
+  background-color: var(--film);
+  background-image:
+    linear-gradient(to right,  var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 34px 34px;
+  background-position: -1px -1px;
+  font-family: var(--sans);
+  font-size: var(--t-body);
+  line-height: 1.62;
+  font-feature-settings: "kern" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- sheet frame (signature) ---------- */
+.sheet-frame{
+  position: fixed;
+  inset: 11px;
+  /* An <svg> with auto width/height falls back to its intrinsic 300x150 even
+     when all four insets are set, so the frame must be sized explicitly. */
+  width: calc(100% - 22px);
+  height: calc(100% - 22px);
+  pointer-events: none;
+  z-index: 40;
+}
+.sheet-frame rect{
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: plot 1.5s cubic-bezier(.65,0,.35,1) forwards;
+}
+/* corner registration ticks: nested <svg> so each corner can be placed
+   with a percentage origin and drawn in local units */
+.sheet-frame svg{ overflow: visible; }
+.sheet-frame line{
+  stroke: var(--rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  animation: ink .4s ease 1.2s forwards;
+}
+@keyframes plot{ to{ stroke-dashoffset: 0; } }
+@keyframes ink{ to{ opacity: 1; } }
+
+/* Zone markers, as on a real drawing border: columns 1-4, rows A-D. They give
+   the frame the density of a sheet and a coordinate system to refer to. */
+.sheet-frame__zones text{
+  fill: var(--rule);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  opacity: 0;
+  animation: ink .4s ease 1.35s forwards;
+}
+
+/* Scroll position, drawn as a dimension down the right edge. Pure chrome, so it
+   only exists where scroll-driven timelines do; nothing else depends on it. */
+.plot-progress{ display: none; }
+@supports (animation-timeline: scroll()){
+  .plot-progress{
+    display: block;
+    position: fixed;
+    top: 11px;
+    right: 5px;
+    width: 1px;
+    height: calc(100% - 22px);
+    background: var(--construct);
+    transform: scaleY(0);
+    transform-origin: top center;
+    pointer-events: none;
+    z-index: 41;
+    animation: draw-y linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes draw-y{ from{ transform: scaleY(0); } to{ transform: scaleY(1); } }
+}
+
+/* Navigating between sheets wipes rather than cross-fades — the browser's
+   default transition is a fade, which is the one verb this system does not use. */
+@view-transition{ navigation: auto; }
+::view-transition-old(root){ animation: none; }
+::view-transition-new(root){ animation: wipe-in .34s var(--ease-plot); }
+
+/* ---------- layout ---------- */
+.wrap{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: var(--gut);
+}
+
+/* ---------- masthead ---------- */
+.masthead{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gut);
+  padding-block: var(--sp-m) var(--sp-s);
+  flex-wrap: wrap;
+}
+.masthead__id{
+  font-family: var(--cond);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+}
+.masthead__nav{
+  display: flex;
+  gap: var(--sp-m);
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.masthead__nav a{
+  color: var(--graphite);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color .16s ease, border-color .16s ease;
+}
+.masthead__nav a:hover,
+.masthead__nav a[aria-current="page"]{
+  color: var(--ink);
+  border-bottom-color: var(--construct);
+}
+
+/* ---------- hero ----------
+   A drafting plate: label bar across the top, then statement and drawing
+   starting on the same line. The eyebrow spans both columns so the thesis and
+   the figure share a top edge instead of the drawing floating mid-column. */
+.hero{
+  /* Fixed steps, not viewport height: an 8vh bottom pad grew to 136px of dead
+     space on tall screens while every other gap stayed put. 48px bottom meets
+     the section's own 48px top, so hero-to-section reads exactly like
+     section-to-section. */
+  padding-block: var(--sp-l) var(--sp-xl);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(240px, 34vw, 460px);
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "text    fig"
+    "rig     rig"
+    "dim     dim";
+  column-gap: clamp(28px, 5vw, 76px);
+  align-items: start;
+}
+.eyebrow{ grid-area: eyebrow; }
+.hero__text{ grid-area: text; }
+.hero__fig{ grid-area: fig; justify-self: end; width: 100%; }
+
+/* The hero leads with the current build rather than a statement about the work.
+   It is the title block again, at plate scale: kicker, drawing title, one line
+   of description, then the same four-cell grid the index cards carry. */
+.hero__kicker{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--construct);
+  margin: 0 0 var(--sp-xs);
+}
+.hero__title{
+  font-family: var(--cond);
+  font-size: var(--t-hero);
+  font-weight: 600;
+  line-height: .98;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  margin: 0;
+  max-width: 18ch;
+}
+.hero__title a{
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color .16s ease;
+}
+.hero__title a:hover{ border-bottom-color: var(--construct); }
+
+/* .tb__grid sets margin:0 and is declared later at equal specificity, so this
+   needs the extra class to win. */
+.hero__text .hero__tb{ margin-top: var(--sp-m); max-width: var(--readw); }
+
+/* The drawing beside the title is E-01, not the featured build. Label it, so it
+   reads as a second entry into the index rather than a picture of the UMV. */
+.hero__figcap{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  text-align: right;
+  margin: var(--sp-xs) 0 0;
+}
+.hero__figcap a{
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: color .16s ease, border-color .16s ease;
+}
+.hero__figcap a:hover{ color: var(--ink); border-bottom-color: var(--construct); }
+.hero__figcap-sub{
+  display: block;
+  margin-top: var(--sp-3xs);
+  color: var(--construct);
+}
+
+.stator{ width: 100%; height: auto; overflow: visible; display: block; }
+.stator circle, .stator path{ fill: none; vector-effect: non-scaling-stroke; }
+/* Line weights follow drawing convention: object lines heaviest, hidden and
+   construction lines lighter. At 340px the earlier 1px strokes washed out
+   against a 104px thesis, so the hierarchy is widened rather than uniformly
+   darkened — the iron still reads as the subject. */
+.stator__rotor circle{ stroke: var(--rule); stroke-width: 1.2; }
+.stator__mag path{ fill: var(--film-3); stroke: var(--rule); stroke-width: 1.2; }
+.stator__iron circle, .stator__iron path{ stroke: var(--ink); stroke-width: 1.7; }
+.stator__dim line{ stroke: var(--construct); stroke-width: 1.1; }
+.stator__dim text{
+  fill: var(--construct);
+  font-family: var(--mono);
+  font-size: 17px;
+  letter-spacing: .05em;
+}
+
+/* No entry animation on the drawing itself. It previously wiped in from
+   clip-path: circle(0%), which meant the single most important element on the
+   site had an invisible start state — anything that stalled or paused that
+   animation (a background tab at load, an early false intersection) left the
+   hero blank. The drawing is simply present; the motion is the motor running. */
+
+/* ---------- live 12N14P commutation ----------
+   Twelve teeth in a dLRK pattern: adjacent pairs share a phase (A a B b C c,
+   twice around). Six-step trapezoidal commutation energises two of the three
+   phases at any instant and leaves the third floating:
+
+     1 A+B-   2 A+C-   3 B+C-   4 B+A-   5 C+A-   6 C+B-
+
+   so A floats in steps 3 and 6, B in 2 and 5, C in 1 and 4. Each keyframe pair
+   sits 0.01% apart, which switches in about a tenth of a millisecond — a step,
+   not a crossfade.
+
+   The rotor turns once per SEVEN electrical cycles, because fourteen poles is
+   seven pole pairs. That ratio is the whole reason an outrunner makes torque at
+   low speed, and it is why --t-rotor is 7 x --t-commutate. */
+.stator__iron .ph{
+  fill: var(--construct);
+  fill-opacity: 0;
+  stroke: var(--ink);
+}
+/* ---------- the motor is the hero object ----------
+   Grab the rotor and it follows the cursor; the commutation follows rotor
+   position, which is exactly how a sensored brushless motor works — Hall
+   sensors report where the rotor is and the controller energises whichever
+   phases make torque there. Turning it makes you the position sensor. */
+/* No grab affordance on the index: there the stator is only the no-WebGL
+   fallback. On p-bldc.html, where the motor is the subject, .fig-well--motor
+   restores it. */
+.fig-well--motor .stator{ cursor: grab; touch-action: none; }
+.fig-well--motor .stator:active{ cursor: grabbing; }
+.stator:focus-visible{ outline: 2px solid var(--construct); outline-offset: 6px; }
+
+/* Rotor magnets: fourteen poles, alternating. The letters counter-rotate in
+   script so they stay upright as the rotor turns. */
+.stator__mag path[data-pole="n"]{ fill: var(--pole-n-tint); stroke: var(--pole-n); }
+.stator__mag path[data-pole="s"]{ fill: var(--pole-s-tint); stroke: var(--pole-s); }
+.stator__poles text{
+  font-family: var(--mono);
+  font-size: 15px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  stroke: none;
+}
+.stator__poles text[data-pole="n"]{ fill: var(--pole-n); }
+.stator__poles text[data-pole="s"]{ fill: var(--pole-s); }
+
+/* Energised teeth take the pole their current produces. Set from script. */
+.stator .ph[data-pole="n"]{ stroke: var(--pole-n); fill: var(--pole-n-tint); fill-opacity: 1; }
+.stator .ph[data-pole="s"]{ stroke: var(--pole-s); fill: var(--pole-s-tint); fill-opacity: 1; }
+
+.mtr__readout{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: var(--sp-s) 0 0;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule-soft);
+}
+.mtr__readout[hidden]{ display: none; }
+.mtr__cell{ background: var(--film-2); padding: var(--sp-2xs) var(--sp-xs); margin: 0; }
+.mtr__cell dt{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin-bottom: var(--sp-3xs);
+}
+.mtr__cell dd{
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scoped to the hero. The index card's motor uses the same phase classes but is
+   a still drawing — it holds step 1 (A+ B-), set below. */
+.stator .ph--a{ animation: ph-a var(--t-commutate) infinite; }
+.stator .ph--b{ animation: ph-b var(--t-commutate) infinite; }
+.stator .ph--c{ animation: ph-c var(--t-commutate) infinite; }
+
+/* When the balance rig is live it drives the motor from the loop's real wheel
+   speed and commanded force, so the free-running CSS loop stands down. Without
+   the rig — no JS, reduced motion — the CSS loop above still runs. */
+.stator.is-driven .ph,
+.stator.is-driven .stator__rotor,
+.stator.is-driven .stator__mag{ animation: none; }
+
+@keyframes ph-a{
+  0%,     33.32%  { stroke: var(--construct); fill-opacity: .16; }
+  33.33%, 49.99%  { stroke: var(--ink);       fill-opacity: 0; }
+  50%,    83.32%  { stroke: var(--construct); fill-opacity: .16; }
+  83.33%, 100%    { stroke: var(--ink);       fill-opacity: 0; }
+}
+@keyframes ph-b{
+  0%,     16.65%  { stroke: var(--construct); fill-opacity: .16; }
+  16.66%, 33.32%  { stroke: var(--ink);       fill-opacity: 0; }
+  33.33%, 66.65%  { stroke: var(--construct); fill-opacity: .16; }
+  66.66%, 83.32%  { stroke: var(--ink);       fill-opacity: 0; }
+  83.33%, 100%    { stroke: var(--construct); fill-opacity: .16; }
+}
+@keyframes ph-c{
+  0%,     16.65%  { stroke: var(--ink);       fill-opacity: 0; }
+  16.66%, 49.99%  { stroke: var(--construct); fill-opacity: .16; }
+  50%,    66.65%  { stroke: var(--ink);       fill-opacity: 0; }
+  66.66%, 100%    { stroke: var(--construct); fill-opacity: .16; }
+}
+
+.stator__rotor, .stator__mag{
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+}
+.stator__rotor,
+.stator__mag{
+  animation: rotor var(--t-rotor) linear infinite;
+}
+@keyframes rotor{ to{ transform: rotate(360deg); } }
+
+/* Script's only power over this drawing: stopping the moving parts when nobody
+   can see them. Scoped to the groups that turn — never the host element, so a
+   pause can never affect whether the drawing is visible. */
+.stator.is-paused .stator__rotor,
+.stator.is-paused .stator__mag,
+.stator.is-paused .ph{ animation-play-state: paused; }
+
+.eyebrow{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin: 0 0 var(--sp-m);
+}
+
+/* Dimension line — annotation layer, drawn once. Label above its line, as on a
+   drawing. It spans the full text column deliberately: a dimension that stops
+   short of the thing it measures is decoration, not annotation. */
+.dim{
+  grid-area: dim;
+  margin-top: var(--sp-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sp-3xs);
+  color: var(--construct);
+}
+.dim__bar{
+  width: 100%;
+  height: 7px;
+  border-left: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  position: relative;
+}
+.dim__bar::after{
+  content: "";
+  position: absolute;
+  inset-block: 3px auto;
+  inset-inline: 0;
+  border-top: 1px solid currentColor;
+}
+.dim__label{
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero__note{
+  margin: var(--sp-m) 0 0;
+  max-width: var(--readw);
+  color: var(--graphite);
+  font-size: 1.02rem;
+}
+
+/* ---------- section heads ---------- */
+.sec{ padding-block: var(--sp-xl); }
+
+.sec__head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-s);
+  padding-bottom: var(--sp-xs);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--sp-l);
+}
+.sec__mark{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  color: var(--construct);
+  letter-spacing: .08em;
+}
+.sec__title{
+  font-family: var(--cond);
+  font-size: var(--t-h2);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.sec__count{
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  color: var(--graphite);
+  letter-spacing: .1em;
+}
+
+/* ---------- drawing index ---------- */
+.index{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: var(--sp-m);
+}
+
+.dwg{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  border: 1px solid var(--rule);
+  background: var(--film-2);
+  transition: border-color .18s ease, transform .18s ease;
+}
+.dwg:hover{ border-color: var(--ink); transform: translateY(-2px); }
+.dwg:focus-within{ border-color: var(--ink); }
+.dwg:hover .tb__no{ color: var(--construct); }
+
+/* The anchor sits on the title, not the whole card: a screen reader announces
+   "Cycloidal gearbox", not the card's entire text. The overlay restores the
+   whole card as a click target without putting it in the link name. */
+.tb__name a{
+  color: inherit;
+  text-decoration: none;
+}
+.tb__name a::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.dwg__fig{
+  aspect-ratio: 4 / 3;
+  background: var(--film-3);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--rule);
+}
+.dwg__fig img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* empty state: reads as a section cut, not as breakage */
+.fig--pending{
+  background-image: repeating-linear-gradient(
+    45deg, transparent 0 9px, var(--rule-soft) 9px 10px
+  );
+}
+.fig--pending span{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  background: var(--film-2);
+  padding: 5px 10px;
+  border: 1px solid var(--rule);
+}
+
+/* ---------- title block (the signature component) ---------- */
+.tb{ padding: var(--sp-s); }
+
+.tb__head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-xs);
+  margin-bottom: var(--sp-xs);
+}
+.tb__no{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .06em;
+  color: var(--graphite);
+  transition: color .18s ease;
+}
+.tb__name{
+  font-family: var(--cond);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: .01em;
+  margin: 0;
+  line-height: 1.2;
+  /* Two lines reserved whether the title needs them or not. Without it a card
+     whose name wraps is 23px taller than one whose name does not, so the grid
+     rows came out 447 / 447 / 424 and the cards read as different sizes. */
+  min-height: 2.4em;
+}
+
+.tb__grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin: 0;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule-soft);
+}
+.tb__cell{
+  background: var(--film-2);
+  padding: var(--sp-2xs) var(--sp-xs);
+  margin: 0;
+}
+.tb__cell dt{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin-bottom: var(--sp-3xs);
+}
+.tb__cell dd{
+  margin: 0;
+  font-family: var(--cond);
+  font-size: .875rem;
+  font-weight: 500;
+  letter-spacing: .015em;
+}
+
+.chip{
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+}
+.chip--live{ background: var(--hazard); border-color: var(--hazard); color: #1a1400; }
+
+/* ---------- project page ---------- */
+.crumb{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding-block: var(--sp-m) 0;
+}
+.crumb a{ color: var(--construct); text-decoration: none; }
+.crumb a:hover{ text-decoration: underline; }
+
+.proj__head{ padding-block: var(--sp-l) var(--sp-xl); }
+.proj__title{
+  font-family: var(--cond);
+  font-size: clamp(2.1rem, 6vw, 4.1rem);
+  font-weight: 600;
+  line-height: .98;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-s);
+  max-width: 18ch;
+}
+.proj__standfirst{
+  font-size: 1.16rem;
+  line-height: 1.5;
+  max-width: var(--readw);
+  margin: 0;
+  color: var(--graphite);
+}
+.proj__standfirst a{ color: var(--construct); }
+
+.proj__layout{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  column-gap: clamp(40px, 5vw, 80px);
+  row-gap: var(--sp-xl);
+  align-items: start;
+  padding-bottom: var(--sp-2xl);
+}
+
+.spec{
+  border: 1px solid var(--rule);
+  background: var(--film-2);
+  position: sticky;
+  top: var(--sp-m);
+}
+.spec__cap{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding: var(--sp-xs) var(--sp-s);
+  border-bottom: 1px solid var(--rule);
+}
+.spec dl{ margin: 0; }
+.spec__row{
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2xs);
+  padding: var(--sp-2xs) var(--sp-s);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.spec__row:last-child{ border-bottom: 0; }
+.spec__row dt{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.spec__row dd{
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  text-align: right;
+}
+
+.prose{ max-width: var(--readw); }
+.prose h2{
+  font-family: var(--cond);
+  font-size: var(--t-h2);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin: var(--sp-xl) 0 var(--sp-s);
+  padding-bottom: var(--sp-2xs);
+  border-bottom: 1px solid var(--rule);
+}
+.prose h2:first-child{ margin-top: 0; }
+.prose h2 .sec__mark{ margin-right: var(--sp-xs); }
+.prose p{ margin: 0 0 var(--sp-m); }
+.prose a{ color: var(--construct); }
+.prose strong{ font-weight: 600; }
+.prose figure{ margin: var(--sp-l) 0; }
+.prose figcaption{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .08em;
+  color: var(--graphite);
+  margin-top: var(--sp-xs);
+  padding-left: var(--sp-xs);
+  border-left: 2px solid var(--construct);
+}
+.prose .fig-well{
+  aspect-ratio: 16 / 10;
+  background: var(--film-3);
+  border: 1px solid var(--rule);
+  display: grid;
+  place-items: center;
+}
+
+/* Revision history reads as a timeline being drawn: each row's rule extends
+   as it arrives, so the table builds downward like a log. */
+.rev tbody tr td{ position: relative; }
+.rev tbody tr td::after{
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--rule-soft);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: draw-x var(--t-draw) var(--ease-plot) both;
+}
+.rev tbody tr:nth-child(2) td::after{ animation-delay: .12s; }
+.rev tbody tr:nth-child(3) td::after{ animation-delay: .24s; }
+@supports (animation-timeline: view()){
+  .rev tbody tr td::after{
+    animation-timeline: view();
+    animation-range: entry 10% entry 70%;
+    animation-delay: 0s;
+  }
+}
+
+/* revision history — encodes iteration, natively */
+.rev{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .93rem;
+  margin: var(--sp-s) 0 0;
+}
+.rev caption{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  text-align: left;
+  padding-bottom: var(--sp-xs);
+}
+.rev th, .rev td{
+  text-align: left;
+  padding: var(--sp-xs) var(--sp-xs) var(--sp-xs) 0;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+}
+.rev th{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  font-weight: 400;
+  border-bottom-color: var(--rule);
+}
+.rev td:first-child{
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  color: var(--construct);
+  white-space: nowrap;
+  width: 64px;
+}
+
+/* ---------- about ---------- */
+.about__grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  column-gap: clamp(40px, 5vw, 80px);
+  row-gap: var(--sp-xl);
+  align-items: start;
+  padding-bottom: var(--sp-2xl);
+}
+
+/* ---------- footer title block ---------- */
+.colophon{
+  border-top: 1px solid var(--rule);
+  margin-top: var(--sp-xl);
+}
+.colophon__grid{
+  margin: 0;            /* it is a <dl> */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule-soft);
+  border-top: 0;
+}
+.colophon__cell{
+  background: var(--film);
+  padding: var(--sp-s);
+}
+.colophon__cell dt{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin-bottom: var(--sp-3xs);
+}
+.colophon__cell dd{
+  margin: 0;
+  font-family: var(--cond);
+  font-size: .95rem;
+  font-weight: 500;
+}
+.colophon__cell a{ color: var(--construct); text-decoration: none; }
+.colophon__cell a:hover{ text-decoration: underline; }
+.colophon__foot{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding-block: var(--sp-m) var(--sp-xl);
+}
+
+/* ---------- reveal: wipe, not fade ----------
+   The old rule faded and slid content upward, which is the one motion this
+   system does not use. A card is now laid down left to right, like a plotter
+   filling a region. Opacity is never animated.
+
+   These are CSS animations that run on load, never classes added by script.
+   Script can only ever PAUSE motion here, never reveal content — so if the
+   observer fails, an extension blocks it, or JS is off entirely, the page is
+   finished rather than blank. Where scroll-driven timelines are supported the
+   wipe follows the scroll instead; where they are not it simply plays. Both
+   paths end with the content visible. */
+@keyframes wipe-in{ from{ clip-path: inset(0 100% 0 0); } to{ clip-path: inset(0 0 0 0); } }
+@keyframes draw-x{ from{ transform: scaleX(0); } to{ transform: scaleX(1); } }
+
+.rise{ animation: wipe-in var(--t-wipe) var(--ease-plot) both; }
+.rise:nth-child(2){ animation-delay: .06s; }
+.rise:nth-child(3){ animation-delay: .12s; }
+.rise:nth-child(4){ animation-delay: .18s; }
+.rise:nth-child(5){ animation-delay: .24s; }
+.rise:nth-child(6){ animation-delay: .30s; }
+
+@supports (animation-timeline: view()){
+  .rise{
+    animation-timeline: view();
+    animation-range: entry 5% entry 45%;
+    animation-delay: 0s;
+  }
+}
+
+/* Section rules draw rather than appear. The head's border is replaced by a
+   scaling pseudo-element so it can be animated on the compositor. */
+.sec__head{ position: relative; border-bottom: 0; }
+.sec__head::after{
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--rule);
+  transform-origin: left center;
+  animation: draw-x var(--t-draw) var(--ease-plot) both;
+}
+@supports (animation-timeline: view()){
+  .sec__head::after{ animation-timeline: view(); animation-range: entry 10% entry 60%; }
+}
+
+/* The hero dimension bar extends to its measure instead of simply being there. */
+.dim__bar{
+  transform-origin: left center;
+  animation: draw-x var(--t-draw) var(--ease-plot) .25s both;
+}
+
+/* ---------- a11y / responsive ---------- */
+a:focus-visible, button:focus-visible{
+  outline: 2px solid var(--construct);
+  outline-offset: 3px;
+}
+
+.skip{
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ink);
+  color: var(--film);
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  z-index: 60;
+}
+.skip:focus{ left: 12px; top: 12px; }
+
+@media (max-width: 900px){
+  .hero{
+    grid-template-columns: minmax(0, 1fr);
+    /* the areas map must collapse too, or it keeps forcing two columns and the
+       drawing lands on top of the title */
+    grid-template-areas: "eyebrow" "text" "fig" "rig" "dim";
+  }
+  .hero__fig{ justify-self: start; max-width: 300px; margin-top: var(--sp-m); }
+  .proj__layout, .about__grid{ grid-template-columns: minmax(0, 1fr); }
+  .spec{ position: static; }
+}
+
+@media (max-width: 560px){
+  .sheet-frame{ inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
+  .masthead{ padding-top: var(--sp-m); }
+  .masthead__nav{ gap: var(--sp-s); }
+  .hero__title{ max-width: 14ch; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .001ms !important;
+  }
+  /* Every drawing must land on a complete, correct static frame — never an
+     empty box. The motor holds step 1 (A+ B-), which is a true state. */
+  .rise{ animation: none !important; clip-path: none !important; }
+  .sec__head::after, .dim__bar{ animation: none !important; transform: scaleX(1); }
+  .sheet-frame rect{ stroke-dashoffset: 0; }
+  .sheet-frame line, .sheet-frame__zones text{ opacity: 1; }
+  .plot-progress{ display: none; }
+  ::view-transition-old(root), ::view-transition-new(root){ animation: none; }
+  .stator__rotor, .stator__mag, .stator .ph{ animation: none !important; }
+  .rev tbody tr td::after{ animation: none !important; transform: scaleX(1); }
+  .stator .ph--a, .stator .ph--b{ stroke: var(--construct); fill-opacity: .16; }
+}
+
+@media print{
+  /* paper is paper: never print the dark theme, whatever the screen is set to */
+  :root{
+    --film: #fff; --film-2: #fff; --film-3: #f2f2f2;
+    --ink: #000; --graphite: #333;
+    --rule: #999; --rule-soft: #ccc;
+    --construct: #00379e; --construct-tint: transparent;
+    --hazard: #D99B0B; --grid-line: transparent;
+    color-scheme: light;
+  }
+  .sheet-frame, .masthead__nav, .skip{ display: none; }
+  body{ background: #fff; background-image: none; }
+  .wrap{ max-width: none; padding-inline: 0; }
+
+  /* a drawing does not split across sheets */
+  .dwg, .spec, .pending-note, figure, .rev{ break-inside: avoid; }
+  .sec, .prose h2{ break-after: avoid; }
+
+  /* paper has no hover state and no clickable text */
+  .prose a[href^="http"]::after,
+  .colophon__cell a[href^="http"]::after{
+    content: " (" attr(href) ")";
+    font-family: var(--mono);
+    font-size: .8em;
+    word-break: break-all;
+  }
+  .rise{ clip-path: none; }
+  .sec__head::after, .dim__bar{ transform: scaleX(1); }
+  .spec{ position: static; }
+
+  /* The fan is six absolutely-positioned, overlapping, rotated sheets. On
+     screen that is the point; on paper it is one illegible smear. Paper gets
+     the grid, which is what the markup is anyway. */
+  .index--fan{
+    display: grid !important;
+    width: auto !important;
+    height: auto !important;
+    margin-left: 0 !important;
+    perspective: none;
+  }
+  .index--fan .dwg{
+    position: static; width: auto; aspect-ratio: auto;
+    transform: none; border-color: var(--rule);
+  }
+  .index--fan .dwg::after{ display: none; }
+  .index--fan .dwg__fig{
+    position: relative; inset: auto; aspect-ratio: 4 / 3; border: 0;
+  }
+  .index--fan .tb{ position: static; padding: var(--sp-s); }
+  /* Explicit values, not `revert`: revert rolls back to the USER-AGENT origin,
+     which threw away .tb__grid{ display: grid } and left the title block as a
+     plain block with its two columns collapsed. */
+  .index--fan .tb__grid{ display: grid; }
+  .index--fan .tb__no{ display: inline; }
+  .index--fan .tb__head{ display: flex; width: auto; height: auto; margin: 0 0 var(--sp-xs); }
+  .index--fan .tb__name{
+    writing-mode: horizontal-tb; transform: none; height: auto; padding-left: 0;
+  }
+  .index--fan .fig--pending > span{ opacity: 1; }
+}
+
+/* ---------- fill-in markers: the site tells you what's missing ---------- */
+/* An unfilled value. This used to render in the accent colour on a tinted
+   ground, which made the loudest thing on every unfinished page its own
+   incompleteness — fine as a private TODO marker, a liability the moment the
+   URL is shared. It now reads the way a blank field reads on a real form:
+   present, clearly empty, not shouting. The loud tracker is `todo.py`, which
+   counts these from the files and so cannot go stale. */
+.fill{
+  font-family: var(--mono);
+  font-size: .86em;
+  color: var(--graphite);
+  border-bottom: 1px dotted var(--rule);
+  padding: 0 1px;
+}
+
+/* ---------- designed empty state for unwritten pages ---------- */
+.pending-note{
+  border: 1px solid var(--rule);
+  background: var(--film-2);
+  padding: var(--sp-m);
+  max-width: var(--readw);
+}
+.pending-note h2{
+  font-family: var(--cond);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-xs);
+  border: 0;
+  padding: 0;
+}
+.pending-note p{ margin: 0 0 var(--sp-xs); color: var(--graphite); }
+.pending-note ol{
+  margin: 0;
+  padding-left: 1.15rem;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: .04em;
+  color: var(--graphite);
+  line-height: 2;
+}
+
+
+/* the motor figure on its own project page: it is the subject there, so the
+   grab-and-spin affordance belongs */
+.fig-well--motor{ padding: var(--sp-m); background: var(--film-3); }
+.fig-well--motor .stator{ max-height: 100%; }
+
+
+/* ---------- the drawing set, fanned ----------
+   The same six cards as the grid, re-laid out. Script adds .index--fan; with no
+   JS, on a narrow screen, or under reduced motion the grid stands and none of
+   this applies.
+
+   Geometry: sheets pushed across a table, not a hand of cards. Stacking runs
+   left-to-right so every sheet reveals a strip of its left edge — and that
+   strip is the sheet's BINDING MARGIN, carrying the drawing number and the
+   project name running up the spine. That is how drawings sit in a flat file,
+   and it is why the fan stays scannable: the first pass showed six clipped
+   titles, which is worse than a grid. Depth is occlusion; no shadows. */
+@media (min-width: 900px){
+  .index--fan{
+    display: block;
+    position: relative;
+    height: clamp(420px, 46vh, 500px);   /* script refits to the tallest sheet */
+    /* No perspective, and no translateZ on the sheets. Depth used to be sold
+       with a Z stagger, which under an 1600px perspective rendered the outer
+       sheets 9% smaller than the middle ones — they read as different-sized
+       drawings rather than as the same drawing further back. Occlusion and the
+       edge do the depth work, which is what the design said all along. */
+    --sheet-w: 300px;
+    --margin-w: 116px;   /* binding edge — the strip left showing at rest */
+    --step: 126px;       /* revealed strip; script bounds it to the stage */
+    --tilt: 1.9deg;      /* per sheet, about a pivot below the stage */
+  }
+  .index--fan .dwg{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--sheet-w);
+    aspect-ratio: 1 / 1.34;
+    margin: 0;
+    --part: 0px;
+    /* Depth here is carried by occlusion and edge alone — there are no shadows
+       by design — so the sheet edge has to be legible in both themes. --rule
+       against the dark sheet measures about 1.6:1 and the stack read as one
+       flat mass at night. Mixed from --graphite instead, which lands close to
+       --rule on paper and clearly above it in the dark. */
+    border-color: color-mix(in srgb, var(--graphite) 55%, transparent);
+    transform-origin: 50% 190%;
+    transform:
+      translate(-50%, -50%)
+      translateX(calc(var(--i) * var(--step) + var(--part)))
+      rotate(calc(var(--i) * var(--tilt)));
+    /* short, so cursor input reads as a damped follow rather than a lag */
+    transition: transform .22s var(--ease-plot), border-color .18s ease;
+    will-change: transform;
+  }
+  .index--fan .dwg:nth-child(1){ --i: -2.5; z-index: 1; }
+  .index--fan .dwg:nth-child(2){ --i: -1.5; z-index: 2; }
+  .index--fan .dwg:nth-child(3){ --i: -0.5; z-index: 3; }
+  .index--fan .dwg:nth-child(4){ --i:  0.5; z-index: 4; }
+  .index--fan .dwg:nth-child(5){ --i:  1.5; z-index: 5; }
+  .index--fan .dwg:nth-child(6){ --i:  2.5; z-index: 6; }
+
+  /* The chosen sheet is pulled out: square, forward, above its neighbours —
+     and the stack PARTS around it. Squaring a 300px sheet up otherwise buried
+     the next sheet's margin completely, so the neighbour lost its identity
+     rather than merely being overlapped. One inherited custom property does it,
+     which keeps the transform declared in exactly one place. */
+  .index--fan .dwg:hover ~ .dwg,
+  .index--fan .dwg:focus-within ~ .dwg{ --part: 52px; }
+  /* :has gives the previous-sibling half; without it the parting is one-sided,
+     which degrades quietly rather than breaking */
+  .index--fan .dwg:has(~ .dwg:hover),
+  .index--fan .dwg:has(~ .dwg:focus-within){ --part: -52px; }
+
+  .index--fan .dwg:hover,
+  /* Keyboard focus rings the SHEET, not the link. The global a:focus-visible
+     outline would otherwise draw a small ring around the vertical spine text —
+     technically present, but it does not say "this drawing is selected". */
+  .index--fan .dwg:has(a:focus-visible){
+    outline: 2px solid var(--construct);
+    outline-offset: 3px;
+  }
+  .index--fan .tb__name a:focus-visible{ outline: none; }
+
+  .index--fan .dwg:focus-within{
+    transform:
+      translate(-50%, -50%)
+      translateX(calc(var(--i) * var(--step) + var(--part)))
+      translateY(-16px)
+      rotate(0deg)
+      scale(1.02);
+    z-index: 9;
+    border-color: var(--ink);
+  }
+
+  /* the figure is inset, leaving the binding margin as sheet, not image */
+  .index--fan .dwg__fig{
+    position: absolute;
+    inset: 10px 10px 10px var(--margin-w);
+    aspect-ratio: auto;
+    border: 1px solid var(--rule);
+  }
+
+  /* the title block becomes the margin: number at the head, name up the spine */
+  .index--fan .tb{ position: absolute; inset: 0; padding: 0; }
+  .index--fan .tb__grid{ display: none; }   /* rev/year/discipline: on the sheet itself */
+  .index--fan .tb__no{ display: none; }     /* replaced by the large number below */
+  /* Deliberately NOT absolutely positioned. The whole-card click target is
+     `.tb__name a::after { inset: 0 }`, which resolves against its nearest
+     POSITIONED ancestor — making this absolute silently shrank the clickable
+     area of every sheet to this 104px strip, and clicks on the figure did
+     nothing at all. Left static, the overlay resolves against .tb, which is
+     inset 0 over the whole sheet. */
+  .index--fan .tb__head{
+    display: block;
+    margin: 86px 0 14px 0;
+    width: calc(var(--margin-w) - 12px);
+    height: calc(100% - 100px);
+  }
+  .index--fan .tb__name{
+    /* Reads top-to-bottom, like a book spine.
+       It must NOT carry a transform. The whole-sheet click target is
+       `.tb__name a::after { inset: 0 }`, and a transform makes the element the
+       containing block for its absolutely positioned descendants — with
+       `rotate(180deg)` here for a bottom-to-top spine, that overlay collapsed
+       onto this ~38px strip and the only clickable part of a sheet was its
+       title. Dropping the rotation costs the ISO reading direction and buys
+       back the entire sheet as a link, with no script involved. */
+    writing-mode: vertical-rl;
+    height: 100%;
+    padding-top: 2px;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  /* The drawing number, set large at the head of the margin. For five of the
+     six sheets the margin is all that shows, so this is the label. */
+  .index--fan .dwg::after{
+    content: attr(data-no);
+    position: absolute;
+    left: 14px;
+    top: 16px;
+    font-family: var(--cond);
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    opacity: .72;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
+  .index--fan .dwg:hover::after,
+  .index--fan .dwg:focus-within::after{ opacity: .9; }
+
+  /* The pending chip is centred in the figure well, which in the fan lands on
+     the overlap edge — six half-cut "FIGURE PEND" labels. It shows only on the
+     sheet you have pulled out. */
+  .index--fan .fig--pending > span{ opacity: 0; transition: opacity .18s ease; }
+  .index--fan .dwg:hover .fig--pending > span,
+  .index--fan .dwg:focus-within .fig--pending > span{ opacity: 1; }
+}
+
+/* Belt and braces: the script only tests reduced motion at load, so if the
+   preference flips afterwards the class is still on the container. */
+@media (prefers-reduced-motion: reduce){
+  .index--fan{ display: grid; height: auto !important; perspective: none;
+               width: auto !important; margin-left: 0 !important; }
+  .index--fan .dwg{ position: static; width: auto; aspect-ratio: auto;
+                    transform: none; transition: none; }
+  .index--fan .dwg::after{ display: none; }
+  .index--fan .dwg__fig{ position: relative; inset: auto; aspect-ratio: 4 / 3; border: 0; }
+  .index--fan .tb{ position: static; padding: var(--sp-s); }
+  /* Explicit values, not `revert`: revert rolls back to the USER-AGENT origin,
+     which threw away .tb__grid{ display: grid } and left the title block as a
+     plain block with its two columns collapsed. */
+  .index--fan .tb__grid{ display: grid; }
+  .index--fan .tb__no{ display: inline; }
+  .index--fan .tb__head{ position: static; width: auto; display: flex; }
+  .index--fan .tb__name{ writing-mode: horizontal-tb; transform: none;
+                         height: auto; padding-left: 0; }
+  .index--fan .fig--pending > span{ opacity: 1; }
+}
+
+/* The project page's figure is the other half of the sheet hand-off: same
+   view-transition-name, so the browser morphs the card into it. */
+.proj__layout .fig-well{ view-transition-name: sheet; }
+
+/* The morph is the browser's; all that is asked of it is the drafting easing
+   and a duration that matches the rest of the motion language. */
+::view-transition-old(sheet),
+::view-transition-new(sheet){
+  animation-duration: .42s;
+  animation-timing-function: var(--ease-plot);
+}
+
+/* ---------- the part, drawn ----------
+   The figure well on a project page holds a real exported assembly instead of
+   a hatched placeholder. There is no viewer chrome: the canvas fills the well
+   the placeholder would have filled, and the only affordance is the cursor. */
+.fig-well--part{
+  position: relative;
+  aspect-ratio: 3 / 2;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+}
+.fig-well--part .part{
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  /* pan-y, not none: a vertical swipe still scrolls the page on a phone. It
+     costs pitch on touch, which is the right thing to give up — a figure that
+     traps the scroll is worse than one that only turns sideways. */
+  touch-action: pan-y;
+}
+.fig-well--part .part.is-turning{ cursor: grabbing; }
+.fig-well--part .part:focus-visible{
+  outline: 2px solid var(--construct);
+  outline-offset: -2px;
+}
+.fig-well--part > #shooter-stand-in,
+.fig-well--part > .fig--pending{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* The stats panel is a second list inside the same aside, so it needs the rule
+   that the first one gets from .spec dl. */
+#mesh-stats{ margin-top: var(--sp-s); border-top: 1px solid var(--rule-soft); }
+
+/* The pending panel states why, when there is a why. Sized down and set in the
+   annotation colour so it reads as a note on the drawing, not as an error dialog. */
+.fig__why{
+  display: block;
+  max-width: 34ch;
+  margin-top: var(--sp-2xs);
+  font-family: var(--sans);
+  font-size: var(--t-micro);
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.45;
+  color: var(--graphite);
+  text-align: center;
+}

@@ -1,0 +1,21 @@
+# Working notes — a plan for the site, not documentation of it.
+# Reads badly to anyone who isn't Neo; keep it off GitHub.
+NOTES.private.md
+REDESIGN.private.md
+
+.DS_Store
+REDESIGN-02.private.md
+REDESIGN-03.private.md
+REDESIGN-04.private.md
+REDESIGN-05.private.md
+REDESIGN-06.private.md
+REDESIGN-07.private.md
+PLAN.private.md
+.notes-archive/
+
+# Authoring and QA scripts. Kept local: they are how the site is built and
+# checked, not part of what it publishes.
+stl2mesh.py
+todo.py
+consistency.py
+gen_og.py

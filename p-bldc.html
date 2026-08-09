@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brushless DC motor — Neo Su</title>
+<meta name="description" content="Designing, winding and characterising a brushless DC motor from a bare stator.">
+<link rel="canonical" href="https://28ns30.github.io/p-bldc.html">
+<meta property="og:title" content="Brushless DC motor — Neo Su">
+<meta property="og:description" content="Designing, winding and characterising a brushless DC motor from a bare stator.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://28ns30.github.io/p-bldc.html">
+<meta property="og:image" content="https://28ns30.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#E6E9E5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141816" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<a class="skip" href="#body">Skip to the write-up</a>
+
+<svg class="sheet-frame" aria-hidden="true" focusable="false">
+  <rect x="0.5" y="0.5" width="99.5%" height="99.5%" pathLength="400"></rect>
+  <svg x="0"    y="0"   ><line x1="0"   y1="26"  x2="26" y2="0"  ></line></svg>
+  <svg x="100%" y="0"   ><line x1="-26" y1="0"   x2="0"  y2="26" ></line></svg>
+  <svg x="100%" y="100%"><line x1="-26" y1="0"   x2="0"  y2="-26"></line></svg>
+  <svg x="0"    y="100%"><line x1="0"   y1="-26" x2="26" y2="0"  ></line></svg>
+
+  <g class="sheet-frame__zones">
+    <text x="12.5%" y="16">1</text><text x="37.5%" y="16">2</text>
+    <text x="62.5%" y="16">3</text><text x="87.5%" y="16">4</text>
+    <svg y="100%">
+      <text x="12.5%" y="-8">1</text><text x="37.5%" y="-8">2</text>
+      <text x="62.5%" y="-8">3</text><text x="87.5%" y="-8">4</text>
+    </svg>
+    <text x="9" y="12.5%">A</text><text x="9" y="37.5%">B</text>
+    <text x="9" y="62.5%">C</text><text x="9" y="87.5%">D</text>
+    <svg x="100%">
+      <text x="-9" y="12.5%">A</text><text x="-9" y="37.5%">B</text>
+      <text x="-9" y="62.5%">C</text><text x="-9" y="87.5%">D</text>
+    </svg>
+  </g>
+</svg>
+
+<div class="plot-progress" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="masthead__id" href="index.html">Neo Su</a>
+    <nav class="masthead__nav" aria-label="Primary">
+      <a href="index.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="https://github.com/28NS30">GitHub</a>
+      <a href="mailto:neolava2@gmail.com">Contact</a>
+    </nav>
+  </header>
+
+  <p class="crumb"><a href="index.html">Index</a> &nbsp;/&nbsp; E-01</p>
+
+  <main id="body">
+
+    <div class="proj__head">
+      <h1 class="proj__title">Brushless DC motor</h1>
+      <p class="proj__standfirst">
+        A hand-wound outrunner designed for a torque density not available off
+        the shelf at this diameter. Three revisions, and a brake dyno built to
+        characterise it.
+      </p>
+    </div>
+
+    <div class="proj__layout">
+
+      <article class="prose">
+
+        <h2><span class="sec__mark">01</span>Why build it</h2>
+        <p>
+          The gearbox I was designing needed roughly <span class="fill">[N] N&middot;m</span>
+          continuous at the output inside a <span class="fill">[N] mm</span> envelope.
+          Off-the-shelf hobby outrunners in that diameter are wound for RPM, not torque:
+          they hit the speed easily and stall well under the load I needed. The options
+          were a much larger motor and a heavier reduction, or winding for a lower Kv
+          and keeping the package.
+        </p>
+        <p>
+          I built one in order to measure the trade-off directly.
+        </p>
+
+        <h2><span class="sec__mark">02</span>Design</h2>
+        <p>
+          <strong>Configuration.</strong> <span class="fill">[12N14P]</span>, outrunner.
+          The slot&ndash;pole combination sets the winding factor and the cogging period;
+          I chose it for <span class="fill">[selection rationale]</span>.
+        </p>
+        <p>
+          <strong>Winding.</strong> <span class="fill">[N]</span> turns of
+          <span class="fill">[N] AWG</span> in a <span class="fill">[dLRK / ABC]</span> pattern,
+          terminated <span class="fill">[wye / delta]</span>. Turn count is the direct lever
+          on Kv: more turns lowers Kv and raises torque per amp, but eats slot area and
+          drives phase resistance and copper loss up. I landed at
+          <span class="fill">[N]</span> turns because <span class="fill">[rationale]</span>.
+        </p>
+        <p>
+          <strong>Magnets and rotor.</strong> <span class="fill">[N42 / N52]</span> arc
+          magnets, <span class="fill">[N] mm</span> thick, retained with
+          <span class="fill">[retention method]</span>. Back-iron thickness was set by
+          <span class="fill">[saturation estimate / available stock]</span>.
+        </p>
+
+        <figure>
+          <div class="fig-well fig-well--motor">
+            <svg class="stator" viewBox="0 0 400 400" role="img"
+             aria-label="Cross-section of a twelve-slot, fourteen-pole outrunner stator and rotor">
+          <g class="stator__rotor">
+            <circle cx="200" cy="200" r="191.0"/>
+            <circle cx="200" cy="200" r="174.0"/>
+          </g>
+          <g class="stator__mag">
+                <path data-pole="n" d="M169.29,30.76 A172.0,172.0 0 0 1 230.71,30.76 L228.21,44.54 A158.0,158.0 0 0 0 171.79,44.54 Z"/>
+            <path data-pole="s" d="M245.76,34.20 A172.0,172.0 0 0 1 301.10,60.85 L292.87,72.18 A158.0,158.0 0 0 0 242.03,47.69 Z"/>
+            <path data-pole="n" d="M313.17,70.47 A172.0,172.0 0 0 1 351.46,118.49 L339.13,125.13 A158.0,158.0 0 0 0 303.95,81.01 Z"/>
+            <path data-pole="s" d="M358.16,132.40 A172.0,172.0 0 0 1 371.83,192.28 L357.84,192.91 A158.0,158.0 0 0 0 345.29,137.90 Z"/>
+            <path data-pole="n" d="M371.83,207.72 A172.0,172.0 0 0 1 358.16,267.60 L345.29,262.10 A158.0,158.0 0 0 0 357.84,207.09 Z"/>
+            <path data-pole="s" d="M351.46,281.51 A172.0,172.0 0 0 1 313.17,329.53 L303.95,318.99 A158.0,158.0 0 0 0 339.13,274.87 Z"/>
+            <path data-pole="n" d="M301.10,339.15 A172.0,172.0 0 0 1 245.76,365.80 L242.03,352.31 A158.0,158.0 0 0 0 292.87,327.82 Z"/>
+            <path data-pole="s" d="M230.71,369.24 A172.0,172.0 0 0 1 169.29,369.24 L171.79,355.46 A158.0,158.0 0 0 0 228.21,355.46 Z"/>
+            <path data-pole="n" d="M154.24,365.80 A172.0,172.0 0 0 1 98.90,339.15 L107.13,327.82 A158.0,158.0 0 0 0 157.97,352.31 Z"/>
+            <path data-pole="s" d="M86.83,329.53 A172.0,172.0 0 0 1 48.54,281.51 L60.87,274.87 A158.0,158.0 0 0 0 96.05,318.99 Z"/>
+            <path data-pole="n" d="M41.84,267.60 A172.0,172.0 0 0 1 28.17,207.72 L42.16,207.09 A158.0,158.0 0 0 0 54.71,262.10 Z"/>
+            <path data-pole="s" d="M28.17,192.28 A172.0,172.0 0 0 1 41.84,132.40 L54.71,137.90 A158.0,158.0 0 0 0 42.16,192.91 Z"/>
+            <path data-pole="n" d="M48.54,118.49 A172.0,172.0 0 0 1 86.83,70.47 L96.05,81.01 A158.0,158.0 0 0 0 60.87,125.13 Z"/>
+            <path data-pole="s" d="M98.90,60.85 A172.0,172.0 0 0 1 154.24,34.20 L157.97,47.69 A158.0,158.0 0 0 0 107.13,72.18 Z"/>
+          
+            <g class="stator__poles"><text class="pole-lbl" data-pole="n" x="200.00" y="35.00">N</text><text class="pole-lbl" data-pole="s" x="271.59" y="51.34">S</text><text class="pole-lbl" data-pole="n" x="329.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="360.86" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="360.86" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="329.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="271.59" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="200.00" y="365.00">S</text><text class="pole-lbl" data-pole="n" x="128.41" y="348.66">N</text><text class="pole-lbl" data-pole="s" x="71.00" y="302.88">S</text><text class="pole-lbl" data-pole="n" x="39.14" y="236.72">N</text><text class="pole-lbl" data-pole="s" x="39.14" y="163.28">S</text><text class="pole-lbl" data-pole="n" x="71.00" y="97.12">N</text><text class="pole-lbl" data-pole="s" x="128.41" y="51.34">S</text></g>
+          </g>
+          <g class="stator__iron">
+            <circle cx="200" cy="200" r="62.0"/>
+            <circle cx="200" cy="200" r="27.0"/>
+                <path class="ph ph--a" data-ph="a" data-dir="1" d="M191.58,138.57 L191.52,62.26 L181.15,49.17 L218.85,49.17 L208.48,62.26 L208.42,138.57 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M223.42,142.59 L261.52,76.47 L259.09,59.95 L291.74,78.81 L276.22,84.96 L238.01,151.01 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M248.99,161.99 L315.04,123.78 L321.19,108.26 L340.05,140.91 L323.53,138.48 L257.41,176.58 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M261.43,191.58 L337.74,191.52 L350.83,181.15 L350.83,218.85 L337.74,208.48 L261.43,208.42 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M257.41,223.42 L323.53,261.52 L340.05,259.09 L321.19,291.74 L315.04,276.22 L248.99,238.01 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M238.01,248.99 L276.22,315.04 L291.74,321.19 L259.09,340.05 L261.52,323.53 L223.42,257.41 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="1" d="M208.42,261.43 L208.48,337.74 L218.85,350.83 L181.15,350.83 L191.52,337.74 L191.58,261.43 Z"/>
+            <path class="ph ph--a" data-ph="a" data-dir="-1" d="M176.58,257.41 L138.48,323.53 L140.91,340.05 L108.26,321.19 L123.78,315.04 L161.99,248.99 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="1" d="M151.01,238.01 L84.96,276.22 L78.81,291.74 L59.95,259.09 L76.47,261.52 L142.59,223.42 Z"/>
+            <path class="ph ph--b" data-ph="b" data-dir="-1" d="M138.57,208.42 L62.26,208.48 L49.17,218.85 L49.17,181.15 L62.26,191.52 L138.57,191.58 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="1" d="M142.59,176.58 L76.47,138.48 L59.95,140.91 L78.81,108.26 L84.96,123.78 L151.01,161.99 Z"/>
+            <path class="ph ph--c" data-ph="c" data-dir="-1" d="M161.99,151.01 L123.78,84.96 L108.26,78.81 L140.91,59.95 L138.48,76.47 L176.58,142.59 Z"/>
+          </g>
+          <g class="stator__dim">
+            <line x1="200" y1="200" x2="200" y2="9"/>
+            <line x1="193" y1="16" x2="207" y2="16"/>
+            <text x="212" y="20">&#8960; 12N14P</text>
+          </g>
+        </svg>
+          </div>
+          <dl class="mtr__readout">
+          <div class="mtr__cell"><dt>Rotor</dt><dd data-m="mech">0&deg;</dd></div>
+          <div class="mtr__cell"><dt>Electrical</dt><dd data-m="elec">0&deg;</dd></div>
+          <div class="mtr__cell"><dt>Step</dt><dd data-m="step">1 / 6</dd></div>
+          <div class="mtr__cell"><dt>Phases</dt><dd data-m="ph">A+ B&minus;</dd></div>
+        </dl>
+          <figcaption>Fig. 1 &mdash; Schematic of a 12N14P stator with a dLRK winding, drawn to show the principle. Drag the rotor &mdash; the commutation follows its position.</figcaption>
+        </figure>
+
+        <h2><span class="sec__mark">03</span>What went wrong</h2>
+        <p>
+          Rev A came apart under test. <span class="fill">[failure mode]</span>
+        </p>
+        <p>
+          The change that carried into Rev B: <span class="fill">[change and result]</span>.
+        </p>
+
+        <h2><span class="sec__mark">04</span>Measured result</h2>
+        <p>
+          I had no way to verify any of this without a test rig, so I built a small
+          brake dyno: <span class="fill">[instrumentation]</span>.
+        </p>
+        <p>
+          Measured Kv came out at <span class="fill">[N] RPM/V</span> against a predicted
+          <span class="fill">[N]</span>, a <span class="fill">[N]%</span> error I attribute to
+          <span class="fill">[cause]</span>. Peak torque before saturation was
+          <span class="fill">[N] N&middot;m</span>; continuous torque was limited by winding
+          temperature, which reached <span class="fill">[N] &deg;C</span> after
+          <span class="fill">[N]</span> minutes at <span class="fill">[N] A</span>.
+        </p>
+
+        <table class="rev">
+          <caption>Revision history</caption>
+          <thead>
+            <tr><th scope="col">Rev</th><th scope="col">Change</th><th scope="col">Outcome</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A</td>
+              <td><span class="fill">[change]</span></td>
+              <td><span class="fill">[outcome]</span></td>
+            </tr>
+            <tr>
+              <td>B</td>
+              <td><span class="fill">[change]</span></td>
+              <td><span class="fill">[outcome]</span></td>
+            </tr>
+            <tr>
+              <td>C</td>
+              <td><span class="fill">[change]</span></td>
+              <td><span class="fill">[outcome]</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2><span class="sec__mark">05</span>Files</h2>
+        <p>
+          CAD, winding diagram and the dyno firmware are on
+          <a href="https://github.com/28NS30">GitHub</a>.
+        </p>
+
+      </article>
+
+      <aside class="spec" aria-label="Parameters">
+        <p class="spec__cap">Parameters</p>
+        <dl>
+          <div class="spec__row"><dt>Drawing</dt><dd>E-01</dd></div>
+          <div class="spec__row"><dt>Rev</dt><dd>C</dd></div>
+          <div class="spec__row"><dt>Type</dt><dd>Outrunner</dd></div>
+          <div class="spec__row"><dt>Config</dt><dd class="fill">[12N14P]</dd></div>
+          <div class="spec__row"><dt>Kv</dt><dd class="fill">[N] RPM/V</dd></div>
+          <div class="spec__row"><dt>Phase R</dt><dd class="fill">[N] m&Omega;</dd></div>
+          <div class="spec__row"><dt>Peak torque</dt><dd class="fill">[N] N&middot;m</dd></div>
+          <div class="spec__row"><dt>Mass</dt><dd class="fill">[N] g</dd></div>
+          <div class="spec__row"><dt>CAD</dt><dd>Onshape</dd></div>
+          <div class="spec__row"><dt>Year</dt><dd>2025</dd></div>
+        </dl>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <footer class="colophon">
+    <dl class="colophon__grid">
+      <div class="colophon__cell"><dt>Modelled by</dt><dd>Neo Su</dd></div>
+      <div class="colophon__cell"><dt>Location</dt><dd>Taipei, Taiwan</dd></div>
+      <div class="colophon__cell"><dt>Code</dt><dd><a href="https://github.com/28NS30">github.com/28NS30</a></dd></div>
+      <div class="colophon__cell"><dt>Contact</dt><dd><a href="mailto:neolava2@gmail.com">neolava2@gmail.com</a></dd></div>
+      <div class="colophon__cell"><dt>Instagram</dt><dd><a href="https://www.instagram.com/ne0._s/">@ne0._s</a></dd></div>
+    </dl>
+    <p class="colophon__foot">E-01</p>
+  </footer>
+
+</div>
+
+<script>
+/* ---------------------------------------------------------------------------
+   The motor, as the hero object.
+
+   Drag it and the rotor follows your cursor. The commutation follows ROTOR
+   POSITION rather than a clock, which is how a sensored brushless motor
+   actually runs: Hall sensors report where the rotor is, the controller
+   energises whichever two phases make torque there. Turning it by hand makes
+   you the position sensor.
+
+   Twelve teeth are wound dLRK — A a B b C c, twice around — so a tooth's
+   magnetic pole is (sign of phase current) x (winding direction). Phase alone
+   is not enough, which is why each tooth carries data-dir.
+
+   Electrical angle is seven times mechanical, because fourteen poles is seven
+   pole pairs. One slow turn of your hand is seven full electrical cycles.
+   --------------------------------------------------------------------------- */
+(function () {
+  var svg = document.querySelector('.stator');
+  if (!svg || !window.requestAnimationFrame) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var teeth = [].slice.call(svg.querySelectorAll('.ph[data-ph]'));
+  var mags  = [].slice.call(svg.querySelectorAll('.stator__mag path[data-pole]'));
+  var lbls  = [].slice.call(svg.querySelectorAll('.stator__poles text'));
+  var rotorG = svg.querySelector('.stator__rotor');
+  var magG   = svg.querySelector('.stator__mag');
+  if (!teeth.length || !rotorG) return;
+
+  // Hand commutation over from the free-running CSS loop. Without this its
+  // keyframes keep writing stroke and fill-opacity every frame and win over
+  // the pole colours, so every energised tooth reads the same blue.
+  svg.classList.add('is-driven');
+
+  var readout = document.querySelector('.mtr__readout');
+  var out = {};
+  if (readout) {
+    readout.querySelectorAll('[data-m]').forEach(function (el) { out[el.dataset.m] = el; });
+    readout.hidden = false;
+  }
+
+  // six-step: [phase sourcing (+), phase sinking (-)]
+  var STEPS = [['a','b'], ['a','c'], ['b','c'], ['b','a'], ['c','a'], ['c','b']];
+  var NAME = { a: 'A', b: 'B', c: 'C' };
+  var POLE_PAIRS = 7, TAU = Math.PI * 2;
+
+  var rotor = 0, vel = 0, target = 0, lastPtr = null, engaged = false, dirty = true;
+
+  function commutate() {
+    var elec = rotor * POLE_PAIRS;
+    // The epsilon matters: stepping by exactly 60 electrical degrees accumulates
+    // float shortfall, so a boundary lands at 359.9999 and floors one step early,
+    // repeating step 6. Nudging past the edge keeps the table honest.
+    var i = Math.floor(elec / (Math.PI / 3) + 1e-9) % 6;
+    if (i < 0) i += 6;
+    var src = STEPS[i][0], snk = STEPS[i][1];
+
+    for (var t = 0; t < teeth.length; t++) {
+      var el = teeth[t], ph = el.dataset.ph, dir = +el.dataset.dir, pole = null;
+      // current is +through a source phase, -through a sink phase; the tooth's
+      // pole flips with the direction it is wound
+      if (ph === src) pole = dir > 0 ? 'n' : 's';
+      else if (ph === snk) pole = dir > 0 ? 's' : 'n';
+      if (pole) el.setAttribute('data-pole', pole);
+      else el.removeAttribute('data-pole');
+    }
+
+    if (!readout) return;
+    // wrap after rounding, or 359.6 displays as "360°"
+    function deg(rad) { return ((Math.round(rad * 180 / Math.PI) % 360) + 360) % 360; }
+    out.mech.textContent = deg(rotor) + '°';
+    out.elec.textContent = deg(elec) + '°';
+    out.step.textContent = (i + 1) + ' / 6';
+    out.ph.textContent   = NAME[src] + '+ ' + NAME[snk] + '−';
+  }
+
+  function draw() {
+    var deg = rotor * 180 / Math.PI;
+    // Rotate via the CSS property, not the SVG attribute: the stylesheet already
+    // sets transform-origin 200 200 for these groups, and an attribute of the
+    // form rotate(a cx cy) applies its own origin on top of that, which threw
+    // the rotor clean off centre.
+    var spin = 'rotate(' + deg.toFixed(2) + 'deg)';
+    rotorG.style.transform = spin;
+    if (magG) magG.style.transform = spin;   // the pole labels sit inside magG
+                                             // and ride it, so they are not
+                                             // rotated a second time here
+    // they do need counter-rotating about their own centres to stay upright
+    for (var i = 0; i < lbls.length; i++) {
+      var l = lbls[i];
+      l.setAttribute('transform',
+        'rotate(' + (-deg).toFixed(2) + ' ' + l.getAttribute('x') + ' ' + l.getAttribute('y') + ')');
+    }
+    commutate();
+  }
+
+  function frame() {
+    if (engaged) {
+      var prev = rotor;
+      rotor += (target - rotor) * 0.16;   // eases toward the cursor: it has mass
+      vel = rotor - prev;
+      dirty = true;
+    } else if (Math.abs(vel) > 1e-5) {
+      vel *= 0.965;                        // and coasts down when you let go
+      rotor += vel;
+      dirty = true;
+    }
+    if (dirty) { draw(); dirty = false; }
+    requestAnimationFrame(frame);
+  }
+
+  function angleAt(e) {
+    var r = svg.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2),
+                      e.clientX - (r.left + r.width / 2));
+  }
+  function track(e) {
+    var a = angleAt(e);
+    if (lastPtr !== null) {
+      var d = a - lastPtr;
+      while (d >  Math.PI) d -= TAU;       // unwrap, so crossing 180 does not jump
+      while (d < -Math.PI) d += TAU;
+      target += d;
+    }
+    lastPtr = a;
+  }
+
+  svg.addEventListener('pointerdown', function (e) {
+    engaged = true; lastPtr = null; target = rotor; track(e);
+    svg.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  svg.addEventListener('pointermove', function (e) { if (engaged) { track(e); e.preventDefault(); } });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
+    svg.addEventListener(t, function () { engaged = false; lastPtr = null; });
+  });
+
+  // Keyboard: one commutation step is 60 electrical degrees, which is
+  // 60/7 mechanical — so arrow keys walk the commutation table exactly.
+  var STEP_MECH = (Math.PI / 3) / POLE_PAIRS;
+  svg.setAttribute('tabindex', '0');
+  svg.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k !== 'ArrowLeft' && k !== 'ArrowRight') return;
+    engaged = false; vel = 0;
+    rotor += (k === 'ArrowRight' ? 1 : -1) * STEP_MECH;
+    target = rotor;
+    // Redraw here rather than waiting on the animation loop: under reduced
+    // motion the loop never starts, and the keyboard is exactly the path those
+    // users need. Leaving it to rAF made the arrow keys dead for them.
+    draw();
+    e.preventDefault();
+  });
+
+  draw();
+  if (!reduce) requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

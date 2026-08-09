@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://28ns30.github.io/sitemap.xml
