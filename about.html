@@ -16,7 +16,12 @@
 <meta name="theme-color" content="#E6E9E5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141816" media="(prefers-color-scheme: dark)">
 <link rel="stylesheet" href="style.css">
-<script>document.documentElement.classList.add('js');</script>
+<script>/* Applied before first paint, or the wrong palette flashes. Kept tiny and
+   inline for that reason; the control itself is deferred in theme.js. */
+document.documentElement.classList.add('js');
+try{var t=localStorage.getItem('theme');
+if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<script src="theme.js" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

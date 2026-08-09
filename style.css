@@ -45,35 +45,65 @@
 }
 
 :root{
-  /* --- surface --- */
-  --film:      #E6E9E5;   /* drafting film */
-  --film-2:    #DCE0DB;   /* recessed panel */
-  --film-3:    #D1D6D0;   /* figure well */
+  /* ---------- palette ----------
+     Every colour that changes with the theme is authored exactly once here, as
+     an --l-* / --d-* pair. The rules below only ever MAP one set onto the live
+     token names, so adding or changing a colour is a one-line edit and the two
+     themes cannot drift apart.
 
-  /* --- ink --- */
-  --ink:       #151917;
-  --graphite:  #545C57;
-  --rule:      #A9B1AA;
-  --rule-soft: #C6CCC5;
+     --l- is drafting film and CAD sketch convention: cool grey-green field,
+     blue-black ink, one annotation blue, one hazard yellow.
+     --d- is not an inversion. The film becomes the dark field of a CAD viewport
+     and the ink becomes the drawn line, which is how the drawing reads at
+     night. The accent lifts because the deep blue is unreadable on a dark
+     ground. Every text pair measures past WCAG AA in both. */
+  --l-film:           #E6E9E5;
+  --d-film:           #141816;
+  --l-film-2:         #DCE0DB;
+  --d-film-2:         #1B211E;
+  --l-film-3:         #D1D6D0;
+  --d-film-3:         #222925;
+  --l-ink:            #151917;
+  --d-ink:            #E4E8E3;
+  --l-graphite:       #545C57;
+  --d-graphite:       #9FA9A2;
+  --l-rule:           #A9B1AA;
+  --d-rule:           #3A423D;
+  --l-rule-soft:      #C6CCC5;
+  --d-rule-soft:      #2A312D;
+  --l-construct:      #1E4FD8;
+  --d-construct:      #7BA0FF;
+  --l-construct-tint: rgba(30, 79, 216, .07);
+  --d-construct-tint: rgba(123, 160, 255, .10);
+  --l-pole-n:         #1E4FD8;
+  --d-pole-n:         #7BA0FF;
+  --l-pole-s:         #9C3822;
+  --d-pole-s:         #E1795C;
+  --l-pole-n-tint:    rgba(30, 79, 216, .18);
+  --d-pole-n-tint:    rgba(123, 160, 255, .22);
+  --l-pole-s-tint:    rgba(156, 56, 34, .18);
+  --d-pole-s-tint:    rgba(225, 121, 92, .22);
+  --l-hazard:         #D99B0B;
+  --d-hazard:         #E0AC38;
+  --l-grid-line:      rgba(21, 25, 23, .030);
+  --d-grid-line:      rgba(228, 232, 227, .035);
 
-  /* --- annotation layer (single accent) --- */
-  --construct: #1E4FD8;
-  --construct-tint: rgba(30, 79, 216, .07);
-
-  /* --- magnetic polarity. Used ONLY inside the motor drawing, never as UI.
-         Every pole also carries an N or S letter, so the colour is a second
-         channel rather than the only one. --- */
-  --pole-n: #1E4FD8;
-  --pole-s: #9C3822;   /* darkened from #B4432B: the S letters sit on the
-                          figure well, where the lighter red measured 3.77:1 */
-  --pole-n-tint: rgba(30, 79, 216, .18);
-  --pole-s-tint: rgba(156, 56, 34, .18);
-
-  /* --- status only. appears on <=2 elements per page --- */
-  --hazard:    #D99B0B;
-
-  /* --- the graticule ruled across the field --- */
-  --grid-line: rgba(21, 25, 23, .030);
+  /* the live tokens; light is the default and the rules below override it */
+  --film:           var(--l-film);
+  --film-2:         var(--l-film-2);
+  --film-3:         var(--l-film-3);
+  --ink:            var(--l-ink);
+  --graphite:       var(--l-graphite);
+  --rule:           var(--l-rule);
+  --rule-soft:      var(--l-rule-soft);
+  --construct:      var(--l-construct);
+  --construct-tint: var(--l-construct-tint);
+  --pole-n:         var(--l-pole-n);
+  --pole-s:         var(--l-pole-s);
+  --pole-n-tint:    var(--l-pole-n-tint);
+  --pole-s-tint:    var(--l-pole-s-tint);
+  --hazard:         var(--l-hazard);
+  --grid-line:      var(--l-grid-line);
 
   color-scheme: light dark;
 
@@ -133,35 +163,55 @@
   --t-rotor: 8.4s;
 }
 
-/* ---------- dark: the same sheet on a backlit table ----------
-   Not an inversion. The film becomes the dark field of a CAD viewport and the
-   ink becomes the drawn line, which is how the drawing reads at night. The
-   accent lifts to #7BA0FF because #1E4FD8 is unreadable on a dark ground.
-   Every text pair here measures past WCAG AA; the weakest is 6.1:1. */
+/* ---------- choosing the theme ----------
+   Three states. With no stored choice the system preference decides, which is
+   also exactly what a reader with scripting off gets. An explicit choice is an
+   attribute on <html>, set by a blocking snippet in <head> so the correct
+   palette is in place for the first paint and nothing flashes.
+
+   The :not() matters: without it, a reader who has chosen LIGHT on a machine
+   set to dark would still get the dark palette from this media query. */
 @media (prefers-color-scheme: dark){
-  :root{
-    --film:      #141816;
-    --film-2:    #1B211E;
-    --film-3:    #222925;
-
-    --ink:       #E4E8E3;
-    --graphite:  #9FA9A2;
-    --rule:      #3A423D;
-    --rule-soft: #2A312D;
-
-    --construct: #7BA0FF;
-    --construct-tint: rgba(123, 160, 255, .10);
-
-    --pole-n: #7BA0FF;
-    --pole-s: #E1795C;
-    --pole-n-tint: rgba(123, 160, 255, .22);
-    --pole-s-tint: rgba(225, 121, 92, .22);
-
-    --hazard:    #E0AC38;
-
-    --grid-line: rgba(228, 232, 227, .035);
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --film:           var(--d-film);
+    --film-2:         var(--d-film-2);
+    --film-3:         var(--d-film-3);
+    --ink:            var(--d-ink);
+    --graphite:       var(--d-graphite);
+    --rule:           var(--d-rule);
+    --rule-soft:      var(--d-rule-soft);
+    --construct:      var(--d-construct);
+    --construct-tint: var(--d-construct-tint);
+    --pole-n:         var(--d-pole-n);
+    --pole-s:         var(--d-pole-s);
+    --pole-n-tint:    var(--d-pole-n-tint);
+    --pole-s-tint:    var(--d-pole-s-tint);
+    --hazard:         var(--d-hazard);
+    --grid-line:      var(--d-grid-line);
   }
 }
+
+/* An explicit choice outranks the system, on any machine. */
+:root[data-theme="dark"]{
+  color-scheme: dark;
+    --film:           var(--d-film);
+    --film-2:         var(--d-film-2);
+    --film-3:         var(--d-film-3);
+    --ink:            var(--d-ink);
+    --graphite:       var(--d-graphite);
+    --rule:           var(--d-rule);
+    --rule-soft:      var(--d-rule-soft);
+    --construct:      var(--d-construct);
+    --construct-tint: var(--d-construct-tint);
+    --pole-n:         var(--d-pole-n);
+    --pole-s:         var(--d-pole-s);
+    --pole-n-tint:    var(--d-pole-n-tint);
+    --pole-s-tint:    var(--d-pole-s-tint);
+    --hazard:         var(--d-hazard);
+    --grid-line:      var(--d-grid-line);
+}
+:root[data-theme="light"]{ color-scheme: light; }
 
 *, *::before, *::after{ box-sizing: border-box; }
 
@@ -1442,3 +1492,68 @@ a:focus-visible, button:focus-visible{
   color: var(--graphite);
   text-align: center;
 }
+
+/* ---------- colour-scheme control ----------
+   Sits in the masthead and reads like the rest of it: mono, small, uppercase.
+   Three states — Auto, Light, Dark — because a two-state toggle strands anyone
+   who tries it: once you have chosen, there is no way back to following your
+   own machine. The mark is a half-filled circle, which is also a drafting
+   section-fill symbol, and it is drawn in currentColor so it themes itself. */
+.theme{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2xs);
+  padding: 4px 8px;
+  margin-left: var(--sp-2xs);
+  /* --rule is the right weight for a hairline between panels, but as the only
+     visible boundary of a CONTROL it measured 1.79:1 on paper and 1.73:1 in the
+     dark, under the 3:1 that WCAG 1.4.11 asks of a non-text UI boundary. Mixed
+     from --graphite at 75%, which clears it in both (3.34 / 4.70) and still
+     reads lighter than a solid graphite box would. */
+  border: 1px solid color-mix(in srgb, var(--graphite) 75%, transparent);
+  background: transparent;
+  color: var(--graphite);
+  font: inherit;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .16s ease, border-color .16s ease;
+}
+.theme:hover{ color: var(--ink); border-color: var(--ink); }
+.theme:focus-visible{
+  outline: 2px solid var(--construct);
+  outline-offset: 2px;
+}
+.theme__mark{
+  width: 11px;
+  height: 11px;
+  flex: none;
+  overflow: visible;
+}
+/* the ring is always drawn; the fill says which state we are in */
+.theme__mark circle{ fill: none; stroke: currentColor; stroke-width: 1.4; }
+.theme__mark path{ fill: currentColor; }
+
+/* Auto shows the half fill; Light is an empty ring; Dark is a solid disc. The
+   mark reports the state as well as the word does.
+   Done with fill and opacity, not by swapping the path: the CSS `d` property is
+   Chromium-only, so on Safari and Firefox the mark would simply never change. */
+:root[data-theme="light"] .theme__mark path{ opacity: 0; }
+:root[data-theme="dark"]  .theme__mark path{ opacity: 0; }
+:root[data-theme="dark"]  .theme__mark circle{ fill: currentColor; }
+
+/* No script, no control: the media query is already doing the right thing and
+   a dead button would be worse than none. */
+.theme{ display: none; }
+html.js .theme{ display: inline-flex; }
+
+@media (max-width: 560px){
+  .theme__label{ position: absolute; width: 1px; height: 1px;
+                 overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .theme{ padding: 5px 6px; }
+}
+
+/* the control is chrome, not content */
+@media print{ .theme{ display: none !important; } }

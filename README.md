@@ -4,9 +4,16 @@ Plain HTML and one CSS file. No build step, no framework, and **no third-party
 requests**: open any `.html` in a browser and it works, offline included. IBM
 Plex is self-hosted in `assets/fonts/` under the SIL Open Font License.
 
-Light and dark are both first-class. The page follows the reader's system
-setting; there is no toggle, because the drawing should look like whatever
-surface it is being read on.
+Light and dark are both first-class. The default is **Auto** — the page follows
+the reader's machine — and the control in the masthead cycles Auto → Light →
+Dark. A choice is stored and outranks the system on any device; clearing site
+data returns you to Auto, because "no opinion" and "nothing stored" are the same
+state on purpose.
+
+The stored value is applied by a 133-byte blocking snippet in `<head>`, so the
+right palette is in place for the first paint and nothing flashes. With no
+script there is no control and the `prefers-color-scheme` media query does the
+work on its own.
 
 ---
 
@@ -23,6 +30,7 @@ p-shooter.html     M-02  FRC shooter subsystem     ← real geometry, write-up p
 p-drylab.html      B-01  iGEM dry lab              ← stub
 p-umv.html         C-02  ultra-mobility vehicle    ← stub, leads the index
 style.css          the whole design system
+theme.js           the Auto / Light / Dark control
 favicon.svg        theme-aware, light and dark
 robots.txt
 sitemap.xml
