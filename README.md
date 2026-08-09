@@ -37,7 +37,7 @@ sitemap.xml
 assets/og.png      1200×630 share card
 assets/og.svg      source for og.png
 assets/fonts/      IBM Plex, 4 files, 84 KB, OFL
-assets/models/     exported geometry, NSM2 format
+assets/models/     exported geometry, NSM3 format (+ .gz for transport)
 mesh.js            WebGL2 renderer for the exported parts
 assets/            photographs go here
 ```
@@ -165,20 +165,44 @@ corner-on one.
 
 ### Live on M-02
 
-`p-shooter.html` draws the real Onshape export: 105 parts merged, 46,780
-triangles, 21,880 vertices, 21,760 feature edges, **616 KB** for the whole
-assembly. It arrived as 129 separate STLs totalling 1.78M triangles and 89 MB,
-so the pipeline is a 38x reduction. The parameters panel beside it is filled
-from the mesh file itself on load, so those numbers cannot drift from what is
-actually being drawn.
+`p-shooter.html` draws the real Onshape export: 87,786 triangles, 42,532
+vertices and 31,731 drawn edges, **573 KB** over the wire. It arrived as 129
+separate STLs totalling 1.78M triangles and 89 MB, so the pipeline is a 20x
+reduction that lands within a pixel of the original — measured against 300,000
+points sampled on the source surfaces, mean deviation is 581 um where a screen
+pixel at this size is 614 um.
+
+Two things earn most of that. Feature edges are extracted from the **full
+resolution** surfaces and then mapped onto the reduced vertices, rather than
+measured after reduction: measuring afterwards means measuring angles between
+facets that reduction itself bent, which on curved parts made 62-72% of the
+drawn lines spurious — lines scribbled across surfaces that are smooth. And
+each cluster's representative vertex is the point minimising squared distance
+to the planes of its incident triangles, not the average of the cell, so
+corners stay corners and flat faces stay flat.
+
+The parameters panel is filled from the mesh file itself on load, so those
+numbers cannot drift from what is actually being drawn.
 
 ### Format
 
-`NSM2`, little-endian: magic, three counts, the part's own bounds in original
-units, float32 positions, then uint16/32 triangle indices and edge indices.
-Parsed in about ten lines. Feature edges (creases past 22°, plus any boundary)
-are extracted ahead of time, and stored normals are dropped entirely — the
-shader derives flat normals from screen-space derivatives, so they never ship.
+`NSM3`, little-endian: magic, three counts, the part's bounds in original units,
+the quantisation origin and span, then **uint16** positions and uint16/32
+triangle and edge indices. Parsed in about a dozen lines.
+
+Positions are quantised because the assembly spans 368 mm and is drawn about
+600px wide — a pixel is most of a millimetre, and 16 bits over the bounding box
+resolves 0.003 mm. float32 would spend twice the bytes on precision no one can
+see; the shader undoes the quantisation, so nothing is decoded on the CPU.
+Stored normals are dropped entirely — the shader derives flat normals from
+screen-space derivatives.
+
+GitHub Pages gzips text but not `model/mesh`, so a pre-compressed copy sits
+beside the mesh and is inflated with `DecompressionStream`: 888 KB becomes 573
+KB over the wire. Where that is unavailable, or where a host has already
+inflated the response, it falls back to the plain file — decided on the gzip
+magic bytes rather than a header, since `fetch` does not reliably expose
+`Content-Encoding` to script.
 
 ```html
 <canvas data-mesh="assets/models/shooter.mesh"

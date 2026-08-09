@@ -135,7 +135,7 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
           <div class="spec__row"><dt>Envelope</dt><dd data-stat="extent"></dd></div>
           <div class="spec__row"><dt>Triangles</dt><dd data-stat="triangles"></dd></div>
           <div class="spec__row"><dt>Drawn edges</dt><dd data-stat="edges"></dd></div>
-          <div class="spec__row"><dt>Mesh</dt><dd data-stat="bytes"></dd></div>
+          <div class="spec__row"><dt>Download</dt><dd data-stat="bytes"></dd></div>
         </dl>
       </aside>
 
@@ -172,7 +172,8 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
       extent: mm(d.extent[0]) + ' \u00d7 ' + mm(d.extent[1]) + ' \u00d7 ' + mm(d.extent[2]) + ' mm',
       triangles: d.triangles.toLocaleString('en'),
       edges: d.edges.toLocaleString('en'),
-      bytes: Math.round(d.bytes / 1024) + ' KB'
+      // what actually crosses the wire, not the inflated size
+      bytes: Math.round((d.transferred || d.bytes) / 1024) + ' KB'
     };
     Object.keys(v).forEach(function (k) {
       var el = panel.querySelector('[data-stat="' + k + '"]');
