@@ -202,8 +202,41 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     // it tumbles freely, forever, in any direction.
     // The opening pose is a three-quarter view, the angle a part is shown at in
     // a drawing, so it reads as considered rather than as a default.
-    var state = { R: mul3(rotY(-0.62), rotX(0.42)),
-                  vYaw: 0, vPitch: 0, ready: false };
+    /* Opening pose, given as the direction you are looking at the model FROM,
+       in model space, plus which model axis is up.
+
+       Not Euler angles. Three angles cannot address a side view without gimbal
+       lock — at yaw ±90 the pitch and roll terms collapse onto the same axis and
+       the triple stops being able to reproduce the matrix at all (measured: a
+       round trip through yaw/pitch/roll reconstructed the right-side view with
+       an error of 1.0, i.e. completely wrong). A direction has no such corner.
+
+       Up defaults to +Z because that is what this CAD exports: the ±Y faces of
+       the shooter are its front and back, so Y-up — the usual default, and what
+       this renderer assumed for a long time — laid the whole assembly on its
+       side by an amount no yaw/pitch pair could straighten. */
+    function vec3(attr, dflt) {
+      var v = (attr || '').split(',').map(parseFloat);
+      return (v.length === 3 && v.every(function (n) { return isFinite(n); })) ? v : dflt;
+    }
+    function lookFrom(d, up) {
+      var L = Math.hypot(d[0], d[1], d[2]) || 1;
+      var z = [d[0] / L, d[1] / L, d[2] / L];
+      // a view straight along the up axis needs a different reference
+      if (Math.abs(z[0]*up[0] + z[1]*up[1] + z[2]*up[2]) > 0.999) up = [0, 1, 0];
+      var cross = function (a, b) {
+        return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]];
+      };
+      var x = cross(up, z);
+      var xl = Math.hypot(x[0], x[1], x[2]) || 1;
+      x = [x[0]/xl, x[1]/xl, x[2]/xl];
+      var y = cross(z, x);
+      // rows are x, y, z; stored column-major to match the other helpers
+      return [x[0], y[0], z[0], x[1], y[1], z[1], x[2], y[2], z[2]];
+    }
+    var view0 = vec3(canvas.dataset.meshView, [0.8, 1, 0.55]);
+    var up0   = vec3(canvas.dataset.meshUp,   [0, 0, 1]);
+    var state = { R: lookFrom(view0, up0), vYaw: 0, vPitch: 0, ready: false };
 
     // Apply an increment about the SCREEN axes. Pre-multiplying puts it outside
     // the current orientation, which is what keeps the drag matching the cursor

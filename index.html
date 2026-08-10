@@ -117,6 +117,11 @@ document.addEventListener('mesh:failed', function () {
       <!-- The drawing is the hero. It carries no project framing on purpose:
            the index below is where the work is listed, and singling one build
            out up here made the whole site read as being about that build. -->
+      <!-- No pan on the canvas below. The camera fits the bounding SPHERE, which
+           is what keeps the framing safe at every angle the cursor can turn it
+           to; any offset eats that margin on one side and the drawing clips as
+           it turns. The geometry settles about 3% below centre as a result,
+           which is the cheaper of the two. -->
       <div class="hero__plot">
         <canvas class="plot" hidden width="1600" height="900"
                 role="img"
@@ -124,8 +129,9 @@ document.addEventListener('mesh:failed', function () {
                 data-mesh="assets/models/hero.mesh"
                 data-mesh-style="line"
                 data-mesh-motion="plot"
-                data-mesh-zoom="1.10"
-                data-mesh-pan-x="-0.034" data-mesh-pan-y="-0.078"
+                data-mesh-view="0.8,1,0.55"
+                data-mesh-zoom="1.0"
+                data-mesh-pan-x="0" data-mesh-pan-y="0"
                 data-mesh-replaces="#hero-stand-in"></canvas>
 
         <!-- shown only if WebGL2 is missing or the geometry cannot load -->
