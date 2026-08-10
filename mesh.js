@@ -444,8 +444,26 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       });
       var t1 = tones[0], t2 = tones[1], t3 = tones[2];   // lit, mid, unlit
       if (lineOnly) {
+        /* Not pure paper on paper.
+           The drawing is carried by crease edges, so anything without a crease
+           had no signal at all: the 150mm ball in this assembly has a maximum
+           dihedral angle of 2.5 degrees and therefore no creases at any sane
+           threshold, and it was being drawn as paper-coloured fill on a paper
+           background — 18% of the geometry rendering as nothing. Three rollers
+           came through on 30 edges apiece, their end circles only.
+           A real line drawing gives a smooth body its silhouette; short of
+           computing silhouettes per frame, pulling the shading part of the way
+           back gives every body enough tone to exist while leaving the ink
+           lines clearly in charge. */
         var paper = cssColour('--film', [.90, .91, .90]);
-        t1 = t2 = t3 = paper;
+        var k = parseFloat(canvas.dataset.meshLineTone);
+        if (!isFinite(k)) k = 0.5;
+        var toward = function (c) {
+          return [paper[0] + (c[0] - paper[0]) * k,
+                  paper[1] + (c[1] - paper[1]) * k,
+                  paper[2] + (c[2] - paper[2]) * k];
+        };
+        t1 = toward(t1); t2 = toward(t2); t3 = toward(t3);
       }
       var ink = cssColour('--ink',   [.08,.10,.09]);
 
