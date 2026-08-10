@@ -23,6 +23,26 @@ document.documentElement.classList.add('js');
 try{var t=localStorage.getItem('theme');
 if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <script src="theme.js" defer></script>
+<script src="mesh.js" defer></script>
+<script>
+/* The edge count is read off the mesh the page actually loaded. Typing it in
+   the markup would make it a claim that goes stale the next time the assembly
+   is re-exported. */
+document.addEventListener('mesh:ready', function (e) {
+  var el = document.querySelector('[data-hero-stat]');
+  if (el) el.textContent = e.detail.edges.toLocaleString('en') + ' edges \u00b7 no libraries';
+});
+/* If the geometry never arrives the stator stands in, and the caption must stop
+   claiming to be a CAD drawing rendered in the browser — it would be describing
+   something that is not on the screen. */
+document.addEventListener('mesh:failed', function () {
+  var cap = document.querySelector('.hero__caption');
+  if (!cap) return;
+  cap.querySelector('.hero__caption-lead').textContent = 'Stator, 12N14P.';
+  var sub = cap.querySelector('[data-hero-stat]');
+  if (sub) sub.textContent = 'schematic';
+});
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -91,29 +111,26 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
 
   <main>
 
-    <section class="hero">
+    <section class="hero hero--plot">
       <p class="eyebrow">Taipei &middot; Motor design, gearboxes, control systems</p>
 
-      <div class="hero__text">
-        <p class="hero__kicker">Current build</p>
+      <!-- The drawing is the hero. It carries no project framing on purpose:
+           the index below is where the work is listed, and singling one build
+           out up here made the whole site read as being about that build. -->
+      <div class="hero__plot">
+        <canvas class="plot" hidden width="1600" height="900"
+                role="img"
+                aria-label="An assembly Neo designed, drawn as line art. It is plotted on stroke by stroke and turns with the pointer."
+                data-mesh="assets/models/hero.mesh"
+                data-mesh-style="line"
+                data-mesh-motion="plot"
+                data-mesh-zoom="1.10"
+                data-mesh-pan-x="-0.034" data-mesh-pan-y="-0.078"
+                data-mesh-replaces="#hero-stand-in"></canvas>
 
-        <h1 class="hero__title"><a href="p-umv.html">Ultra-Mobility Vehicle, scaled</a></h1>
-
-        <p class="hero__note">
-          A scaled wheeled-legged vehicle and its balance controller. I design and
-          wind the motors, machine the gearboxes, and write the control firmware.
-        </p>
-
-        <dl class="tb__grid hero__tb">
-          <div class="tb__cell"><dt>Drawing</dt><dd>C&#8209;02</dd></div>
-          <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
-          <div class="tb__cell"><dt>Discipline</dt><dd>Controls</dd></div>
-          <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
-        </dl>
-      </div>
-
-      <div class="hero__fig">
-        <svg class="stator" viewBox="0 0 400 400" role="img"
+        <!-- shown only if WebGL2 is missing or the geometry cannot load -->
+        <div id="hero-stand-in" class="hero__standin">
+          <svg class="stator" viewBox="0 0 400 400" role="img"
              aria-label="Cross-section of a twelve-slot, fourteen-pole outrunner stator and rotor">
           <g class="stator__rotor">
             <circle cx="200" cy="200" r="191.0"/>
@@ -159,13 +176,13 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
             <text x="212" y="20">&#8960; 12N14P</text>
           </g>
         </svg>
-
-        <p class="hero__figcap">
-          <a href="p-bldc.html">E&#8209;01 &middot; Stator, 12N14P</a>
-          <span class="hero__figcap-sub" data-hint>Drag the rotor &middot; commutation follows position</span>
-        </p>
+        </div>
       </div>
 
+      <p class="hero__caption">
+        <span class="hero__caption-lead">Drawn from the CAD, in the browser.</span>
+        <span class="hero__caption-sub" data-hero-stat>no libraries</span>
+      </p>
 
       <div class="dim">
         <span class="dim__label">6 builds &middot; 2024 &ndash; present</span>

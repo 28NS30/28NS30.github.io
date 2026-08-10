@@ -434,70 +434,20 @@ body{
   align-items: start;
 }
 .eyebrow{ grid-area: eyebrow; }
-.hero__text{ grid-area: text; }
-.hero__fig{ grid-area: fig; justify-self: end; width: 100%; }
+
 
 /* The hero leads with the current build rather than a statement about the work.
    It is the title block again, at plate scale: kicker, drawing title, one line
    of description, then the same four-cell grid the index cards carry. */
-.hero__kicker{
-  font-family: var(--mono);
-  font-size: var(--t-meta);
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--construct);
-  margin: 0 0 var(--sp-xs);
-  animation: text-draw var(--t-text-in) var(--ease-plot) forwards;
-}
-.hero__title{
-  font-family: var(--cond);
-  font-size: var(--t-hero);
-  font-weight: 300;
-  line-height: .98;
-  letter-spacing: -.01em;
-  text-transform: uppercase;
-  margin: 0;
-  max-width: 18ch;
-  animation: text-in .7s var(--ease-plot) .1s forwards;
-  opacity: 0;
-}
-.hero__title a{
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: border-color var(--t-tap) ease;
-  position: relative;
-}
-.hero__title a:hover{ border-bottom-color: var(--construct); }
+
 
 /* .tb__grid sets margin:0 and is declared later at equal specificity, so this
    needs the extra class to win. */
-.hero__text .hero__tb{ margin-top: var(--sp-m); max-width: var(--readw); animation: text-in .7s var(--ease-plot) .25s forwards; opacity: 0; }
+
 
 /* The drawing beside the title is E-01, not the featured build. Label it, so it
    reads as a second entry into the index rather than a picture of the UMV. */
-.hero__figcap{
-  font-family: var(--mono);
-  font-size: var(--t-micro);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--graphite);
-  text-align: right;
-  margin: var(--sp-xs) 0 0;
-  animation: text-draw var(--t-text-in) var(--ease-plot) .2s forwards;
-}
-.hero__figcap a{
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule);
-  transition: color var(--t-tap) ease, border-color var(--t-tap) ease;
-}
-.hero__figcap a:hover{ color: var(--ink); border-bottom-color: var(--construct); }
-.hero__figcap-sub{
-  display: block;
-  margin-top: var(--sp-3xs);
-  color: var(--construct);
-}
+
 
 .stator{ width: 100%; height: auto; overflow: visible; display: block; }
 .stator circle, .stator path{ fill: none; vector-effect: non-scaling-stroke; }
@@ -693,14 +643,6 @@ body{
   white-space: nowrap;
 }
 
-.hero__note{
-  margin: var(--sp-m) 0 0;
-  max-width: var(--readw);
-  color: var(--graphite);
-  font-size: 1.02rem;
-  animation: text-in .7s var(--ease-plot) .18s forwards;
-  opacity: 0;
-}
 
 /* ---------- section heads ---------- */
 .sec{ padding-block: var(--sp-xl); }
@@ -1208,7 +1150,7 @@ a:focus-visible, button:focus-visible{
        drawing lands on top of the title */
     grid-template-areas: "eyebrow" "text" "fig" "rig" "dim";
   }
-  .hero__fig{ justify-self: start; max-width: 300px; margin-top: var(--sp-m); }
+
   .proj__layout, .about__grid{ grid-template-columns: minmax(0, 1fr); }
   .spec{ position: static; }
 }
@@ -1217,7 +1159,7 @@ a:focus-visible, button:focus-visible{
   .sheet-frame{ inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
   .masthead{ padding-top: var(--sp-m); }
   .masthead__nav{ gap: var(--sp-s); }
-  .hero__title{ max-width: 14ch; }
+
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -1238,9 +1180,9 @@ a:focus-visible, button:focus-visible{
   .rev tbody tr td::after{ animation: none !important; transform: scaleX(1); }
   .stator .ph--a, .stator .ph--b{ stroke: var(--construct); fill-opacity: .16; }
   
-  /* Disable text animations under reduced motion */
-  .hero__kicker, .hero__title, .hero__note, .hero__text .hero__tb,
-  .eyebrow, .dim, .sec__title, .hero__figcap,
+  /* Disable text animations under reduced motion. The old hero's selectors are
+     gone with its markup; what is left is what still animates. */
+  .eyebrow, .dim, .sec__title, .hero__caption,
   .proj__title, .proj__standfirst{
     animation: none !important;
     opacity: 1 !important;
@@ -1666,3 +1608,63 @@ html.js .theme{ display: inline-flex; }
 
 /* the control is chrome, not content */
 @media print{ .theme{ display: none !important; } }
+
+/* ---------- the plot: the homepage drawing ----------
+   One column, the drawing dominant. The old hero put a project title beside a
+   figure, which made the whole site read as being about that one build; the
+   index below is where the work is listed. */
+.hero--plot{
+  display: block;
+  padding-bottom: var(--sp-xl);
+}
+.hero--plot .eyebrow{ margin-bottom: var(--sp-m); }
+
+.hero__plot{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: min(66vh, 620px);
+  margin: 0 auto;
+}
+.hero__plot .plot{
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* not a handle: it answers the pointer wherever it is on the page */
+  pointer-events: none;
+}
+/* the stator stands in only when WebGL2 or the fetch fails */
+.hero__standin{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+/* Drive the fallback drawing off HEIGHT, not width. The well is a wide
+   letterbox sized for the assembly; a square stator told to be 100% wide
+   becomes 1104px tall inside a 320px box and spills over everything under it.
+   Height is definite here, so the 1:1 viewBox gives the width. */
+.hero__standin .stator{ width: min(360px, 90%); height: auto; }
+
+.hero__caption{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-xs);
+  margin: var(--sp-s) 0 0;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.hero__caption-lead{ color: var(--ink); }
+.hero__caption-sub::before{ content: ""; }
+
+@media (max-width: 700px){
+  .hero__plot{ aspect-ratio: 4 / 3; max-height: 46vh; }
+}
+
+/* No script, no WebGL: the stand-in is the figure and it should not be squeezed
+   into a 16:9 letterbox meant for the assembly. */
+.hero__plot:not(:has(.plot:not([hidden]))){ aspect-ratio: auto; min-height: 380px; }

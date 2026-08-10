@@ -74,9 +74,10 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     }
     return o;
   }
-  function mvp(proj, rot, dist){
-    // view is a pure translation down -Z, so fold it in by hand
-    var m=[rot[0],rot[1],rot[2],0, rot[3],rot[4],rot[5],0, rot[6],rot[7],rot[8],0, 0,0,-dist,1];
+  function mvp(proj, rot, dist, px, py){
+    // view is a pure translation, so fold it in by hand
+    var m=[rot[0],rot[1],rot[2],0, rot[3],rot[4],rot[5],0, rot[6],rot[7],rot[8],0,
+           px||0, py||0, -dist, 1];
     var o=new Array(16);
     for(var i=0;i<4;i++)for(var j=0;j<4;j++){
       var s=0; for(var k=0;k<4;k++) s+=proj[k*4+j]*m[i*4+k];
@@ -108,7 +109,7 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
   function parse(buf) {
     var dv = new DataView(buf);
     var magic = String.fromCharCode(dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3));
-    if (magic !== 'NSM3') throw new Error('expected an NSM3 mesh, got "' + magic + '"');
+    if (magic !== 'NSM4') throw new Error('expected an NSM4 mesh, got "' + magic + '"');
     var vc = dv.getUint32(4, true), ic = dv.getUint32(8, true), ec = dv.getUint32(12, true);
     var lo = [dv.getFloat32(16, true), dv.getFloat32(20, true), dv.getFloat32(24, true)];
     var hi = [dv.getFloat32(28, true), dv.getFloat32(32, true), dv.getFloat32(36, true)];
@@ -118,9 +119,22 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     var verts = new Uint16Array(buf, o, vc * 3); o += vc * 6;
     var Arr = vc > 65535 ? Uint32Array : Uint16Array, w = vc > 65535 ? 4 : 2;
     var tris = new Arr(buf, o, ic); o += ic * w;
-    var edges = new Arr(buf, o, ec);
+    var edges = new Arr(buf, o, ec); o += ec * w;
+
+    // Parts, as ranges into the two index buffers. Triangles and edges for one
+    // part are contiguous, so drawing the first N groups draws N whole parts —
+    // fill and lines together, which is what lets the homepage plot the
+    // assembly on a part at a time without earlier strokes showing through
+    // parts that have not been laid down yet.
+    var gc = dv.getUint32(o, true); o += 4;
+    var groups = [];
+    for (var g = 0; g < gc; g++) {
+      groups.push({ triStart: dv.getUint32(o, true), triCount: dv.getUint32(o + 4, true),
+                    edgeStart: dv.getUint32(o + 8, true), edgeCount: dv.getUint32(o + 12, true) });
+      o += 16;
+    }
     return { verts: verts, tris: tris, edges: edges, wide: vc > 65535,
-             lo: lo, hi: hi, qorg: qorg, qspan: qspan, vcount: vc };
+             lo: lo, hi: hi, qorg: qorg, qspan: qspan, vcount: vc, groups: groups };
   }
 
   function program(gl, vsrc, fsrc) {
@@ -155,8 +169,11 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       why.textContent = reason;
       panel.appendChild(why);
     }
-    console.warn('[mesh] ' + canvas.dataset.mesh + ' — ' + reason,
-                 detail || '');
+    console.warn('[mesh] ' + canvas.dataset.mesh + ' — ' + reason, detail || '');
+    // let the page correct anything it said on the assumption this would load
+    canvas.dispatchEvent(new CustomEvent('mesh:failed', {
+      bubbles: true, detail: { reason: reason }
+    }));
   }
 
   function mount(canvas) {
@@ -170,6 +187,15 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     if (!gl) { fail(canvas, 'This browser has no WebGL2, so the part cannot be drawn.'); return; }
 
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 'line'  — fill is painted in the page colour: invisible, but it still
+    //           writes depth, which is what removes the hidden lines. A pure
+    //           wireframe of 16,000 edges is an unreadable tangle; a drawing
+    //           has its back edges hidden, and this is how you get that with
+    //           no extra passes.
+    // 'plot'  — the assembly is laid down a part at a time, then follows the
+    //           cursor. Anything else orbits by drag.
+    var lineOnly = canvas.dataset.meshStyle === 'line';
+    var plotting = canvas.dataset.meshMotion === 'plot';
     // Orientation is a matrix, not a yaw/pitch pair. Euler angles need a
     // clamp near the poles or the part flips and the drag direction inverts;
     // accumulating the rotation instead means there is no pole and no limit —
@@ -189,6 +215,7 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     var fill, line, vao, ebo, mesh;
 
     var FOVY        = 0.72;              // radians
+    var panX = 0, panY = 0;              // fractions of the visible half-extent
     var dist        = 2.15;              // replaced by a real fit once loaded
     var DRAG_GAIN   = 0.0072;            // radians per CSS pixel
     var FRICTION    = 0.94;              // per frame after release
@@ -272,7 +299,14 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
         var d2 = x*x + y*y + z*z;
         if (d2 > r2) r2 = d2;
       }
-      dist = Math.sqrt(r2) / Math.sin(FOVY / 2) * 1.06;
+      // The sphere fit is rotation-invariant, which is right for something you
+      // can tumble end over end but leaves a part that only sways within a few
+      // degrees looking small in its frame. data-mesh-zoom tightens it; the
+      // clipping check below is what keeps that honest.
+      var zoom = parseFloat(canvas.dataset.meshZoom) || 1;
+      panX = parseFloat(canvas.dataset.meshPanX) || 0;
+      panY = parseFloat(canvas.dataset.meshPanY) || 0;
+      dist = Math.sqrt(r2) / Math.sin(FOVY / 2) * 1.06 / zoom;
 
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.CULL_FACE);
@@ -291,7 +325,9 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       canvas.removeAttribute('hidden');
 
       state.ready = true;
+      drawAll();
       resize(); draw();
+      if (plotting) startPlot();
 
       canvas.dispatchEvent(new CustomEvent('mesh:ready', {
         bubbles: true,
@@ -329,6 +365,20 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       }
     }
 
+    // how much of the assembly has been laid down; everything until the plot
+    // starts, so a static render is complete
+    var triDrawn = 0, edgeDrawn = 0;
+    function drawAll() { triDrawn = mesh.tris.length; edgeDrawn = mesh.edges.length; }
+    function drawUpTo(n) {
+      var g = mesh.groups;
+      if (!g || !g.length) { drawAll(); return; }
+      n = Math.max(0, Math.min(g.length, n));
+      if (n === 0) { triDrawn = edgeDrawn = 0; return; }
+      var last = g[n - 1];
+      triDrawn = last.triStart + last.triCount;
+      edgeDrawn = last.edgeStart + last.edgeCount;
+    }
+
     function draw() {
       if (!state.ready || !canvas.clientWidth) return;
       resize();
@@ -338,7 +388,12 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
 
       var rot = state.R;
       var proj = perspective(FOVY, canvas.width / canvas.height, 0.1, 20);
-      var M = mvp(proj, rot, dist);
+      // A part is centred on its bounding box, which is not where it looks
+      // centred once projected — this assembly sits low and slightly right in
+      // its frame. Pan is expressed as a fraction of the visible half-extent so
+      // it holds at any canvas size.
+      var half = dist * Math.tan(FOVY / 2);
+      var M = mvp(proj, rot, dist, panX * half * (canvas.width / canvas.height), panY * half);
 
       // Order the three tones by LUMINANCE, not by token name. The dark theme
       // is not an inversion of the light one: --film is the lightest token on
@@ -355,6 +410,10 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
                (a[0]*.2126 + a[1]*.7152 + a[2]*.0722);
       });
       var t1 = tones[0], t2 = tones[1], t3 = tones[2];   // lit, mid, unlit
+      if (lineOnly) {
+        var paper = cssColour('--film', [.90, .91, .90]);
+        t1 = t2 = t3 = paper;
+      }
       var ink = cssColour('--ink',   [.08,.10,.09]);
 
       gl.bindVertexArray(vao);
@@ -369,7 +428,7 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       // push the fill back so the drawn edges are not z-fighting it
       gl.enable(gl.POLYGON_OFFSET_FILL);
       gl.polygonOffset(1.2, 1.2);
-      gl.drawElements(gl.TRIANGLES, mesh.tris.length, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.TRIANGLES, triDrawn, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
       gl.disable(gl.POLYGON_OFFSET_FILL);
 
       gl.bindVertexArray(ebo);
@@ -378,7 +437,7 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       gl.uniform3fv(gl.getUniformLocation(line, 'uQOrg'), mesh.qorg);
       gl.uniform1f(gl.getUniformLocation(line, 'uQSpan'), mesh.qspan);
       gl.uniform3fv(gl.getUniformLocation(line, 'uInk'), ink);
-      gl.drawElements(gl.LINES, mesh.edges.length, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.LINES, edgeDrawn, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
 
       gl.bindVertexArray(null);
     }
@@ -393,6 +452,21 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     }
     function step() {
       raf = 0;
+      if (plotting_now) {
+        var more = advancePlot(performance.now());
+        draw();
+        if (more) { wake(); return; }
+      }
+      if (plotting) {                       // hero: ease toward the cursor pose
+        var dy = targetYaw - poseYaw, dp = targetPitch - posePitch;
+        if (Math.abs(dy) > 1e-4 || Math.abs(dp) > 1e-4) {
+          poseYaw += dy * 0.06; posePitch += dp * 0.06;
+          spin(dy * 0.06, dp * 0.06);
+          draw();
+          wake();
+        }
+        return;
+      }
       if (!dragging) {
         spin(state.vYaw, state.vPitch);
         state.vYaw   *= FRICTION;
@@ -407,10 +481,56 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       wake();
     }
 
+    /* ---- the plot ------------------------------------------------------------
+       The assembly is laid down a part at a time, the way a pen plotter works
+       through a drawing. It is not a loading bar: the geometry is already on
+       the GPU before the first stroke, and the only thing advancing is how many
+       index ranges get drawn, so the cost of a frame during the plot is lower
+       than after it, not higher.
+
+       Under reduced motion there is no plot at all — the finished drawing is
+       simply there, which is the honest reading of the preference. */
+    var PLOT_MS = 2400;
+    var plotStart = 0, plotting_now = false;
+
+    function startPlot() {
+      if (reduce) { drawAll(); draw(); return; }
+      var seen = false;
+      var begin = function () {
+        if (seen) return;
+        seen = true;
+        plotStart = performance.now();
+        plotting_now = true;
+        drawUpTo(0);
+        wake();
+      };
+      // start when it is actually on screen, so nobody arrives to a finished
+      // drawing they never saw being made
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting) { begin(); io.disconnect(); }
+        }, { threshold: .25 });
+        io.observe(canvas);
+      } else begin();
+    }
+
+    function advancePlot(now) {
+      var t = (now - plotStart) / PLOT_MS;
+      if (t >= 1) { plotting_now = false; drawAll(); return false; }
+      // Close to linear, the way a plotter actually works, with just enough
+      // ease-out that it settles rather than stopping dead. A stronger curve
+      // put 84% of the assembly down in the first half and left the rest
+      // dribbling in.
+      var e = 1 - Math.pow(1 - t, 1.4);
+      drawUpTo(Math.ceil(e * mesh.groups.length));
+      return true;
+    }
+
     // ---- drag ---------------------------------------------------------------
     var dragging = false, lastX = 0, lastY = 0, moved = 0;
 
     canvas.addEventListener('pointerdown', function (e) {
+      if (plotting) return;                 // the hero is not a handle
       if (e.button !== 0 && e.pointerType === 'mouse') return;
       dragging = true; moved = 0;
       lastX = e.clientX; lastY = e.clientY;
@@ -442,6 +562,21 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     }
     canvas.addEventListener('pointerup', release);
     canvas.addEventListener('pointercancel', release);
+
+    /* The hero turns with the cursor rather than by dragging. It is a drawing
+       on a page, not an object to operate: a small, damped response reads as
+       the sheet having depth, where a grab handle would invite fiddling. */
+    var targetYaw = 0, targetPitch = 0, poseYaw = 0, posePitch = 0;
+    if (plotting && !reduce) {
+      // Kept small deliberately, and small enough that the tighter hero framing
+      // never swings a corner of the assembly out of the frame.
+      var MAX_YAW = 0.26, MAX_PITCH = 0.12;
+      addEventListener('pointermove', function (e) {
+        targetYaw = (e.clientX / innerWidth - 0.5) * 2 * MAX_YAW;
+        targetPitch = (e.clientY / innerHeight - 0.5) * 2 * MAX_PITCH;
+        wake();
+      }, { passive: true });
+    }
 
     // ---- keyboard -----------------------------------------------------------
     // Draws synchronously rather than waking the loop, because under reduced
