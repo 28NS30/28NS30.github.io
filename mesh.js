@@ -195,6 +195,9 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
     // 'plot'  — the assembly is laid down a part at a time, then follows the
     //           cursor. Anything else orbits by drag.
     var lineOnly = canvas.dataset.meshStyle === 'line';
+    // depth-offset silhouette rim; 0 turns it off
+    var outline = parseFloat(canvas.dataset.meshOutline);
+    if (!isFinite(outline)) outline = 2.0;
     var plotting = canvas.dataset.meshMotion === 'plot';
     // Orientation is a matrix, not a yaw/pitch pair. Euler angles need a
     // clamp near the poles or the part flips and the drag direction inverts;
@@ -481,6 +484,36 @@ void main(){ fragColor = vec4(uInk, 1.0); }`;
       gl.polygonOffset(1.2, 1.2);
       gl.drawElements(gl.TRIANGLES, triDrawn, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
       gl.disable(gl.POLYGON_OFFSET_FILL);
+
+      /* ---- silhouette rim ---------------------------------------------
+         Crease edges cannot outline a smooth body: a sphere has no crease
+         anywhere, so it was drawn with no boundary at all. A real line drawing
+         gives it its silhouette, which is view-dependent and therefore not in
+         the file.
+
+         Rather than ship face adjacency for every manifold edge — about 1.6 MB
+         for this assembly, far past the budget — the rim is found from the
+         depth buffer that has already been written. The BACK faces are drawn
+         pulled slightly toward the camera; they win the depth test only where
+         they are within that pull of the front surface, which is exactly where
+         the two converge: the silhouette. Everywhere the body is thicker than
+         the offset, the front face still covers them and nothing shows.
+
+         One extra draw call, no new geometry, no extra bytes. */
+      if (lineOnly && outline > 0) {
+        gl.bindVertexArray(vao);
+        gl.useProgram(line);
+        gl.uniformMatrix4fv(gl.getUniformLocation(line, 'uMVP'), false, new Float32Array(M));
+        gl.uniform3fv(gl.getUniformLocation(line, 'uQOrg'), mesh.qorg);
+        gl.uniform1f(gl.getUniformLocation(line, 'uQSpan'), mesh.qspan);
+        gl.uniform3fv(gl.getUniformLocation(line, 'uInk'), ink);
+        gl.cullFace(gl.FRONT);
+        gl.enable(gl.POLYGON_OFFSET_FILL);
+        gl.polygonOffset(-outline, -outline * 2.0);
+        gl.drawElements(gl.TRIANGLES, triDrawn, mesh.wide ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT, 0);
+        gl.disable(gl.POLYGON_OFFSET_FILL);
+        gl.cullFace(gl.BACK);
+      }
 
       gl.bindVertexArray(ebo);
       gl.useProgram(line);
