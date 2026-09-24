@@ -29,6 +29,8 @@ p-drone.html       C-01  quadrotor                 ← stub
 p-shooter.html     M-02  FRC shooter subsystem     ← real geometry, write-up pending
 p-drylab.html      B-01  iGEM dry lab              ← stub
 p-umv.html         C-02  ultra-mobility vehicle    ← stub, leads the index
+tree.html          project tree                    ← generated from ~/Farm; never edit
+tree.js            edges and tracing for the tree
 style.css          the whole design system
 theme.js           the Auto / Light / Dark control
 favicon.svg        theme-aware, light and dark
@@ -45,6 +47,41 @@ assets/            photographs go here
 "Stub" means the page exists, is styled, and carries a **Write-up pending**
 block. Nothing 404s. `p-bldc.html` is the structural template — copy its five
 sections when writing a stub up properly.
+
+---
+
+## Project tree
+
+`tree.html` is every project and what has to exist before it can start: tiers
+left to right in build order, the standalone projects apart behind a dashed
+rule. It is generated, not written. The data lives in `~/Farm`, which owns
+every project's status, scores, dependencies, plan and log; this repo owns only
+the rendering, in the same title blocks the index uses.
+
+```bash
+python3 gen_tree.py          # runs Farm's build, then renders both pages
+python3 gen_tree.py --check  # are the pages what Farm says now? exit 1 if not
+python3 consistency.py       # must say "everything agrees" before a commit
+```
+
+`--check` also notices Farm edits that have not been built yet. The generator
+refuses to write `tree.html` from a public export older than the full one (a
+plain `build.py` refreshes only the full one), or from one carrying a link that
+is not http(s) or mailto; it prints a `note:` when public prose names a hidden
+project or a private file.
+
+`gen_tree.py` writes two pages from one template. `tree.html` gets the public
+projects and only their Summary and Goals; it is committed and deploys.
+`tree.local.html` gets everything — plans, next actions, open questions,
+decisions, logs, cost, time, all five scores, links into the Farm folder — and
+is gitignored. Open it from Finder; it is the private view of the tree.
+
+Both are static HTML with the data in the markup, so they work as `file://`
+documents and read with scripting off: a tiered list of title blocks whose
+Needs / Unlocks are in each card's details. `tree.js` draws the edges and lights
+a card's whole chain on hover or focus. A node names its drawing page in Farm
+with `site: {drawing: "C-02", page: "p-umv.html"}`; the generator refuses to run
+if that page is missing or its Drawing disagrees.
 
 ---
 
@@ -127,9 +164,11 @@ crops — render onto a 1200×1200 canvas with the artwork centred, then
 3. Settings → Pages → Source: `main`, folder: `/ (root)`.
 4. Live at `https://28ns30.github.io` within a minute or two.
 
-The absolute URLs in each page's `<link rel="canonical">` and `og:` tags point
-at `28ns30.github.io`. On a custom domain, update them — five files, one
-find-and-replace.
+The absolute URLs in each page's `<link rel="canonical">` and `og:` tags, in
+`sitemap.xml` and in `robots.txt` point at `28ns30.github.io`. On a custom
+domain, update them with one find-and-replace over those files, then run
+`python3 gen_tree.py`: it takes the address from `p-umv.html`'s canonical, so
+`tree.html` and its sitemap entry follow.
 
 ---
 

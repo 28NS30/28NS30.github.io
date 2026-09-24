@@ -1124,6 +1124,369 @@ body{
   animation: draw-x var(--t-draw) var(--ease-plot) .25s both;
 }
 
+/* ---------- project tree ----------
+   tree.html and tree.local.html, rendered by gen_tree.py from Farm's data. Every
+   project is a title block -- the same component the index and the spec panels
+   use -- so a reader knows how to read a card before reaching one. Tiers are
+   columns in the order things can be built; standalone projects sit apart
+   behind a dashed rule. The edges are drawn by tree.js over a page that already
+   reads without them: each card lists what it needs and unlocks in its details.
+
+   Stacked by default, columns from 1100px. Mobile-first so the no-script,
+   narrow-screen and print cases are the base rules, not the overrides. */
+.tree{ --tree-col: 232px; margin: 0 0 var(--sp-xl); }
+
+.tree__legend{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-xs) var(--sp-l);
+  margin: 0 0 var(--sp-m);
+  padding: var(--sp-xs) 0;
+  border-block: 1px solid var(--rule-soft);
+}
+.tree__key{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2xs) var(--sp-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.tree__key li{ display: inline-flex; align-items: center; gap: var(--sp-2xs); }
+.tree__sample{ width: var(--sp-l); height: var(--sp-2xs); overflow: visible; }
+.tree__sample line{ stroke: var(--rule); stroke-width: 1.5; }
+.tree__sample--soft line{ stroke: var(--graphite); stroke-dasharray: 5 4; }
+.tree__note{
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .08em;
+  color: var(--graphite);
+}
+
+/* An idea is on the list, not committed: a dashed border says "not drawn yet"
+   in the drawing's own language. */
+.chip--idea{ border-style: dashed; color: var(--graphite); }
+
+/* local page only */
+.tree__local{
+  margin: var(--sp-s) 0 0;
+  padding: var(--sp-2xs) var(--sp-xs);
+  border-left: 2px solid var(--construct);
+  background: var(--construct-tint);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.tree__warnings{
+  margin: 0 0 var(--sp-m);
+  padding: var(--sp-xs) var(--sp-s);
+  border-left: 2px solid var(--hazard);
+  background: var(--film-2);
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+}
+.tree__warnings h2{
+  margin: 0 0 var(--sp-2xs);
+  font-size: var(--t-micro);
+  font-weight: 400;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.tree__warnings ul{ margin: 0; padding-left: var(--sp-s); }
+
+/* ---- tiers, stacked ---- */
+.tree__scroll{ position: relative; }
+.tree__edges{ display: none; }
+.tree__tiers{ list-style: none; margin: 0; padding: 0; }
+.tier{ margin: 0 0 var(--sp-xl); }
+.tier__head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-xs);
+  margin: 0 0 var(--sp-s);
+  padding-bottom: var(--sp-2xs);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--cond);
+  font-size: var(--t-h3);
+  font-weight: 300;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.tier__head .sec__mark{ min-width: 2ch; }
+.tier__n{
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  color: var(--graphite);
+}
+.tier__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--sp-m);
+}
+
+/* ---- a card ---- */
+.node{
+  position: relative;               /* above the edge layer */
+  border: 1px solid var(--rule);
+  background: var(--film-2);
+  scroll-margin: var(--sp-xl);
+  transition: border-color var(--t-tap) ease, opacity var(--t-tap) ease;
+}
+.node:hover, .node:focus-within{ border-color: var(--ink); }
+.node:hover .tb__no{ color: var(--construct); }
+/* The title link's whole-card overlay (.tb__name a::after) is scoped to the
+   title block, not the card: the card also holds a <details>, and an overlay
+   over the whole card would sit on top of its summary and swallow the click. */
+.node .tb{ position: relative; }
+/* 1fr is minmax(auto, 1fr): a column will not shrink below its longest word,
+   and in a 232px card "COMPLEXITY" set in spaced mono pushed the grid out of
+   the card. minmax(0, 1fr) keeps both columns inside it. */
+.node .tb__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* an odd cell out takes the whole row rather than leaving a hole beside it */
+.node .tb__cell:last-child:nth-child(odd){ grid-column: 1 / -1; }
+/* A drawing number is four characters; a Farm id like drift-suspension is
+   sixteen, and set beside the title it squeezed the name into two short lines.
+   In the tree the number goes above the name and the name gets the width. */
+.node .tb__head{ flex-direction: column; gap: var(--sp-3xs); }
+.node .tb__no{ overflow-wrap: anywhere; }
+.node .tb__name{ min-height: 0; }
+.node .tb__cell dt{ letter-spacing: .06em; }
+.node .tb__cell .mono{ font-family: var(--mono); font-size: var(--t-meta); font-weight: 400; letter-spacing: .04em; }
+/* without script, following a #link still marks where you landed */
+/* Without script a #link lands on :target. With script the chosen card is
+   marked by tree.js instead: history.pushState never moves :target, so the
+   card from the loaded URL would keep its ring after every later choice. */
+html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct); outline-offset: 2px; }
+.node--dropped{ opacity: .5; }
+
+.node__bar{ height: 3px; margin-top: var(--sp-xs); background: var(--rule-soft); }
+.node__bar span{ display: block; height: 100%; background: var(--construct); }
+.node__todo{ color: var(--construct); }
+
+.node__more{ border-top: 1px solid var(--rule-soft); }
+.node__more > summary{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2xs);
+  padding: var(--sp-2xs) var(--sp-s);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.node__more > summary::-webkit-details-marker{ display: none; }
+.node__more > summary::before{ content: "+"; width: 1ch; color: var(--construct); }
+.node__more[open] > summary::before{ content: "\2212"; }
+.node__more > summary:hover{ color: var(--ink); }
+.node__more > summary:focus-visible{ outline: 2px solid var(--construct); outline-offset: -2px; }
+
+/* body size while a card is a reading width; meta in the narrow columns */
+.node__body{ padding: 0 var(--sp-s) var(--sp-s); font-size: var(--t-body); line-height: 1.55; }
+.node__body h4{
+  margin: var(--sp-s) 0 var(--sp-2xs);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  font-weight: 400;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+.node__body h4:first-child{ margin-top: var(--sp-2xs); }
+/* (0,1,1) to beat .prose p, which would space a card like an article; the
+   component paragraphs and lists further down are .node__body .x, (0,2,0) */
+.node__body p{ margin: 0 0 var(--sp-xs); }
+.node__body ul, .node__body ol{ margin: 0 0 var(--sp-xs); padding-left: var(--sp-s); }
+.node__body li{ margin: 0 0 var(--sp-3xs); }
+/* .prose strong is set to 300, lighter than the 400 body it sits in, which
+   turns every **bold** in a plan into de-emphasis. Here it has to read as bold. */
+.node__body strong{ font-weight: 600; }
+.node__body code{
+  font-family: var(--mono);
+  font-size: .85em;
+  padding: 0 var(--sp-3xs);
+  background: var(--film-3);
+}
+.node__body .tasks{ list-style: none; padding-left: 0; }
+/* a plain note among the checkboxes keeps its bullet */
+.node__body .tasks > li:not(.task){ list-style: disc; margin-left: var(--sp-s); }
+.node__body .task label{ display: flex; gap: var(--sp-2xs); align-items: baseline; }
+.node__body .task label > span{ min-width: 0; overflow-wrap: anywhere; }
+.node__body .task input{ margin: 0; flex: none; accent-color: var(--construct); }
+.node__table{ max-width: 100%; margin: 0 0 var(--sp-xs); overflow-x: auto; scrollbar-width: thin; }
+.node__body table{ width: 100%; border-collapse: collapse; font-size: var(--t-meta); }
+.node__body th, .node__body td{
+  padding: var(--sp-3xs) var(--sp-2xs) var(--sp-3xs) 0;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.node__body th{ font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; color: var(--graphite); }
+.node__body li > ul, .node__body li > ol{ margin: var(--sp-3xs) 0 0; }
+.node__body .tasks .tasks{ padding-left: var(--sp-s); }
+.node__body h5, .node__body h6{
+  margin: var(--sp-xs) 0 var(--sp-3xs);
+  font-size: 1em;
+  font-weight: 600;
+}
+.node__body h6{ font-weight: 400; color: var(--graphite); }
+.node__body pre{
+  margin: 0 0 var(--sp-xs);
+  padding: var(--sp-2xs) var(--sp-xs);
+  overflow-x: auto;
+  background: var(--film-3);
+  font-size: .85em;
+  line-height: 1.45;
+}
+.node__body pre code{ padding: 0; background: none; font-size: 1em; }
+/* on the film-3 chip a link measured 4.50:1, a hair under AA; on the card it is 4.97 */
+.node__body a code{ padding: 0; background: none; }
+.node__empty{ color: var(--graphite); }
+.node__body blockquote{
+  margin: 0 0 var(--sp-xs);
+  padding-left: var(--sp-xs);
+  border-left: 2px solid var(--rule);
+  color: var(--graphite);
+}
+.node__body blockquote > :last-child{ margin-bottom: 0; }
+.node__body hr{ margin: var(--sp-xs) 0; border: 0; border-top: 1px solid var(--rule-soft); }
+
+/* relations, facts and scores share one label/value grid */
+.node__rel, .node__facts, .node__scores{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-3xs) var(--sp-xs);
+  margin: var(--sp-xs) 0;
+}
+.node__facts > div, .node__scores > div{ display: contents; }
+.node__rel dt, .node__facts dt, .node__scores dt{
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding-top: .2em;
+}
+.node__rel dd, .node__facts dd, .node__scores dd{ margin: 0; }
+.node__rel{ padding-top: var(--sp-xs); border-top: 1px solid var(--rule-soft); }
+.node__scores dd{ display: flex; align-items: center; gap: var(--sp-2xs); }
+.node__meter{ display: inline-flex; gap: 2px; }
+.node__meter span{ width: var(--sp-2xs); height: var(--sp-2xs); border: 1px solid var(--rule); }
+.node__meter .on{ background: var(--ink); border-color: var(--ink); }
+.node__val{ font-family: var(--mono); font-size: var(--t-meta); }
+.node__of{ color: var(--graphite); }
+
+.node__body .node__links, .node__body .node__page{ margin: var(--sp-xs) 0 0; font-size: var(--t-meta); }
+.node__page a{ font-family: var(--mono); font-size: var(--t-meta); letter-spacing: .06em; }
+.node__body .node__log{ margin: 0; padding: 0; list-style: none; }
+.node__log li{ margin: 0 0 var(--sp-2xs); }
+.node__date, .node__more-log{ font-family: var(--mono); font-size: var(--t-micro); color: var(--graphite); }
+.node__excerpt{ display: block; color: var(--graphite); white-space: pre-line; }
+.node__body .node__files{ margin: 0; padding: 0; list-style: none; }
+.node__body .node__path{ margin: var(--sp-3xs) 0 0; font-size: var(--t-meta); color: var(--graphite); }
+
+/* ---- tracing (tree.js) ---- */
+.node.is-dim{ opacity: .35; }
+/* a keyboard focus ring at 35% is no focus ring */
+.node.is-dim:has(:focus-visible){ opacity: 1; }
+.node.node--dropped.is-dim:has(:focus-visible){ opacity: .5; }   /* back to what dropped is */
+.node.is-related{ border-color: var(--construct); }
+.node.is-focus{ border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+
+.tree__edge{
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1.5;
+  marker-end: url(#tree-arrow);
+  transition: stroke var(--t-tap) ease, opacity var(--t-tap) ease;
+}
+.tree__edge.is-hi{ stroke: var(--construct); stroke-width: 2; marker-end: url(#tree-arrow-hi); }
+.tree__edge.is-dim{ opacity: .15; }
+.tree__edge--soft{ stroke: var(--graphite); stroke-dasharray: 5 4; marker-end: none; }
+.tree__arrow{ fill: var(--rule); }
+.tree__arrow--hi{ fill: var(--construct); }
+
+/* ---- tiers as columns ---- */
+@media (min-width: 1100px){
+  /* Out past the reading measure to the sheet frame, so five columns fit a
+     1440 screen without the tree scrolling sideways. 100vw is inset by 16px a
+     side on purpose: it counts a classic scrollbar, and the inset absorbs one
+     up to 32px wide, so the page itself never scrolls sideways. Anything
+     narrower than the tree scrolls inside this box instead. */
+  .tree__scroll{
+    width: calc(100vw - 2 * var(--sp-s));
+    margin-left: calc(50% - 50vw + var(--sp-s));
+    padding: var(--sp-s) var(--sp-2xs) var(--sp-m);
+    overflow-x: auto;
+    /* the site hides scrollbars everywhere (the * rule at the top); this is
+       the one box that scrolls sideways, and without a bar a column cut off
+       at the right edge gives no sign that it is there */
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+  }
+  .tree__edges{
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  /* One grid for every column so they share a width; the tiers take a
+     subgrid of it. The tiers stretch to the tallest TIER and centre their
+     cards in that height; the standalone column is not in that row's sizing
+     and starts at the top. */
+  .tree__cols{
+    position: relative;             /* cards paint over the edge layer */
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(var(--tree-col), 1fr));
+    column-gap: var(--sp-xl);
+    align-items: start;
+  }
+  .tree__tiers{
+    grid-column: 1 / span var(--tiers);
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+  .tier{ display: flex; flex-direction: column; margin: 0; }
+  .tier__head{ font-size: var(--t-body); }
+  /* auto margins centre each column's cards in the height the tallest column
+     sets, which keeps the long edges short */
+  .tier__list{ display: flex; flex-direction: column; gap: var(--sp-s); margin-block: auto; }
+  /* The standalone column is set apart by a dashed rule drawn down the middle
+     of the gap before it -- not by padding, which made its cards 32px narrower
+     than every other column's and pushed their title blocks out of the card. */
+  .tier--alone{ position: relative; }
+  .tier--alone::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--sp-xl) / -2);
+    border-left: 1px dashed var(--rule);
+  }
+  .node .tb__name{ font-size: var(--t-body); }
+  .node__body{ font-size: var(--t-meta); }
+}
+
 /* ---------- a11y / responsive ---------- */
 a:focus-visible, button:focus-visible{
   outline: 2px solid var(--construct);
@@ -1158,7 +1521,9 @@ a:focus-visible, button:focus-visible{
 @media (max-width: 560px){
   .sheet-frame{ inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
   .masthead{ padding-top: var(--sp-m); }
-  .masthead__nav{ gap: var(--sp-s); }
+  /* five items since the Tree link: 12px gaps fit one line at 360, and
+     below that the nav wraps rather than pushing the page sideways */
+  .masthead__nav{ gap: var(--sp-2xs) var(--sp-xs); flex-wrap: wrap; }
 
 }
 
@@ -1192,12 +1557,16 @@ a:focus-visible, button:focus-visible{
 
 @media print{
   /* paper is paper: never print the dark theme, whatever the screen is set to */
-  :root{
+  /* :root:root, because the Dark and Auto-dark rules are (0,2,0): plain :root
+     lost to them, and a dark-theme print came out as dark cards on white */
+  :root:root{
     --film: #fff; --film-2: #fff; --film-3: #f2f2f2;
     --ink: #000; --graphite: #333;
     --rule: #999; --rule-soft: #ccc;
     --construct: #00379e; --construct-tint: transparent;
     --hazard: #D99B0B; --grid-line: transparent;
+    --pole-n: var(--l-pole-n); --pole-s: var(--l-pole-s);
+    --pole-n-tint: var(--l-pole-n-tint); --pole-s-tint: var(--l-pole-s-tint);
     color-scheme: light;
   }
   .sheet-frame, .masthead__nav, .skip{ display: none; }
@@ -1249,6 +1618,25 @@ a:focus-visible, button:focus-visible{
     writing-mode: horizontal-tb; transform: none; height: auto; padding-left: 0;
   }
   .index--fan .fig--pending > span{ opacity: 1; }
+
+  /* The tree on paper is the stacked layout, every card whole and open. The
+     edge layer is screen-only; the relationships are in each card's text. */
+  .tree__edges{ display: none !important; }
+  .tree__scroll{ width: auto !important; margin-left: 0 !important; padding: 0; overflow: visible; }
+  .tree__cols, .tree__tiers{ display: block !important; }
+  .tier{ display: block !important; margin: 0 0 var(--sp-l); }
+  .tier__list{ display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tier--alone::before{ display: none; }
+  .tier__head{ break-after: avoid; }
+  .node{ break-inside: avoid; opacity: 1 !important; border-color: var(--rule) !important;
+         box-shadow: none !important; outline: none !important; }
+  .node__more > summary{ display: none; }
+  /* open on paper even when there was no script to open it */
+  .node__more::details-content{ content-visibility: visible; display: block; }
+  /* paper cannot scroll: long lines wrap, wide tables show whole */
+  .node__body pre{ overflow: visible; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .node__table{ overflow: visible; }
+  .node__body th, .node__body td{ overflow-wrap: anywhere; }
 }
 
 /* ---------- fill-in markers: the site tells you what's missing ---------- */
@@ -1603,7 +1991,7 @@ html.js .theme{ display: inline-flex; }
 @media (max-width: 560px){
   .theme__label{ position: absolute; width: 1px; height: 1px;
                  overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .theme{ padding: 5px 6px; }
+  .theme{ padding: 5px 6px; margin-left: 0; }
 }
 
 /* the control is chrome, not content */

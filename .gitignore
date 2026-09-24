@@ -19,7 +19,14 @@ stl2mesh.py
 todo.py
 consistency.py
 gen_og.py
+gen_tree.py
 
 # bytecode cache from running the local scripts
 __pycache__/
 *.pyc
+
+# Integration plan for the project-tree page (see ~/Farm). Working notes, like the others.
+TREE.private.md
+
+# The private twin of tree.html: plans, logs and working notes. Never published.
+tree.local.html
