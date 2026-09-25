@@ -1290,6 +1290,7 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
 .work.has-view .tt > .skip,
 .work.has-view .tree{ display: none; }
 .work.has-view .tt__panel{ display: block; margin-top: var(--sp-m); }
+html.js .work:not(.has-view) :is(.tt__panel, .tt__cap-kbd){ display: none; }
 @media (max-width: 699px){
   .tt__cap-wide, html.js .tt__cap-kbd{ display: none; }
   .tt__cap-narrow{ display: inline; }
@@ -1332,7 +1333,7 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
 .tt__soft.is-shown{ display: inline; }
 
 .tt__hub circle{ fill: var(--ink); }
-.tt__hubname{ font-family: var(--cond); font-size: 17px; letter-spacing: .12em; fill: var(--film); text-anchor: middle; }
+.tt__hubname{ font-family: var(--cond); font-weight: 500; font-size: 17px; letter-spacing: .12em; fill: var(--film); text-anchor: middle; }
 
 /* a circle takes its project's status: done is solid ink, in progress is
    hazard, planned is hollow, an idea is hollow and dashed (not drawn yet) */
@@ -1341,7 +1342,7 @@ a.tt__node{ cursor: pointer; }
 /* graphite at 75%, as the lines: 3.3:1 on the film in light, 4.7:1 in dark */
 .tt__disc{ fill: var(--film-2); stroke: color-mix(in srgb, var(--graphite) 75%, transparent); stroke-width: 1.5; }
 .tt__halo{ fill: none; stroke: none; }
-.tt__name{ font-family: var(--cond); font-size: 11.2px; letter-spacing: .02em; fill: var(--graphite); text-anchor: middle; }
+.tt__name{ font-family: var(--cond); font-weight: 500; font-size: 11.2px; letter-spacing: .02em; fill: var(--graphite); text-anchor: middle; }
 /* the local page's progress figure, above the name of work under way */
 .tt__code{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; }
 .tt__top{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; text-anchor: middle; }
@@ -1770,7 +1771,8 @@ a:focus-visible, button:focus-visible{
     font-size: .8em;
     word-break: break-all;
   }
-  .rise{ clip-path: none; }
+  .rise{ clip-path: none !important; }
+  .work.has-view.is-graph .tree{ display: block !important; }
   .sec__head::after, .dim__bar{ transform: scaleX(1); }
   .spec{ position: static; }
 
@@ -1845,17 +1847,25 @@ a:focus-visible, button:focus-visible{
 .fig-well--motor .stator{ max-height: 100%; }
 
 
-/* The project page's figure is the other half of the sheet hand-off: same
-   view-transition-name, so the browser morphs the card into it. */
-.proj__layout .fig-well{ view-transition-name: sheet; }
+/* The project page's title block is the other half of the hand-off from the
+   Work page: a grid card's title block, or the graph's panel, carries the
+   same view-transition-name at click time, so the browser moves it into the
+   page's head. The head, not the figure: it is always on the first screen,
+   where a figure lower on the page would have the sheet fly off the bottom. */
+.proj__head{ view-transition-name: head; }
 
-/* The morph is the browser's; all that is asked of it is the drafting easing
-   and a duration that matches the rest of the motion language. */
-::view-transition-old(sheet),
-::view-transition-new(sheet){
+/* The move is the browser's, on the drafting easing. What arrives is wiped on
+   over what left, as the page itself is: the browser's own cross-fade is the
+   one verb this system does not use. A head that leaves with nothing to meet
+   it (Back to the index) is wiped away; one that arrives alone is wiped on. */
+::view-transition-group(head){
   animation-duration: .42s;
   animation-timing-function: var(--ease-plot);
 }
+::view-transition-old(head){ animation: none; }
+::view-transition-new(head){ animation: wipe-in .42s var(--ease-plot) both; }
+::view-transition-old(head):only-child{ animation: wipe-out .34s var(--ease-plot) both; }
+@keyframes wipe-out{ to{ clip-path: inset(0 0 0 100%); } }
 
 /* ---------- the part, drawn ----------
    The figure well on a project page holds a real exported assembly instead of

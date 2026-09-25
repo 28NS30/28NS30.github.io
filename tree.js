@@ -209,7 +209,9 @@
   function refocus(a) {
     if (!a) return;
     a.focus({ preventScroll: true });
-    a.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+    // under the drawing, the panel is what is being read: it stays in view
+    if (below()) reveal();
+    else a.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
   }
 
   function fill(id) {
@@ -300,15 +302,17 @@
   }
 
   // under the drawing (a narrow screen), the panel is scrolled to where it can be read
+  function below() {
+    if (!onWork || !panel) return false;
+    return panel.getBoundingClientRect().top >= tt.querySelector('.tt__fig').getBoundingClientRect().bottom - 1;
+  }
   function reveal() {
-    if (!onWork || !panel) return;
-    var fig = tt.querySelector('.tt__fig').getBoundingClientRect(), box = panel.getBoundingClientRect();
-    if (box.top >= fig.bottom - 1) panel.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+    if (below()) panel.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
   }
   // back from a project's page (the page is restored whole): the name is let go
   addEventListener('pageshow', function () {
-    var sheet = panel && panel.querySelector('.node');
-    if (sheet) sheet.style.viewTransitionName = '';
+    var block = panel && panel.querySelector('.node');
+    if (block) block.style.viewTransitionName = '';
   });
 
   function clear() {
@@ -372,12 +376,12 @@
       else mark(id);                 // the link goes on to its card, marked
       return;
     }
-    // leaving for a project's page from the panel: the panel is the sheet the
-    // page's figure grows from (a cross-document view transition; the page's
-    // .fig-well carries the same name), so the move reads as one piece
+    // leaving for a project's page from the panel: the panel's title block
+    // moves into the page's head (a cross-document view transition; the page's
+    // .proj__head carries the same name), so the move reads as one piece
     if (a && onWork && panel && panel.contains(a) && (a.getAttribute('href') || '').charAt(0) !== '#') {
-      var sheet = panel.querySelector('.node');
-      if (sheet) sheet.style.viewTransitionName = 'sheet';
+      var block = panel.querySelector('.node');
+      if (block) block.style.viewTransitionName = 'head';
       return;
     }
     if (a && a.classList.contains('node__up')) {
@@ -446,7 +450,7 @@
     var id = idOf(location.hash);
     if (want) requestAnimationFrame(function () { settle(was); });
     if (!cards[id]) { clear(); return; }
-    if (e.state && e.state.tt && roomy.matches) {
+    if ((onWork || (e.state && e.state.tt)) && roomy.matches) {
       select(id, false);
       if (circles[id]) requestAnimationFrame(function () { circles[id].scrollIntoView({ block: 'nearest' }); });
     } else {
@@ -478,6 +482,13 @@
   // show it beside the panel; elsewhere the browser has already gone to the
   // card, as a fragment link should.
   var first = idOf(location.hash);
+  // a link into the cards the switch hides (#parts, say) lands on the graph
+  var into = work && !cards[first] && first && document.getElementById(first);
+  if (into && into.closest('.tree') && !into.getClientRects().length) {
+    history.replaceState(null, '', location.pathname + location.search + '#graph');
+    var arrive = function () { graphView.scrollIntoView(); };
+    if (document.readyState === 'complete') arrive(); else addEventListener('load', arrive);
+  }
   if (cards[first]) {
     select(first, false);
     var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];

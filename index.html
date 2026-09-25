@@ -551,23 +551,23 @@ document.addEventListener('mesh:failed', function () {
 
 </script>
 <script>
-/* Opening a project carries its card's figure into the project page's: a
-   cross-document view transition, so the browser animates the hand-off. The
-   name goes on the figure, not the card, so figure -> figure is a true morph;
-   and only at click time, because a name must be unique in the document. */
+/* Opening a project carries its card's title block into the project page's
+   head: a cross-document view transition, so the browser animates the
+   hand-off (style.css names the page's .proj__head the same). Named only at
+   click time, because a name must be unique in the document. */
 (function () {
-  var sheets = [].slice.call(document.querySelectorAll('.index .dwg:not(.dwg--farm)'));
-  sheets.forEach(function (card) {
+  var cards = [].slice.call(document.querySelectorAll('.index .dwg:not(.dwg--farm)'));
+  cards.forEach(function (card) {
     card.addEventListener('click', function () {
       if (!document.startViewTransition) return;
-      var fig = card.querySelector('.dwg__fig');
-      if (fig) fig.style.viewTransitionName = 'sheet';
+      var tb = card.querySelector('.tb');
+      if (tb) tb.style.viewTransitionName = 'head';
     });
   });
   addEventListener('pageshow', function () {
-    sheets.forEach(function (c) {
-      var f = c.querySelector('.dwg__fig');
-      if (f) f.style.viewTransitionName = '';
+    cards.forEach(function (c) {
+      var tb = c.querySelector('.tb');
+      if (tb) tb.style.viewTransitionName = '';
     });
   });
 })();
