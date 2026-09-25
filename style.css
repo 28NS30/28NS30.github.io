@@ -1290,8 +1290,17 @@ body{
   text-align: center;
 }
 .tt__panel{ display: none; }
-.tt__cap-narrow, .tt__cap-kbd{ display: none; }
+.tt__cap-narrow, .tt__cap-kbd, .tt__cap-js{ display: none; }
 html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with script */
+/* The Work page's graph is read through its panel, not a list of cards: with
+   the switch working, the cards under the drawing (the panel's source, and the
+   whole story with no script) step aside, and the panel sits beside the
+   drawing where there is room and under it where there is not. */
+.work.has-view .tt__cap-js{ display: inline; }
+.work.has-view .tt__cap-nojs,
+.work.has-view .tt > .skip,
+.work.has-view .tree{ display: none; }
+.work.has-view .tt__panel{ display: block; margin-top: var(--sp-m); }
 @media (max-width: 699px){
   .tt__cap-wide, html.js .tt__cap-kbd{ display: none; }
   .tt__cap-narrow{ display: inline; }
@@ -1415,7 +1424,7 @@ a.tt__node{ cursor: pointer; }
     justify-content: center;
   }
   html.js .tt--compact .tt__fig{ width: 100%; }
-  html.js .tt--compact .tt__panel{ display: block; position: sticky; top: var(--sp-xl); }
+  html.js .tt--compact .tt__panel{ display: block; position: sticky; top: var(--sp-xl); margin-top: 0; }
 }
 .tt__hint{ margin: 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .06em; color: var(--graphite); }
 .tt__panel .node{ scroll-margin: 0; }
@@ -1721,6 +1730,7 @@ a:focus-visible, button:focus-visible{
   .sheet-frame line, .sheet-frame__zones text{ opacity: 1; }
   .plot-progress{ display: none; }
   ::view-transition-old(root), ::view-transition-new(root){ animation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*){ animation: none !important; }
   .stator__rotor, .stator__mag, .stator .ph{ animation: none !important; }
   .rev tbody tr td::after{ animation: none !important; transform: scaleX(1); }
   .stator .ph--a, .stator .ph--b{ stroke: var(--construct); fill-opacity: .16; }
@@ -1781,7 +1791,7 @@ a:focus-visible, button:focus-visible{
   .tt__key{ break-inside: avoid; break-after: avoid; }     /* the key stays with its drawing */
   /* !important beats the wipe without cancelling it, so nothing replays after */
   .tt__svg{ clip-path: none !important; }
-  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__nav, .tt__key-soft{ display: none !important; }
+  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .tt__cap-js, .node__nav, .tt__key-soft{ display: none !important; }
   .parts__group{ margin: 0 0 var(--sp-l); }
   .parts__list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .parts__head{ break-after: avoid; }

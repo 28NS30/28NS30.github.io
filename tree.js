@@ -30,7 +30,10 @@
   var hint = panel ? panel.innerHTML : '';
   var wide = matchMedia('(min-width: 700px)');           // room to trace a chain
   // room for the panel: the Work page's small graph keeps it in the column
-  var roomy = matchMedia(tt.classList.contains('tt--compact') ? '(min-width: 1100px)' : '(min-width: 1400px)');
+  // On the Work page the panel is always there -- beside the drawing where it
+  // fits, under it where it does not -- because there are no cards to go to.
+  var onWork = !!tt.closest('.work');
+  var roomy = matchMedia(onWork ? 'all' : tt.classList.contains('tt--compact') ? '(min-width: 1100px)' : '(min-width: 1400px)');
   var hover = matchMedia('(hover: hover)');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -237,11 +240,13 @@
     out.appendChild(block);
     // the first paragraph of the Summary, then what it needs and what needs it
     var body = card.querySelector('.node__body');
+    var page = body && body.querySelector('.node__page a');
     var heads = body ? [].slice.call(body.querySelectorAll('.node__h')) : [];
     for (var k = 0; k < heads.length; k++) {
       if (/^summary$/i.test(heads[k].textContent.trim())) {
-        var p = heads[k].nextElementSibling;
-        if (p && p.tagName === 'P') {
+        // a project with no page of its own is read here in full
+        var whole = onWork && !page;
+        for (var p = heads[k].nextElementSibling; p && p.tagName === 'P'; p = whole ? p.nextElementSibling : null) {
           var sum = p.cloneNode(true);
           sum.className = 'tt__psum';
           out.appendChild(sum);
@@ -253,15 +258,25 @@
     if (rel) out.appendChild(rel.cloneNode(true));
     var go = document.createElement('p');
     go.className = 'tt__pgo';
-    var more = document.createElement('a');
-    more.href = '#' + id;
-    more.className = 'tt__details';
-    more.textContent = 'Details ↓';
-    go.appendChild(more);
-    var page = body && body.querySelector('.node__page a');
-    var titled = block.querySelector('.tb__name a');
-    if (page && !(titled && titled.getAttribute('href') === page.getAttribute('href'))) go.appendChild(page.cloneNode(true));
-    out.appendChild(go);
+    if (onWork) {
+      // the detail is the project's own page, and the panel carries over into it
+      if (page) {
+        var to = document.createElement('a');
+        to.href = page.getAttribute('href');
+        to.className = 'tt__details';
+        to.textContent = 'Details →';
+        go.appendChild(to);
+      }
+    } else {
+      var more = document.createElement('a');
+      more.href = '#' + id;
+      more.className = 'tt__details';
+      more.textContent = 'Details ↓';
+      go.appendChild(more);
+      var titled = block.querySelector('.tb__name a');
+      if (page && !(titled && titled.getAttribute('href') === page.getAttribute('href'))) go.appendChild(page.cloneNode(true));
+    }
+    if (go.firstChild) out.appendChild(go);
     panel.innerHTML = '';
     panel.appendChild(out);
   }
@@ -283,6 +298,18 @@
     // the drawing, while a #link in the parts list still goes to its card
     if (push && location.hash !== '#' + id) history.pushState({ tt: id }, '', '#' + id);
   }
+
+  // under the drawing (a narrow screen), the panel is scrolled to where it can be read
+  function reveal() {
+    if (!onWork || !panel) return;
+    var fig = tt.querySelector('.tt__fig').getBoundingClientRect(), box = panel.getBoundingClientRect();
+    if (box.top >= fig.bottom - 1) panel.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+  }
+  // back from a project's page (the page is restored whole): the name is let go
+  addEventListener('pageshow', function () {
+    var sheet = panel && panel.querySelector('.node');
+    if (sheet) sheet.style.viewTransitionName = '';
+  });
 
   function clear() {
     var had = panel && panel.contains(document.activeElement), was = sticky;
@@ -341,8 +368,16 @@
     var circle = t.closest && t.closest('.tt__svg .tt__node');
     if (circle) {
       var id = circle.getAttribute('data-id');
-      if (roomy.matches) { e.preventDefault(); select(id, true); }
+      if (roomy.matches) { e.preventDefault(); select(id, true); reveal(); }
       else mark(id);                 // the link goes on to its card, marked
+      return;
+    }
+    // leaving for a project's page from the panel: the panel is the sheet the
+    // page's figure grows from (a cross-document view transition; the page's
+    // .fig-well carries the same name), so the move reads as one piece
+    if (a && onWork && panel && panel.contains(a) && (a.getAttribute('href') || '').charAt(0) !== '#') {
+      var sheet = panel.querySelector('.node');
+      if (sheet) sheet.style.viewTransitionName = 'sheet';
       return;
     }
     if (a && a.classList.contains('node__up')) {
