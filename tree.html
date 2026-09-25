@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Project tree — Neo Su</title>
-<meta name="description" content="Every project, and what has to exist before it can start.">
+<title>Tech tree — Neo Su</title>
+<meta name="description" content="Every project as a tech tree: what is built, what can start now, and what has to exist first.">
 <link rel="canonical" href="https://28ns30.github.io/tree.html">
-<meta property="og:title" content="Project tree — Neo Su">
-<meta property="og:description" content="Every project, and what has to exist before it can start.">
+<meta property="og:title" content="Tech tree — Neo Su">
+<meta property="og:description" content="Every project as a tech tree: what is built, what can start now, and what has to exist first.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://28ns30.github.io/tree.html">
 <meta property="og:image" content="https://28ns30.github.io/assets/og.png">
@@ -72,80 +72,208 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
   <main id="body">
 
     <div class="proj__head">
-      <h1 class="proj__title">Project tree</h1>
-      <p class="proj__standfirst">28 projects. 19 are linked by hard prerequisites and sit in 4 tiers, left to right: each can start only once what it needs exists. 9 standalone: they need nothing and nothing needs them. Generated from the working files on 24 Sep 2026.</p>
+      <h1 class="proj__title">Tech tree</h1>
+      <p class="proj__standfirst">33 projects in 4 tiers, 12 standalone: 5 built, 3 in progress, 13 ready, 12 locked. Each ring is a tier: a project sits one ring out from the furthest thing it needs, and can start once everything it needs is built. Generated from the working files on 25 Sep 2026.</p>
     </div>
 
     <!-- tree:generated -->
-    <div class="tree__legend" role="group" aria-label="Legend">
-        <ul class="tree__key"><li><span class="chip chip--idea">Idea</span></li><li><span class="chip">Planned</span></li><li><span class="chip chip--live">In progress</span></li></ul>
-        <ul class="tree__key">
-          <li><svg class="tree__sample" viewBox="0 0 32 8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4"/></svg>needs</li>
-          <li><svg class="tree__sample tree__sample--soft" viewBox="0 0 32 8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4"/></svg>uses if built</li>
+    <div class="tt__key" role="group" aria-label="Legend">
+        <ul class="tt__board"><li><svg class="tt__swatch" viewBox="-12 -12 24 24" aria-hidden="true"><g class="tt__key-node is-built"><circle class="tt__disc" r="10"/></g></svg><span>Built</span><span class="tt__count">5</span></li><li><svg class="tt__swatch" viewBox="-12 -12 24 24" aria-hidden="true"><g class="tt__key-node is-active"><circle class="tt__disc" r="10"/></g></svg><span>In progress</span><span class="tt__count">3</span></li><li><svg class="tt__swatch" viewBox="-12 -12 24 24" aria-hidden="true"><g class="tt__key-node is-ready"><circle class="tt__disc" r="10"/></g></svg><span>Ready</span><span class="tt__count">13</span></li><li><svg class="tt__swatch" viewBox="-12 -12 24 24" aria-hidden="true"><g class="tt__key-node is-locked"><circle class="tt__disc" r="10"/></g></svg><span>Locked</span><span class="tt__count">12</span></li></ul>
+        <ul class="tt__board tt__board--how">
+          <li><svg class="tt__swatch" viewBox="-12 -12 24 24" aria-hidden="true"><g class="tt__key-node is-ready is-idea"><circle class="tt__disc" r="10"/></g></svg><span>Idea: not decided yet</span></li>
+          <li><svg class="tt__sample" viewBox="0 0 32 8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4"/></svg><span>needs</span></li>
+          <li class="tt__key-soft"><svg class="tt__sample tt__sample--soft" viewBox="0 0 32 8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4"/></svg><span>uses if built, shown for the project in focus</span></li>
         </ul>
         <p class="tree__note">H S E: hardware, software, electrical complexity, 1–5</p>
       </div>
-    <section class="tree" aria-label="Dependency tree">
-      <div class="tree__scroll">
-        <svg class="tree__edges" aria-hidden="true" focusable="false"></svg>
-        <div class="tree__cols" style="--tiers: 4; --cols: 5">
-        <ol class="tree__tiers">
+    <section class="tt" aria-label="Tech tree">
+      <a class="skip" href="#parts">Skip the drawing: parts list</a>
+      <div class="tt__sheet" style="--fig-w: 971px; --hub-x: 42.6%; --hub-y: 46.1%">
+        <figure class="tt__fig" id="figure">
+          <svg class="tt__svg" viewBox="-413 -411 971 892" width="971" height="892" data-layout="31a016f7ccb8" role="group" aria-label="Tech tree: 33 projects on 4 rings around a hub">
+<g class="tt__rings" aria-hidden="true"><path class="tt__ring" d="M139.2 -367.3A392.8 392.8 0 0 1 240.6 310.5"/><text class="tt__tier" x="127.9" y="-367.4">T1</text><path class="tt__ring" d="M395.6 -293.9A492.8 492.8 0 0 1 368.6 327.1"/><text class="tt__tier" x="388.4" y="-299.4">T2</text><text class="tt__tier" x="464.0" y="373.0">T3</text><text class="tt__tier" x="11.6" y="-232.6">T0</text><path class="tt__dim" d="M77.9 352.3A360.8 360.8 0 1 1 111.9 -343.1 M76.6 346.5L79.2 358.2 M110.0 -337.4L113.7 -348.8"/><text class="tt__dimtext" text-anchor="middle" transform="translate(-378.4 -18.5) rotate(-87.2)" y="4">STANDALONE · 12</text></g>
+<g class="tt__lines" aria-hidden="true"><path class="tt__edge tt__spoke is-ready" data-to="aimbot" d="M0.0 0.0L-267.1 120.0"/><path class="tt__edge tt__spoke is-built" data-to="bldc-motor" d="M0.0 0.0L145.5 -254.1"/><path class="tt__edge tt__spoke is-ready" data-to="coil-winder" d="M0.0 0.0L254.1 145.5"/><path class="tt__edge tt__spoke is-ready" data-to="diwheel" d="M0.0 0.0L-286.7 -59.9"/><path class="tt__edge tt__spoke is-built" data-to="drawing-b-01" d="M0.0 0.0L59.9 -286.7"/><path class="tt__edge tt__spoke is-ready" data-to="drift-car" d="M0.0 0.0L286.7 59.9"/><path class="tt__edge tt__spoke is-ready" data-to="dyno" d="M0.0 0.0L196.7 216.9"/><path class="tt__edge tt__spoke is-ready" data-to="foc-driver" d="M0.0 0.0L291.1 -31.6"/><path class="tt__edge tt__spoke is-built" data-to="frc-shooter" d="M0.0 0.0L-31.6 -291.1"/><path class="tt__edge tt__spoke is-ready" data-to="kart" d="M0.0 0.0L-291.1 31.6"/><path class="tt__edge tt__spoke is-ready" data-to="monowheel" d="M0.0 0.0L-216.9 196.7"/><path class="tt__edge tt__spoke is-active" data-to="pcb-motor" d="M0.0 0.0L216.9 -196.7"/><path class="tt__edge tt__spoke is-ready" data-to="pogo" d="M0.0 0.0L-145.5 254.1"/><path class="tt__edge tt__spoke is-built" data-to="quadrotor" d="M0.0 0.0L-120.0 -267.1"/><path class="tt__edge tt__spoke is-active" data-to="rcj" d="M0.0 0.0L-254.1 -145.5"/><path class="tt__edge tt__spoke is-active" data-to="shooter-2026" d="M0.0 0.0L-196.7 -216.9"/><path class="tt__edge tt__spoke is-ready" data-to="snakeboard" d="M0.0 0.0L-59.9 286.7"/><path class="tt__edge tt__spoke is-ready" data-to="tvc-testbed" d="M0.0 0.0L267.1 -120.0"/><path class="tt__edge tt__spoke is-ready" data-to="umv" d="M0.0 0.0L120.0 267.1"/><path class="tt__edge tt__spoke is-ready" data-to="whoop" d="M0.0 0.0L31.6 291.1"/><path class="tt__edge is-locked" data-from="linear-motor" data-to="carrier-ops" d="M366.5 -141.4L429.4 -241.9"/><path class="tt__edge is-locked" data-from="tvc-testbed" data-to="carrier-ops" d="M267.1 -120.0Q333.8 -200.2 429.4 -241.9"/><path class="tt__edge is-built" data-from="bldc-motor" data-to="cycloidal-gearbox" d="M145.5 -254.1L195.2 -340.9"/><path class="tt__edge is-locked" data-from="drift-car" data-to="drift-fpv" d="M286.7 59.9L389.3 -52.6"/><path class="tt__edge is-locked" data-from="drift-car" data-to="drift-speed" d="M286.7 59.9L390.8 39.7"/><path class="tt__edge is-locked" data-from="drift-car" data-to="drift-suspension" d="M286.7 59.9L327.8 68.5Q335.6 70.1 337.1 62.3A342.8 342.8 0 0 0 342.8 2.3Q342.8 -5.7 350.8 -5.8L434.8 -7.2Q442.8 -7.3 442.6 -15.3A442.8 442.8 0 0 0 439.6 -53.7Q438.5 -61.6 446.5 -62.7L488.0 -68.6"/><path class="tt__edge is-locked" data-from="linear-motor" data-to="drift-suspension" d="M366.5 -141.4L488.0 -68.6"/><path class="tt__edge is-locked" data-from="drift-car" data-to="drift-tandem" d="M286.7 59.9L371.0 129.2"/><path class="tt__edge is-locked" data-from="drift-car" data-to="drift-wall" d="M286.7 59.9L330.6 212.2"/><path class="tt__edge is-locked" data-from="foc-driver" data-to="linear-motor" d="M291.1 -31.6L366.5 -141.4"/><path class="tt__edge is-locked" data-from="pcb-motor" data-to="pcb-drone" d="M216.9 -196.7L291.0 -263.9"/><path class="tt__edge is-locked" data-from="linear-motor" data-to="printer-5axis" d="M366.5 -141.4L466.8 -158.0"/><path class="tt__edge is-locked" data-from="v3-bldc" data-to="qdd-actuator" d="M272.4 283.1L395.2 294.5"/><path class="tt__edge is-locked" data-from="foc-driver" data-to="qdd-actuator" d="M291.1 -31.6L337.9 -36.7Q345.8 -37.6 346.6 -29.6A347.8 347.8 0 0 1 341.2 67.5Q339.6 75.3 347.4 77.0L429.4 95.2Q437.2 96.9 435.4 104.7A447.8 447.8 0 0 1 363.8 261.2Q359.1 267.6 365.5 272.4L395.2 294.5"/><path class="tt__edge is-locked" data-from="dyno" data-to="qdd-actuator" d="M196.7 216.9L221.6 244.4Q226.9 250.3 232.8 244.8A337.8 337.8 0 0 0 300.2 155.0Q303.8 147.8 311.0 151.3L386.5 188.1Q393.7 191.6 390.1 198.8A437.8 437.8 0 0 1 355.8 255.2Q351.1 261.7 357.5 266.4L395.2 294.5"/><path class="tt__edge is-locked" data-from="coil-winder" data-to="v3-bldc" d="M254.1 145.5L272.4 283.1"/><path class="tt__edge is-locked" data-from="dyno" data-to="v3-bldc" d="M196.7 216.9L272.4 283.1"/><path class="tt__edge is-locked" data-from="qdd-actuator" data-to="wheel-leg" d="M395.2 294.5L427.2 411.1"/><path class="tt__edge is-locked" data-from="umv" data-to="wheel-leg" d="M120.0 267.1L427.2 411.1"/></g>
+<g class="tt__softs" aria-hidden="true"><path class="tt__soft" data-from="foc-driver" data-to="diwheel" d="M291.1 -31.6Q3.4 -69.7 -286.7 -59.9"/><path class="tt__soft" data-from="foc-driver" data-to="drift-car" d="M291.1 -31.6L286.7 59.9"/><path class="tt__soft" data-from="v3-bldc" data-to="drift-speed" d="M272.4 283.1L301.5 313.3Q307.1 319.1 312.8 313.5A442.8 442.8 0 0 0 439.7 52.7Q440.6 44.8 432.6 43.9L390.8 39.7"/><path class="tt__soft" data-from="foc-driver" data-to="drift-speed" d="M291.1 -31.6L390.8 39.7"/><path class="tt__soft" data-from="v3-bldc" data-to="kart" d="M-291.1 31.6L-337.9 36.7Q-345.8 37.6 -344.9 45.5A347.8 347.8 0 0 0 -118.7 327.0A347.8 347.8 0 0 0 235.4 256.1Q241.2 250.6 246.7 256.4L272.4 283.1"/><path class="tt__soft" data-from="foc-driver" data-to="kart" d="M291.1 -31.6L337.9 -36.7Q345.8 -37.6 344.9 -45.5A347.8 347.8 0 0 0 -37.6 -345.8A347.8 347.8 0 0 0 -346.6 29.6Q-345.8 37.6 -337.9 36.7L-291.1 31.6"/><path class="tt__soft" data-from="coil-winder" data-to="linear-motor" d="M254.1 145.5L286.2 163.9Q293.2 167.9 297.1 160.9A337.8 337.8 0 0 0 318.0 -114.1Q315.2 -121.6 322.7 -124.5L366.5 -141.4"/><path class="tt__soft" data-from="foc-driver" data-to="monowheel" d="M291.1 -31.6L-216.9 196.7"/><path class="tt__soft" data-from="qdd-actuator" data-to="monowheel" d="M-216.9 196.7L-248.1 224.9Q-254.0 230.3 -248.5 236.2A342.8 342.8 0 0 0 8.4 342.7A342.8 342.8 0 0 0 259.8 223.7Q264.9 217.6 271.1 222.7L336.0 276.0Q342.2 281.1 347.2 274.9A442.8 442.8 0 0 0 350.2 271.0Q355.1 264.7 361.5 269.4L395.2 294.5"/><path class="tt__soft" data-from="foc-driver" data-to="pcb-drone" d="M291.1 -31.6Q339.1 -147.8 291.0 -263.9"/><path class="tt__soft" data-from="qdd-actuator" data-to="pogo" d="M-145.5 254.1L-166.4 290.6Q-170.4 297.5 -163.4 301.4A342.8 342.8 0 0 0 259.8 223.7Q264.9 217.6 271.1 222.7L336.0 276.0Q342.2 281.1 347.2 274.9A442.8 442.8 0 0 0 350.2 271.0Q355.1 264.7 361.5 269.4L395.2 294.5"/><path class="tt__soft" data-from="foc-driver" data-to="printer-5axis" d="M291.1 -31.6L337.9 -36.7Q345.8 -37.6 344.9 -45.5A347.8 347.8 0 0 0 338.8 -78.7Q336.9 -86.5 344.7 -88.5L426.0 -109.4Q433.8 -111.4 431.7 -119.1A447.8 447.8 0 0 0 426.7 -136.0Q424.2 -143.6 431.8 -146.1L466.8 -158.0"/></g>
+<g class="tt__hub" aria-hidden="true"><circle r="48"/><text class="tt__hubname" y="-2">NEO SU</text><text class="tt__hubsub" y="17">5 BUILT</text></g>
+<g class="tt__ring-0" role="list" aria-label="T0, no prerequisites, 8 projects"><g role="listitem"><a class="tt__node is-built" id="fig-bldc-motor" href="#bldc-motor" data-id="bldc-motor" data-a="-60.2" data-parent="__hub__" data-short="Brushless DC motor" aria-label="Brushless DC motor, drawing E-01, built (Complete)" transform="translate(145.5 -254.1)"><desc>Unlocks Cycloidal gearbox</desc><title>Brushless DC motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-9.3">E-01</text><text class="tt__name"><tspan x="0" y="4.5">Brushless</tspan><tspan x="0" y="17.1">DC motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-pcb-motor" href="#pcb-motor" data-id="pcb-motor" data-a="-42.2" data-parent="__hub__" data-short="PCB Motor" aria-label="PCB Motor, in progress" transform="translate(216.9 -196.7)"><desc>Unlocks PCB Drone</desc><title>PCB Motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB Motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-tvc-testbed" href="#tvc-testbed" data-id="tvc-testbed" data-a="-24.2" data-parent="__hub__" data-short="Thrust-Vectoring Testbed" aria-label="Thrust-Vectoring Testbed, ready to start" transform="translate(267.1 -120.0)"><desc>Unlocks Carrier Ops</desc><title>Thrust-Vectoring Testbed</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">Thrust-</tspan><tspan x="0" y="3.5">Vectoring</tspan><tspan x="0" y="16.1">Testbed</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-foc-driver" href="#foc-driver" data-id="foc-driver" data-a="-6.2" data-parent="__hub__" data-short="FOC Driver Board" aria-label="FOC Driver Board, ready to start" transform="translate(291.1 -31.6)"><desc>Unlocks Linear Motor, QDD Actuator Module; Also helps Diwheel, Drift Car (platform), Drift — Speed Run, Go-Kart, Monowheel, PCB Drone, 5-Axis Linear-Motor Printer</desc><title>FOC Driver Board</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">FOC Driver</tspan><tspan x="0" y="9.8">Board</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-drift-car" href="#drift-car" data-id="drift-car" data-a="11.8" data-parent="__hub__" data-short="Drift Car" aria-label="Drift Car (platform), ready to start" transform="translate(286.7 59.9)"><desc>Unlocks Drift — Head-Tracked FPV, Drift — Speed Run, Drift — Electromagnetic Active Suspension, Drift — Autonomous Tandem, Drift — Wall Driving</desc><title>Drift Car (platform)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Drift Car</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-coil-winder" href="#coil-winder" data-id="coil-winder" data-a="29.8" data-parent="__hub__" data-short="CNC Coil Winder" aria-label="CNC Coil Winder, ready to start" transform="translate(254.1 145.5)"><desc>Unlocks V3 BLDC Motor (laminated stator); Also helps Linear Motor</desc><title>CNC Coil Winder</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">CNC Coil</tspan><tspan x="0" y="9.8">Winder</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-dyno" href="#dyno" data-id="dyno" data-a="47.8" data-parent="__hub__" data-short="Motor Dynamometer" aria-label="Motor Dynamometer, ready to start" transform="translate(196.7 216.9)"><desc>Unlocks QDD Actuator Module, V3 BLDC Motor (laminated stator)</desc><title>Motor Dynamometer</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">Motor</tspan><tspan x="0" y="3.5">Dynamo-</tspan><tspan x="0" y="16.1">meter</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-umv" href="#umv" data-id="umv" data-a="65.8" data-parent="__hub__" data-short="UMV" aria-label="UMV — Ultra Mobility Vehicle, drawing C-02, ready to start" transform="translate(120.0 267.1)"><desc>Unlocks Wheel-Leg (Beni-class)</desc><title>UMV — Ultra Mobility Vehicle</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-3.1">C-02</text><text class="tt__name"><tspan x="0" y="10.8">UMV</tspan></text></g></a></g></g>
+<g class="tt__ring-0 tt__alone" role="list" aria-label="Standalone: needs nothing and nothing needs it, 12 projects"><g role="listitem"><a class="tt__node is-built" id="fig-drawing-b-01" href="#drawing-b-01" data-id="drawing-b-01" data-a="-78.2" data-parent="__hub__" data-short="Dry-lab model &amp; measurement" aria-label="Dry-lab model &amp; measurement, drawing B-01, built (In review)" transform="translate(59.9 -286.7)"><desc>Standalone: nothing needs it</desc><title>Dry-lab model &amp; measurement</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-14.5" style="font-size:10.4px">B-01</text><text class="tt__name" style="font-size:10.4px"><tspan x="0" y="-1.6">Dry-lab model</tspan><tspan x="0" y="10.0">&amp; measure-</tspan><tspan x="0" y="21.7">ment</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-whoop" href="#whoop" data-id="whoop" data-a="83.8" data-parent="__hub__" data-short="Whoop" aria-label="Whoop, ready to start" transform="translate(31.6 291.1)"><desc>Standalone: nothing needs it</desc><title>Whoop</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Whoop</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-snakeboard" href="#snakeboard" data-id="snakeboard" data-a="101.8" data-parent="__hub__" data-short="Snakeboard" aria-label="Snakeboard, ready to start" transform="translate(-59.9 286.7)"><desc>Standalone: nothing needs it</desc><title>Snakeboard</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Snakeboard</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-pogo" href="#pogo" data-id="pogo" data-a="119.8" data-parent="__hub__" data-short="Multi-DOF Pogo Robot" aria-label="Multi-DOF Pogo Robot, ready to start" transform="translate(-145.5 254.1)"><desc>Standalone: nothing needs it</desc><title>Multi-DOF Pogo Robot</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Multi-DOF</tspan><tspan x="0" y="9.8">Pogo Robot</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-monowheel" href="#monowheel" data-id="monowheel" data-a="137.8" data-parent="__hub__" data-short="Monowheel" aria-label="Monowheel, ready to start" transform="translate(-216.9 196.7)"><desc>Standalone: nothing needs it</desc><title>Monowheel</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Monowheel</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-aimbot" href="#aimbot" data-id="aimbot" data-a="155.8" data-parent="__hub__" data-short="Mechanical Aimbot" aria-label="Mechanical Aimbot, ready to start" transform="translate(-267.1 120.0)"><desc>Standalone: nothing needs it</desc><title>Mechanical Aimbot</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Mechanical</tspan><tspan x="0" y="9.8">Aimbot</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready is-idea" id="fig-kart" href="#kart" data-id="kart" data-a="173.8" data-parent="__hub__" data-short="Go-Kart" aria-label="Go-Kart, an idea, ready to start" transform="translate(-291.1 31.6)"><desc>Standalone: nothing needs it</desc><title>Go-Kart</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Go-Kart</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-ready" id="fig-diwheel" href="#diwheel" data-id="diwheel" data-a="-168.2" data-parent="__hub__" data-short="Diwheel" aria-label="Diwheel, ready to start" transform="translate(-286.7 -59.9)"><desc>Standalone: nothing needs it</desc><title>Diwheel</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Diwheel</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-rcj" href="#rcj" data-id="rcj" data-a="-150.2" data-parent="__hub__" data-short="RoboCup Junior" aria-label="RoboCup Junior (Play One), in progress" transform="translate(-254.1 -145.5)"><desc>Standalone: nothing needs it</desc><title>RoboCup Junior (Play One)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">RoboCup</tspan><tspan x="0" y="9.8">Junior</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-shooter-2026" href="#shooter-2026" data-id="shooter-2026" data-a="-132.2" data-parent="__hub__" data-short="2026 Shooter" aria-label="2026 Shooter (finish), in progress" transform="translate(-196.7 -216.9)"><desc>Standalone: nothing needs it</desc><title>2026 Shooter (finish)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">2026 Shooter</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-built" id="fig-quadrotor" href="#quadrotor" data-id="quadrotor" data-a="-114.2" data-parent="__hub__" data-short="Quadrotor" aria-label="Quadrotor, drawing C-01, built (Flown)" transform="translate(-120.0 -267.1)"><desc>Standalone: nothing needs it</desc><title>Quadrotor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-3.1">C-01</text><text class="tt__name"><tspan x="0" y="10.8">Quadrotor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-built" id="fig-frc-shooter" href="#frc-shooter" data-id="frc-shooter" data-a="-96.2" data-parent="__hub__" data-short="FRC shooter subsystem" aria-label="FRC shooter subsystem, drawing M-02, built (Competed)" transform="translate(-31.6 -291.1)"><desc>Standalone: nothing needs it</desc><title>FRC shooter subsystem</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-9.3">M-02</text><text class="tt__name"><tspan x="0" y="4.5">FRC shooter</tspan><tspan x="0" y="17.1">subsystem</tspan></text></g></a></g></g>
+<g class="tt__ring-1" role="list" aria-label="T1, builds on T0, 8 projects"><g role="listitem"><a class="tt__node is-built" id="fig-cycloidal-gearbox" href="#cycloidal-gearbox" data-id="cycloidal-gearbox" data-a="-60.2" data-parent="bldc-motor" data-short="Cycloidal gearbox" aria-label="Cycloidal gearbox, drawing M-01, built (Complete)" transform="translate(195.2 -340.9)"><desc>Nothing needs it yet</desc><title>Cycloidal gearbox</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__code" y="-9.3">M-01</text><text class="tt__name"><tspan x="0" y="4.5">Cycloidal</tspan><tspan x="0" y="17.1">gearbox</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-pcb-drone" href="#pcb-drone" data-id="pcb-drone" data-a="-42.2" data-parent="pcb-motor" data-short="PCB Drone" aria-label="PCB Drone, locked: needs PCB Motor" transform="translate(291.0 -263.9)"><desc>Nothing needs it yet</desc><title>PCB Drone</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB Drone</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-linear-motor" href="#linear-motor" data-id="linear-motor" data-a="-21.1" data-parent="foc-driver" data-short="Linear Motor" aria-label="Linear Motor, locked: needs FOC Driver Board" transform="translate(366.5 -141.4)"><desc>Unlocks Carrier Ops, Drift — Electromagnetic Active Suspension, 5-Axis Linear-Motor Printer</desc><title>Linear Motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Linear Motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-drift-fpv" href="#drift-fpv" data-id="drift-fpv" data-a="-7.7" data-parent="drift-car" data-short="Head-Tracked FPV" aria-label="Drift — Head-Tracked FPV, locked: needs Drift Car (platform)" transform="translate(389.3 -52.6)"><desc>Nothing needs it yet</desc><title>Drift — Head-Tracked FPV</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Head-</tspan><tspan x="0" y="9.8">Tracked FPV</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked is-idea" id="fig-drift-speed" href="#drift-speed" data-id="drift-speed" data-a="5.8" data-parent="drift-car" data-short="Speed Run" aria-label="Drift — Speed Run, an idea, locked: needs Drift Car (platform)" transform="translate(390.8 39.7)"><desc>Nothing needs it yet</desc><title>Drift — Speed Run</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Speed Run</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked is-idea" id="fig-drift-tandem" href="#drift-tandem" data-id="drift-tandem" data-a="19.2" data-parent="drift-car" data-short="Autonomous Tandem" aria-label="Drift — Autonomous Tandem, an idea, locked: needs Drift Car (platform)" transform="translate(371.0 129.2)"><desc>Nothing needs it yet</desc><title>Drift — Autonomous Tandem</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Autonomous</tspan><tspan x="0" y="9.8">Tandem</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-drift-wall" href="#drift-wall" data-id="drift-wall" data-a="32.7" data-parent="drift-car" data-short="Wall Driving" aria-label="Drift — Wall Driving, locked: needs Drift Car (platform)" transform="translate(330.6 212.2)"><desc>Nothing needs it yet</desc><title>Drift — Wall Driving</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Wall Driving</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-v3-bldc" href="#v3-bldc" data-id="v3-bldc" data-a="46.1" data-parent="dyno" data-short="V3 BLDC Motor" aria-label="V3 BLDC Motor (laminated stator), locked: needs CNC Coil Winder, Motor Dynamometer" transform="translate(272.4 283.1)"><desc>Unlocks QDD Actuator Module; Also helps Drift — Speed Run, Go-Kart</desc><title>V3 BLDC Motor (laminated stator)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">V3 BLDC</tspan><tspan x="0" y="9.8">Motor</tspan></text></g></a></g></g>
+<g class="tt__ring-2" role="list" aria-label="T2, builds on T1, 4 projects"><g role="listitem"><a class="tt__node is-locked" id="fig-carrier-ops" href="#carrier-ops" data-id="carrier-ops" data-a="-29.4" data-parent="linear-motor" data-short="Carrier Ops" aria-label="Carrier Ops, locked: needs Linear Motor, Thrust-Vectoring Testbed" transform="translate(429.4 -241.9)"><desc>Nothing needs it yet</desc><title>Carrier Ops</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Carrier Ops</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-printer-5axis" href="#printer-5axis" data-id="printer-5axis" data-a="-18.7" data-parent="linear-motor" data-short="5-Axis Linear-Motor Printer" aria-label="5-Axis Linear-Motor Printer, locked: needs Linear Motor" transform="translate(466.8 -158.0)"><desc>Nothing needs it yet</desc><title>5-Axis Linear-Motor Printer</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">5-Axis</tspan><tspan x="0" y="3.5">Linear-Motor</tspan><tspan x="0" y="16.1">Printer</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-drift-suspension" href="#drift-suspension" data-id="drift-suspension" data-a="-8.0" data-parent="linear-motor" data-short="Electromagnetic Active Suspension" aria-label="Drift — Electromagnetic Active Suspension, locked: needs Drift Car (platform), Linear Motor" transform="translate(488.0 -68.6)"><desc>Nothing needs it yet</desc><title>Drift — Electromagnetic Active Suspension</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name" style="font-size:9.6px"><tspan x="0" y="-7.7">Electro-</tspan><tspan x="0" y="3.0">magnetic Active</tspan><tspan x="0" y="13.8">Suspension</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-locked" id="fig-qdd-actuator" href="#qdd-actuator" data-id="qdd-actuator" data-a="36.7" data-parent="v3-bldc" data-short="QDD Actuator Module" aria-label="QDD Actuator Module, locked: needs V3 BLDC Motor (laminated stator), FOC Driver Board, Motor Dynamometer" transform="translate(395.2 294.5)"><desc>Unlocks Wheel-Leg (Beni-class); Also helps Monowheel, Multi-DOF Pogo Robot</desc><title>QDD Actuator Module</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">QDD</tspan><tspan x="0" y="3.5">Actuator</tspan><tspan x="0" y="16.1">Module</tspan></text></g></a></g></g>
+<g class="tt__ring-3" role="list" aria-label="T3, builds on T2, 1 project"><g role="listitem"><a class="tt__node is-locked" id="fig-wheel-leg" href="#wheel-leg" data-id="wheel-leg" data-a="43.9" data-parent="qdd-actuator" data-short="Wheel-Leg" aria-label="Wheel-Leg (Beni-class), locked: needs QDD Actuator Module, UMV — Ultra Mobility Vehicle" transform="translate(427.2 411.1)"><desc>Nothing needs it yet</desc><title>Wheel-Leg (Beni-class)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Wheel-Leg</tspan></text></g></a></g></g>
+</svg>
+          <figcaption class="tt__cap">Rings are tiers, counted out from the hub. <span class="tt__cap-wide">Select a circle for its title block; every project is also in the parts list below.</span><span class="tt__cap-kbd"> From the keyboard: Tab to the drawing, arrow keys between circles, Enter for the title block.</span><span class="tt__cap-narrow">Pinch to read the drawing, or tap a circle for its card below.</span></figcaption>
+        </figure>
+        <p class="tt__status" role="status"></p>
+        <aside class="tt__panel" aria-label="Selected project">
+          <p class="tt__hint">Select a project in the drawing and its title block appears here.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="tree" id="parts" aria-labelledby="parts-h">
+      <div class="prose"><h2 id="parts-h"><span class="sec__mark">01</span>Parts list</h2></div>
+      <ol class="tree__tiers">
         <li class="tier" data-tier="0">
-          <h2 class="tier__head"><span class="sec__mark">T0</span> No prerequisites <span class="tier__n">7</span></h2>
+          <h3 class="tier__head"><span class="sec__mark">T0</span> No prerequisites <span class="tier__n">8</span></h3>
           <ol class="tier__list">
-            <li><article class="node" id="drift-car" data-status="planned" data-tier="0" data-uses="foc-driver">
+            <li><article class="node" id="bldc-motor" data-status="done" data-state="built" data-tier="0">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">drift-car</span>
-              <h3 class="tb__name"><a href="#drift-car">Drift Car (platform)</a></h3>
+              <span class="tb__no"><span class="node__swatch is-built" aria-hidden="true"></span>E-01</span>
+              <h4 class="tb__name"><a href="p-bldc.html">Brushless DC motor</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>5</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-built"><span class="node__why">Built</span><a class="node__up" href="#fig-bldc-motor">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
+          <p>A hand-wound outrunner, designed for a torque density not available off the shelf at this diameter. A gearbox then being designed needed more continuous torque inside its envelope than hobby outrunners of that size give: they are wound for RPM, not torque. The choice was a larger motor with a heavier reduction, or a lower-Kv winding that keeps the package. This motor was built to measure that trade-off directly.</p>
+          <h5>Goals</h5>
+          <ul><li>More torque at this diameter than an off-the-shelf hobby outrunner, from a lower-Kv winding in the same package.</li><li>Built to measure the trade-off directly: more turns lower Kv and raise torque per amp, but cost slot area, phase resistance and copper loss.</li></ul>
+          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#cycloidal-gearbox">Cycloidal gearbox</a></dd></dl>
+          <p class="node__page"><a href="p-bldc.html">Drawing E-01 →</a></p>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="pcb-motor" data-status="active" data-state="active" data-tier="0">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-active" aria-hidden="true"></span>pcb-motor</span>
+              <h4 class="tb__name"><a href="#pcb-motor">PCB Motor</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-active"><span class="node__why">In progress</span><a class="node__up" href="#fig-pcb-motor">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>An axial-flux, coreless motor whose stator is the copper in a multilayer PCB, with a Halbach or back-iron magnet rotor. Already explored in earlier chats: the physics is honest but unforgiving (thin copper, no iron, poor thermal path), and the two things that make it useful are radius (Km ∝ r², loss ∝ 1/r⁴) and running the driver at ≥ 100 kHz to tame the ripple in µH-scale windings. This node is the motor on its own; the drone that uses it is <code>pcb-drone</code>.</p>
+          <h5>Goals</h5>
+          <ul><li>A 25–40 mm stator on a 6–8 layer, 2 oz board that spins a rotor with measured Kt, Km and a thermal curve on the dyno.</li><li>Test both rotor styles: back-iron disc and Halbach array (Halbach is the one the drone needs).</li><li>Characterize copper loss vs. PWM frequency with the FOC board to settle the 100 kHz question with data.</li><li>A rim-drive variant (annular coil band at large radius, cut-out center) as the second board, since that is the geometry the drone wants.</li></ul>
+          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#pcb-drone">PCB Drone</a></dd></dl>
+          <p class="node__links"><a href="https://www.youtube.com/@CarlBugeja" rel="noopener">Carl Bugeja&#x27;s PCB motors (reference)</a></p>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="tvc-testbed" data-status="planned" data-state="ready" data-tier="0">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>tvc-testbed</span>
+              <h4 class="tb__name"><a href="#tvc-testbed">Thrust-Vectoring Testbed</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S3 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-tvc-testbed">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>A tethered, hover-only rig with a single motor (prop or EDF) on a two-axis vectoring mount: the smallest thing that teaches vectored-thrust attitude control. It is the &quot;thrust vectoring is nice&quot; item from the original list, and it is the gate for the carrier wing&#x27;s tail-sitter hover. Everything learned here — servo bandwidth, gimbal geometry, control allocation, the prop-vs-EDF choice — transfers straight into <code>carrier-ops</code>.</p>
+          <h5>Goals</h5>
+          <ul><li>A 2-axis gimballed motor (±15°) on a stand with a pitch/yaw pivot, later on a 3-DOF tether.</li><li>Attitude hold to within ±2° in pitch and yaw with a step-disturbance recovery under 0.5 s.</li><li>Measured servo bandwidth and thrust lag, so the wing&#x27;s hover controller starts from numbers.</li><li>A written comparison of prop vs. EDF for hover authority, noise, and efficiency at the wing&#x27;s mass (~700 g).</li></ul>
+          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#carrier-ops">Carrier Ops</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="foc-driver" data-status="planned" data-state="ready" data-tier="0">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>foc-driver</span>
+              <h4 class="tb__name"><a href="#foc-driver">FOC Driver Board</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S4 E5</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>2</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-foc-driver">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>The motor driver everything else runs on: a field-oriented-control board with current sensing, encoder input, CAN, and PWM fast enough for the low-inductance windings of the PCB motor and linear motor. Two form factors from one design: a multi-channel board (4-in-1 or 6-in-1) for the drift car and motion platform, and a single-channel puck that fits inside the QDD actuator housing. Not exciting on its own; nine projects sit on it.</p>
+          <h5>Goals</h5>
+          <ul><li>Sinusoidal FOC with dq current control, ≥ 20 kHz current loop, PWM selectable up to ≥ 100 kHz for coreless/ironless windings.</li><li>Per-channel: ≥ 30 A peak, 24–48 V bus, phase current sensing (inline or low-side shunts), magnetic encoder (AS5047P SPI / ABI) and hall input.</li><li>CAN (classic, 1 Mbps) with a RobStride-style MIT-mode command set so the UMV&#x27;s runner code works on both.</li><li>Multi-channel board: 4 or 6 channels, one MCU per channel or one fast MCU with hardware timers (decide at rev 0).</li><li>Puck: ≤ 40 mm diameter, fits the QDD housing, temperature sensing, bus-side bulk capacitance.</li></ul>
+          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#linear-motor">Linear Motor</a>, <a href="#qdd-actuator">QDD Actuator Module</a></dd><dt>Also helps</dt><dd><a href="#diwheel">Diwheel</a>, <a href="#drift-car">Drift Car (platform)</a>, <a href="#drift-speed">Drift — Speed Run</a>, <a href="#kart">Go-Kart</a>, <a href="#monowheel">Monowheel</a>, <a href="#pcb-drone">PCB Drone</a>, <a href="#printer-5axis">5-Axis Linear-Motor Printer</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="drift-car" data-status="planned" data-state="ready" data-tier="0" data-uses="foc-driver">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>drift-car</span>
+              <h4 class="tb__name"><a href="#drift-car">Drift Car (platform)</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>5</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-drift-car">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
           <p>A small RC drift car built as a platform, not a toy: four in-wheel motors with independent control, yaw-rate feedback, and torque vectoring so it holds a drift angle on its own. Starts on off-the-shelf ESCs and moves to the FOC board and own motors when they exist. Everything in the &quot;drift tree&quot; hangs off this chassis: head-tracked FPV, wall driving with EDF downforce, a speed-run variant, autonomous tandem drift, electromagnetic active suspension, and the sim-rig cockpit. Vision comes later as a layer across those branches.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>1/10-ish scale, four independent wheel motors, IMU, wheel-speed and steering feedback.</li><li>A drift controller: commanded yaw rate and slip angle, torque-vectored to hold it, driver just steers and throttles.</li><li>Sustained donuts and figure-eights hands-off on a smooth floor; controlled transitions.</li><li>Clean mounting for the branch projects: camera gimbal, EDF pods, suspension modules, telemetry radio.</li></ul>
           <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd><dt>Unlocks</dt><dd><a href="#drift-fpv">Drift — Head-Tracked FPV</a>, <a href="#drift-speed">Drift — Speed Run</a>, <a href="#drift-suspension">Drift — Electromagnetic Active Suspension</a>, <a href="#drift-tandem">Drift — Autonomous Tandem</a>, <a href="#drift-wall">Drift — Wall Driving</a></dd></dl>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="dyno" data-status="planned" data-tier="0">
+            <li><article class="node" id="coil-winder" data-status="planned" data-state="ready" data-tier="0">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">dyno</span>
-              <h3 class="tb__name"><a href="#dyno">Motor Dynamometer</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>coil-winder</span>
+              <h4 class="tb__name"><a href="#coil-winder">CNC Coil Winder</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>2</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-coil-winder">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
+          <p>A small CNC needle winder with tension control for stator windings. Boring to describe; it is the reason V3&#x27;s slots end up at a good fill factor with neat, repeatable turns instead of hand-wound birds&#x27; nests. Also winds the flat coils for the linear motor if that goes the wound-copper route.</p>
+          <h5>Goals</h5>
+          <ul><li>Winds a 12-slot outrunner stator (V3 size) with a needle, programmable turns per slot and layer pattern.</li><li>Closed-loop or spring-damped tension, adjustable, so the wire neither loosens nor thins.</li><li>Fill factor on V3 ≥ 45 % (hand winding is usually 30–40 %).</li><li>Reprogrammable for different stator sizes without rebuilding.</li></ul>
+          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a></dd><dt>Also helps</dt><dd><a href="#linear-motor">Linear Motor</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="dyno" data-status="planned" data-state="ready" data-tier="0">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>dyno</span>
+              <h4 class="tb__name"><a href="#dyno">Motor Dynamometer</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>2</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-dyno">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
           <p>A bench that measures what a motor actually does: torque, speed, phase current, voltage, input power, and stator temperature over time. From those it produces Kt, Kv, Km, efficiency maps, and thermal limits. It is what makes every motor project on the tree credible, and it is how V3 gets compared against the coreless PCB motor with numbers instead of feelings. Build it before V3 is finished so V3 gets measured properly.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Torque 0–5 N·m (reaction-arm on a load cell, or a small torque cell), speed 0–10k rpm, up to ~1 kW electrical.</li><li>Load: a second motor in regen/brake mode (cheap, controllable) or a hysteresis brake (smoother at low speed).</li><li>Logs at ≥ 100 Hz to CSV; a script turns a sweep into Kt, Kv, Km = Kt/√R, efficiency map, and a thermal time constant.</li><li>Repeatable mounting for outrunners, inrunners, and the QDD module.</li></ul>
           <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a>, <a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a></dd></dl>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="umv" data-status="planned" data-tier="0">
+            <li><article class="node" id="umv" data-status="planned" data-state="ready" data-tier="0">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">C-02</span>
-              <h3 class="tb__name"><a href="p-umv.html">UMV — Ultra Mobility Vehicle</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>C-02</span>
+              <h4 class="tb__name"><a href="p-umv.html">UMV — Ultra Mobility Vehicle</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H5 S5 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-umv">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
           <p>A ~3.4 kg two-wheeled acrobatic bicycle robot scaled from the RAI Institute&#x27;s UMV (s = 0.525, 0.21 m Neck). It drives, balances, jumps, and is designed toward front and back flips as the headline capability. Five actuated DOFs: a cable-driven bevel differential (S1/S2 → virtual µ pitch and φ out-of-plane), Head–Neck pitch (qh), steering (qs), rear drive (qw). RobStride quasi-direct-drive actuators on one CAN bus, Raspberry Pi 5 running a 50 Hz RL policy that outputs joint PD targets. The full spec is in <code>spec.md</code>.</p>
           <p>This is the flagship and the root of the dynamic-robot line: it needs nothing else on the tree, and it produces the RL sim-to-real pipeline (URDF export → IsaacLab training → Pi deployment) that <code>wheel-leg</code> and <code>inline-wheel-leg</code> reuse.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Balance and drive at ≥ 3.8 m/s (steering-only balance, 156 ms tipping constant).</li><li>Jump 0.40 m at the CoM (takeoff 2.80 m/s, ~2.7× BW ground reaction, ~250 W peak at the CoM).</li><li>Land partial-stroke at up to ~4× BW without damage (cables, anchors, bearings sized to it).</li><li>Front flip and back flip (0.58 s flight, ~23 rad/s peak pitch rate, ~2.2:1 inertia modulation by tucking).</li><li>A reusable sim-to-real pipeline: URDF, IsaacLab environment, domain randomization, policy export, on-robot runner.</li></ul>
           <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#wheel-leg">Wheel-Leg (Beni-class)</a></dd></dl>
           <p class="node__links"><a href="https://arxiv.org/abs/2602.22118" rel="noopener">Bokser et al., System Design of the Ultra Mobility Vehicle (arXiv 2602.22118)</a> · <a href="https://rai-inst.com/" rel="noopener">RAI Institute</a></p>
@@ -153,323 +281,279 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="coil-winder" data-status="planned" data-tier="0">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">coil-winder</span>
-              <h3 class="tb__name"><a href="#coil-winder">CNC Coil Winder</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A small CNC needle winder with tension control for stator windings. Boring to describe; it is the reason V3&#x27;s slots end up at a good fill factor with neat, repeatable turns instead of hand-wound birds&#x27; nests. Also winds the flat coils for the linear motor if that goes the wound-copper route.</p>
-          <h4>Goals</h4>
-          <ul><li>Winds a 12-slot outrunner stator (V3 size) with a needle, programmable turns per slot and layer pattern.</li><li>Closed-loop or spring-damped tension, adjustable, so the wire neither loosens nor thins.</li><li>Fill factor on V3 ≥ 45 % (hand winding is usually 30–40 %).</li><li>Reprogrammable for different stator sizes without rebuilding.</li></ul>
-          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a></dd><dt>Also helps</dt><dd><a href="#linear-motor">Linear Motor</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="foc-driver" data-status="planned" data-tier="0">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">foc-driver</span>
-              <h3 class="tb__name"><a href="#foc-driver">FOC Driver Board</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S4 E5</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>2</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>The motor driver everything else runs on: a field-oriented-control board with current sensing, encoder input, CAN, and PWM fast enough for the low-inductance windings of the PCB motor and linear motor. Two form factors from one design: a multi-channel board (4-in-1 or 6-in-1) for the drift car and motion platform, and a single-channel puck that fits inside the QDD actuator housing. Not exciting on its own; nine projects sit on it.</p>
-          <h4>Goals</h4>
-          <ul><li>Sinusoidal FOC with dq current control, ≥ 20 kHz current loop, PWM selectable up to ≥ 100 kHz for coreless/ironless windings.</li><li>Per-channel: ≥ 30 A peak, 24–48 V bus, phase current sensing (inline or low-side shunts), magnetic encoder (AS5047P SPI / ABI) and hall input.</li><li>CAN (classic, 1 Mbps) with a RobStride-style MIT-mode command set so the UMV&#x27;s runner code works on both.</li><li>Multi-channel board: 4 or 6 channels, one MCU per channel or one fast MCU with hardware timers (decide at rev 0).</li><li>Puck: ≤ 40 mm diameter, fits the QDD housing, temperature sensing, bus-side bulk capacitance.</li></ul>
-          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#linear-motor">Linear Motor</a>, <a href="#qdd-actuator">QDD Actuator Module</a></dd><dt>Also helps</dt><dd><a href="#diwheel">Diwheel</a>, <a href="#drift-car">Drift Car (platform)</a>, <a href="#drift-speed">Drift — Speed Run</a>, <a href="#kart">Go-Kart</a>, <a href="#monowheel">Monowheel</a>, <a href="#pcb-drone">PCB Drone</a>, <a href="#printer-5axis">5-Axis Linear-Motor Printer</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="tvc-testbed" data-status="planned" data-tier="0">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">tvc-testbed</span>
-              <h3 class="tb__name"><a href="#tvc-testbed">Thrust-Vectoring Testbed</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S3 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A tethered, hover-only rig with a single motor (prop or EDF) on a two-axis vectoring mount: the smallest thing that teaches vectored-thrust attitude control. It is the &quot;thrust vectoring is nice&quot; item from the original list, and it is the gate for the carrier wing&#x27;s tail-sitter hover. Everything learned here — servo bandwidth, gimbal geometry, control allocation, the prop-vs-EDF choice — transfers straight into <code>carrier-ops</code>.</p>
-          <h4>Goals</h4>
-          <ul><li>A 2-axis gimballed motor (±15°) on a stand with a pitch/yaw pivot, later on a 3-DOF tether.</li><li>Attitude hold to within ±2° in pitch and yaw with a step-disturbance recovery under 0.5 s.</li><li>Measured servo bandwidth and thrust lag, so the wing&#x27;s hover controller starts from numbers.</li><li>A written comparison of prop vs. EDF for hover authority, noise, and efficiency at the wing&#x27;s mass (~700 g).</li></ul>
-          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#carrier-ops">Carrier Ops</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="pcb-motor" data-status="active" data-tier="0">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">pcb-motor</span>
-              <h3 class="tb__name"><a href="#pcb-motor">PCB Motor</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>0</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>An axial-flux, coreless motor whose stator is the copper in a multilayer PCB, with a Halbach or back-iron magnet rotor. Already explored in earlier chats: the physics is honest but unforgiving (thin copper, no iron, poor thermal path), and the two things that make it useful are radius (Km ∝ r², loss ∝ 1/r⁴) and running the driver at ≥ 100 kHz to tame the ripple in µH-scale windings. This node is the motor on its own; the drone that uses it is <code>pcb-drone</code>.</p>
-          <h4>Goals</h4>
-          <ul><li>A 25–40 mm stator on a 6–8 layer, 2 oz board that spins a rotor with measured Kt, Km and a thermal curve on the dyno.</li><li>Test both rotor styles: back-iron disc and Halbach array (Halbach is the one the drone needs).</li><li>Characterize copper loss vs. PWM frequency with the FOC board to settle the 100 kHz question with data.</li><li>A rim-drive variant (annular coil band at large radius, cut-out center) as the second board, since that is the geometry the drone wants.</li></ul>
-          <dl class="node__rel"><dt>Unlocks</dt><dd><a href="#pcb-drone">PCB Drone</a></dd></dl>
-          <p class="node__links"><a href="https://www.youtube.com/@CarlBugeja" rel="noopener">Carl Bugeja&#x27;s PCB motors (reference)</a></p>
-            </div>
-          </details>
-        </article></li>
           </ol>
         </li>
         <li class="tier" data-tier="1">
-          <h2 class="tier__head"><span class="sec__mark">T1</span> Builds on T0 <span class="tier__n">7</span></h2>
+          <h3 class="tier__head"><span class="sec__mark">T1</span> Builds on T0 <span class="tier__n">8</span></h3>
           <ol class="tier__list">
-            <li><article class="node" id="drift-tandem" data-status="idea" data-tier="1" data-needs="drift-car">
+            <li><article class="node" id="cycloidal-gearbox" data-status="done" data-state="built" data-tier="1" data-needs="bldc-motor">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">drift-tandem</span>
-              <h3 class="tb__name"><a href="#drift-tandem">Drift — Autonomous Tandem</a></h3>
+              <span class="tb__no"><span class="node__swatch is-built" aria-hidden="true"></span>M-01</span>
+              <h4 class="tb__name"><a href="p-cycloidal.html">Cycloidal gearbox</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S5 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-built"><span class="node__why">Built</span><a class="node__up" href="#fig-cycloidal-gearbox">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Two cars holding a drift in formation with nobody driving: the lead runs a planned line, the chase tracks it (vision or a shared localization) and holds a fixed offset while sideways. This is where the vision layer on the drift tree gets its hardest test, and it is almost entirely software on hardware the platform already has.</p>
-          <h4>Goals</h4>
-          <ul><li>Localization good enough for a 1 m offset at 3 m/s while sliding (overhead camera + tags first; onboard later).</li><li>Lead car: trajectory tracking through a drift with the platform&#x27;s controller.</li><li>Chase car: formation controller with a model of the lead&#x27;s motion.</li><li>A clean tandem run of a full lap with no intervention.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
+          <h5>Summary</h5>
+          <p>A cycloidal reducer, designed and cut to pair with the E-01 brushless motor: a high reduction ratio in a single stage.</p>
+          <h5>Goals</h5>
+          <ul><li>One reduction stage that pairs with the E-01 motor.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#bldc-motor">Brushless DC motor</a></dd></dl>
+          <p class="node__page"><a href="p-cycloidal.html">Drawing M-01 →</a></p>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="drift-wall" data-status="planned" data-tier="1" data-needs="drift-car">
+            <li><article class="node" id="pcb-drone" data-status="planned" data-state="locked" data-tier="1" data-needs="pcb-motor" data-uses="foc-driver">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">drift-wall</span>
-              <h3 class="tb__name"><a href="#drift-wall">Drift — Wall Driving</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>pcb-drone</span>
+              <h4 class="tb__name"><a href="#pcb-drone">PCB Drone</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S3 E5</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#pcb-motor">PCB Motor</a></span><a class="node__up" href="#fig-pcb-drone">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Two or four EDFs pointed at the roof so the car makes more downforce than it weighs, then it drives up a wall and across the ceiling, drifting the whole way. Absurd, physically real (there are research cars that do it), and it reuses the drift controller with a different gravity vector. Mostly tuning once the fans are on.</p>
-          <h4>Goals</h4>
-          <ul><li>Thrust-to-weight ≥ 1.5 from the EDFs at full power; car mass kept low.</li><li>Drives vertically on a plywood wall; transitions floor → wall → ceiling.</li><li>Drift controller works with the adhesion force replacing weight (friction scales with fan thrust, not gravity).</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
+          <h5>Summary</h5>
+          <p>A whoop-sized quad where one PCB is the frame, the four stators, the ESCs and the flight controller — plus four printed hubs and props. Two motor geometries are candidates: a hub stator under a Halbach prop hub (simpler; marginal at 16–18 mm stator), and a rim drive with magnets on the prop tips and an annular coil band around each duct opening (much better copper loss at large radius; centrifugal retention and rotor inertia are the problems). Physics is marginal, which is exactly why the thrust-stand gate exists and why feasibility is scored 2. If it flies, it is something that does not exist yet.</p>
+          <h5>Goals</h5>
+          <ul><li>Thrust-stand gate: ≥ 12–15 g thrust per motor, added rotor + copper mass ≤ 3 g, stator ≤ 80 °C after 3 min at hover thrust, ≥ 2 g/W at hover.</li><li>75–85 mm wheelbase, 40–45 mm props, 1S 450 mAh or 2S 300 mAh, 30–40 g all-up.</li><li>ESC: four AM32-style channels on the board (or the FOC board&#x27;s 100 kHz mode); bidirectional DShot for RPM filtering.</li><li>Flies like a whoop, not just hovers: ~4 × 15–20 g at full throttle.</li><li>TPU ducts bolt on as bumpers and magnet shields; soft-mounted IMU island.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#pcb-motor">PCB Motor</a></dd><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd></dl>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="drift-fpv" data-status="planned" data-tier="1" data-needs="drift-car">
+            <li><article class="node" id="linear-motor" data-status="planned" data-state="locked" data-tier="1" data-needs="foc-driver" data-uses="coil-winder">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">drift-fpv</span>
-              <h3 class="tb__name"><a href="#drift-fpv">Drift — Head-Tracked FPV</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A fast camera gimbal on the drift car that follows the driver&#x27;s head in a VR headset or FPV goggles with a head tracker. Looking into the corner while the car is sideways is the whole point of drifting; this is the branch that makes the platform fun to drive and it is the first camera on the car, so the later vision work has a mount to inherit.</p>
-          <h4>Goals</h4>
-          <ul><li>2-axis (pan/tilt) gimbal with ≥ 300°/s slew and &lt; 30 ms head-to-camera latency on top of the video link latency.</li><li>Low-latency analog or digital FPV link; head-tracker data over the control link.</li><li>Mounting shared with the vision branch (same camera boss, power, and data lines).</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="v3-bldc" data-status="planned" data-tier="1" data-needs="coil-winder dyno">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">v3-bldc</span>
-              <h3 class="tb__name"><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S1 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Third version of the homemade brushless motor, finally with a real laminated steel stator instead of a printed or coreless one. The point is a motor with datasheet-grade numbers (Kt, Km, thermal limit) measured on the dyno, wound cleanly on the winder, that can then become the heart of the QDD actuator and, scaled up, a kart motor. V1/V2 taught the process; V3 is the one that has to perform.</p>
-          <h4>Goals</h4>
-          <ul><li>Laminated stator (M19/M270-class silicon steel, 0.35 mm or thinner), laser-cut or wire-EDM&#x27;d, stacked and bonded or welded.</li><li>Km at least 3× the coreless V2 at the same envelope; a thermal curve that says what it can do continuously.</li><li>Rotor with properly retained magnets (sleeve or captured pockets), balanced.</li><li>A design spreadsheet or script that goes from spec (Kv, torque, envelope) to slot/pole, turns, wire gauge, magnet size — so V4 and the kart motor are re-runs, not restarts.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#coil-winder">CNC Coil Winder</a>, <a href="#dyno">Motor Dynamometer</a></dd><dt>Unlocks</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a></dd><dt>Also helps</dt><dd><a href="#drift-speed">Drift — Speed Run</a>, <a href="#kart">Go-Kart</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="drift-speed" data-status="idea" data-tier="1" data-needs="drift-car" data-uses="v3-bldc foc-driver">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">drift-speed</span>
-              <h3 class="tb__name"><a href="#drift-speed">Drift — Speed Run</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S1 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>The platform with your own motors and inverter, an aero body, and one number: top speed. It is the motor line&#x27;s most visible benchmark and it is the branch where the drift car&#x27;s in-wheel motors get replaced by V3-derived ones. Low software, all hardware.</p>
-          <h4>Goals</h4>
-          <ul><li>A measured top speed on a straight (GPS or timing gates), with the motors and drive designed here.</li><li>Gearing or direct-drive choice justified by the dyno maps.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd><dt>Uses if built</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="linear-motor" data-status="planned" data-tier="1" data-needs="foc-driver" data-uses="coil-winder">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">linear-motor</span>
-              <h3 class="tb__name"><a href="#linear-motor">Linear Motor</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>linear-motor</span>
+              <h4 class="tb__name"><a href="#linear-motor">Linear Motor</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S3 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>3</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#foc-driver">FOC Driver Board</a></span><a class="node__up" href="#fig-linear-motor">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
           <p>A direct-drive linear motor: a track of coils (PCB or wound) and a Halbach mover, or the reverse (magnet track, moving coil), commutated by the FOC board with a linear encoder. It is the single highest-leverage project on the tree: it gates the carrier catapult, the fast printer axes, and the drift car&#x27;s active suspension, and those three are independent of each other once it exists. Two variants share one coil/magnet design: a long, cheap, lower-precision track for the rail, and a short, stiff, precise module for the printer and suspension.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Module: ≥ 100 N peak force, ≥ 30 N continuous, ≥ 4 m/s, sub-0.1 mm repeatability with a magnetic linear scale.</li><li>Rail: 2 m of track built from the same coil segments, a carriage that reaches ~15 m/s carrying ~1 kg (that is ~56 m/s² over 2 m, ~85 N for 0.27 s).</li><li>Commutation and position control on the FOC board (linear = the same dq math with an electrical angle from the scale).</li><li>Measured force constant, force ripple, and thermal limit.</li></ul>
           <dl class="node__rel"><dt>Needs</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd><dt>Uses if built</dt><dd><a href="#coil-winder">CNC Coil Winder</a></dd><dt>Unlocks</dt><dd><a href="#carrier-ops">Carrier Ops</a>, <a href="#drift-suspension">Drift — Electromagnetic Active Suspension</a>, <a href="#printer-5axis">5-Axis Linear-Motor Printer</a></dd></dl>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="pcb-drone" data-status="planned" data-tier="1" data-needs="pcb-motor" data-uses="foc-driver">
+            <li><article class="node" id="drift-fpv" data-status="planned" data-state="locked" data-tier="1" data-needs="drift-car">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">pcb-drone</span>
-              <h3 class="tb__name"><a href="#pcb-drone">PCB Drone</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>drift-fpv</span>
+              <h4 class="tb__name"><a href="#drift-fpv">Drift — Head-Tracked FPV</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S3 E5</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#drift-car">Drift Car (platform)</a></span><a class="node__up" href="#fig-drift-fpv">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A whoop-sized quad where one PCB is the frame, the four stators, the ESCs and the flight controller — plus four printed hubs and props. Two motor geometries are candidates: a hub stator under a Halbach prop hub (simpler; marginal at 16–18 mm stator), and a rim drive with magnets on the prop tips and an annular coil band around each duct opening (much better copper loss at large radius; centrifugal retention and rotor inertia are the problems). Physics is marginal, which is exactly why the thrust-stand gate exists and why feasibility is scored 2. If it flies, it is something that does not exist yet.</p>
-          <h4>Goals</h4>
-          <ul><li>Thrust-stand gate: ≥ 12–15 g thrust per motor, added rotor + copper mass ≤ 3 g, stator ≤ 80 °C after 3 min at hover thrust, ≥ 2 g/W at hover.</li><li>75–85 mm wheelbase, 40–45 mm props, 1S 450 mAh or 2S 300 mAh, 30–40 g all-up.</li><li>ESC: four AM32-style channels on the board (or the FOC board&#x27;s 100 kHz mode); bidirectional DShot for RPM filtering.</li><li>Flies like a whoop, not just hovers: ~4 × 15–20 g at full throttle.</li><li>TPU ducts bolt on as bumpers and magnet shields; soft-mounted IMU island.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#pcb-motor">PCB Motor</a></dd><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd></dl>
+          <h5>Summary</h5>
+          <p>A fast camera gimbal on the drift car that follows the driver&#x27;s head in a VR headset or FPV goggles with a head tracker. Looking into the corner while the car is sideways is the whole point of drifting; this is the branch that makes the platform fun to drive and it is the first camera on the car, so the later vision work has a mount to inherit.</p>
+          <h5>Goals</h5>
+          <ul><li>2-axis (pan/tilt) gimbal with ≥ 300°/s slew and &lt; 30 ms head-to-camera latency on top of the video link latency.</li><li>Low-latency analog or digital FPV link; head-tracker data over the control link.</li><li>Mounting shared with the vision branch (same camera boss, power, and data lines).</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="drift-speed" data-status="idea" data-state="locked" data-tier="1" data-needs="drift-car" data-uses="v3-bldc foc-driver">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>drift-speed</span>
+              <h4 class="tb__name"><a href="#drift-speed">Drift — Speed Run</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S1 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#drift-car">Drift Car (platform)</a></span><a class="node__up" href="#fig-drift-speed">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>The platform with your own motors and inverter, an aero body, and one number: top speed. It is the motor line&#x27;s most visible benchmark and it is the branch where the drift car&#x27;s in-wheel motors get replaced by V3-derived ones. Low software, all hardware.</p>
+          <h5>Goals</h5>
+          <ul><li>A measured top speed on a straight (GPS or timing gates), with the motors and drive designed here.</li><li>Gearing or direct-drive choice justified by the dyno maps.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd><dt>Uses if built</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="drift-tandem" data-status="idea" data-state="locked" data-tier="1" data-needs="drift-car">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>drift-tandem</span>
+              <h4 class="tb__name"><a href="#drift-tandem">Drift — Autonomous Tandem</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S5 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#drift-car">Drift Car (platform)</a></span><a class="node__up" href="#fig-drift-tandem">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>Two cars holding a drift in formation with nobody driving: the lead runs a planned line, the chase tracks it (vision or a shared localization) and holds a fixed offset while sideways. This is where the vision layer on the drift tree gets its hardest test, and it is almost entirely software on hardware the platform already has.</p>
+          <h5>Goals</h5>
+          <ul><li>Localization good enough for a 1 m offset at 3 m/s while sliding (overhead camera + tags first; onboard later).</li><li>Lead car: trajectory tracking through a drift with the platform&#x27;s controller.</li><li>Chase car: formation controller with a model of the lead&#x27;s motion.</li><li>A clean tandem run of a full lap with no intervention.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="drift-wall" data-status="planned" data-state="locked" data-tier="1" data-needs="drift-car">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>drift-wall</span>
+              <h4 class="tb__name"><a href="#drift-wall">Drift — Wall Driving</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S2 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#drift-car">Drift Car (platform)</a></span><a class="node__up" href="#fig-drift-wall">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>Two or four EDFs pointed at the roof so the car makes more downforce than it weighs, then it drives up a wall and across the ceiling, drifting the whole way. Absurd, physically real (there are research cars that do it), and it reuses the drift controller with a different gravity vector. Mostly tuning once the fans are on.</p>
+          <h5>Goals</h5>
+          <ul><li>Thrust-to-weight ≥ 1.5 from the EDFs at full power; car mass kept low.</li><li>Drives vertically on a plywood wall; transitions floor → wall → ceiling.</li><li>Drift controller works with the adhesion force replacing weight (friction scales with fan thrust, not gravity).</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="v3-bldc" data-status="planned" data-state="locked" data-tier="1" data-needs="coil-winder dyno">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>v3-bldc</span>
+              <h4 class="tb__name"><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>1</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S1 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#coil-winder">CNC Coil Winder</a>, <a href="#dyno">Motor Dynamometer</a></span><a class="node__up" href="#fig-v3-bldc">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>Third version of the homemade brushless motor, finally with a real laminated steel stator instead of a printed or coreless one. The point is a motor with datasheet-grade numbers (Kt, Km, thermal limit) measured on the dyno, wound cleanly on the winder, that can then become the heart of the QDD actuator and, scaled up, a kart motor. V1/V2 taught the process; V3 is the one that has to perform.</p>
+          <h5>Goals</h5>
+          <ul><li>Laminated stator (M19/M270-class silicon steel, 0.35 mm or thinner), laser-cut or wire-EDM&#x27;d, stacked and bonded or welded.</li><li>Km at least 3× the coreless V2 at the same envelope; a thermal curve that says what it can do continuously.</li><li>Rotor with properly retained magnets (sleeve or captured pockets), balanced.</li><li>A design spreadsheet or script that goes from spec (Kv, torque, envelope) to slot/pole, turns, wire gauge, magnet size — so V4 and the kart motor are re-runs, not restarts.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#coil-winder">CNC Coil Winder</a>, <a href="#dyno">Motor Dynamometer</a></dd><dt>Unlocks</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a></dd><dt>Also helps</dt><dd><a href="#drift-speed">Drift — Speed Run</a>, <a href="#kart">Go-Kart</a></dd></dl>
             </div>
           </details>
         </article></li>
           </ol>
         </li>
         <li class="tier" data-tier="2">
-          <h2 class="tier__head"><span class="sec__mark">T2</span> Builds on T1 <span class="tier__n">4</span></h2>
+          <h3 class="tier__head"><span class="sec__mark">T2</span> Builds on T1 <span class="tier__n">4</span></h3>
           <ol class="tier__list">
-            <li><article class="node" id="drift-suspension" data-status="planned" data-tier="2" data-needs="drift-car linear-motor">
+            <li><article class="node" id="carrier-ops" data-status="planned" data-state="locked" data-tier="2" data-needs="linear-motor tvc-testbed">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">drift-suspension</span>
-              <h3 class="tb__name"><a href="#drift-suspension">Drift — Electromagnetic Active Suspension</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>carrier-ops</span>
+              <h4 class="tb__name"><a href="#carrier-ops">Carrier Ops</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S5 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#linear-motor">Linear Motor</a>, <a href="#tvc-testbed">Thrust-Vectoring Testbed</a></span><a class="node__up" href="#fig-carrier-ops">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A short-stroke linear motor at each corner instead of a spring and damper: the car leans into corners, stays level over jumps, absorbs bumps actively, and hops on command. Bose built this for real cars and never sold it; nobody has done it at RC scale. It is the linear-motor module&#x27;s second customer and the branch that changes the chassis the most, so the platform&#x27;s rev 1 should leave room for it.</p>
-          <h4>Goals</h4>
-          <ul><li>Four modules, ~25 mm stroke, ~20–40 N, ≥ 50 Hz force bandwidth, position + force control on the FOC board.</li><li>Modes: active damping, roll and pitch cancellation in a drift, level over a jump, hop.</li><li>Measured: body roll vs. lateral g with and without the system.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a>, <a href="#linear-motor">Linear Motor</a></dd></dl>
+          <h5>Summary</h5>
+          <p>Aircraft-carrier operations at RC scale: a linear-motor catapult launches a fixed wing straight into cruise, the wing flies, comes back, pitches up into a tail-sitter hover on its vectored tail motor, finds the landing platform with a downward camera, and sets down on its tail. The platform is the end of the rail, so it launches from and lands on the same two meters of aluminum. No landing gear anywhere. A quad would make the rail theatre, so the aircraft is a wing that has to hover at the end.</p>
+          <h5>Goals</h5>
+          <ul><li>Wing: ~700 mm span flying wing, 600–800 g, motor on a 2-axis vectoring mount at the tail, elevons in the propwash.</li><li>Launch: ~15 m/s off a 2 m rail (≈ 56 m/s²), no hover transition at takeoff.</li><li>Cruise 20–25 m/s; return transition to a stable tail-sitter hover.</li><li>Vision landing: downward camera, AprilTag on the platform, touchdown within ±10 cm, on the tail, motors off.</li><li>Full cycle repeated 10 times in a session without hands.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#linear-motor">Linear Motor</a>, <a href="#tvc-testbed">Thrust-Vectoring Testbed</a></dd></dl>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="qdd-actuator" data-status="planned" data-tier="2" data-needs="v3-bldc foc-driver dyno">
+            <li><article class="node" id="printer-5axis" data-status="planned" data-state="locked" data-tier="2" data-needs="linear-motor" data-uses="foc-driver">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">qdd-actuator</span>
-              <h3 class="tb__name"><a href="#qdd-actuator">QDD Actuator Module</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S3 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A complete quasi-direct-drive actuator built from scratch: the V3 motor, a low-ratio planetary (6–8:1, backdrivable), the single-channel FOC puck, and output-side magnetic encoder, all in one housing with CAN in and out. The MIT Cheetah / RobStride class of module, made from the copper up. Target ~$80 per unit after the development cost, which is what turns the wheel-leg, the pogo, and the monowheel from &quot;bought actuators&quot; into &quot;my actuators&quot;, and makes ten of them affordable. Sized so <code>wheel-leg</code> and the pogo / monowheel internals share the same module.</p>
-          <h4>Goals</h4>
-          <ul><li>Peak ≈ 12–18 N·m, ≈ 300–400 rpm at the output, ≤ 450 g, 24–48 V, CAN MIT-mode compatible with the UMV runner.</li><li>Backdrivable (reflected inertia low enough to survive landings without a spring), &lt; 0.5° backlash.</li><li>Output encoder + motor encoder; temperature; overcurrent and thermal derating in firmware.</li><li>Dyno-measured: torque constant, efficiency map, thermal limit, backdrive torque.</li><li>Unit cost ≈ $80 in a batch of 10.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a>, <a href="#dyno">Motor Dynamometer</a></dd><dt>Unlocks</dt><dd><a href="#wheel-leg">Wheel-Leg (Beni-class)</a></dd><dt>Also helps</dt><dd><a href="#monowheel">Monowheel</a>, <a href="#pogo">Multi-DOF Pogo Robot</a></dd></dl>
-          <p class="node__links"><a href="https://www.robstride.com/" rel="noopener">RobStride actuators (the reference class)</a></p>
-            </div>
-          </details>
-        </article></li>
-            <li><article class="node" id="printer-5axis" data-status="planned" data-tier="2" data-needs="linear-motor" data-uses="foc-driver">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">printer-5axis</span>
-              <h3 class="tb__name"><a href="#printer-5axis">5-Axis Linear-Motor Printer</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>printer-5axis</span>
+              <h4 class="tb__name"><a href="#printer-5axis">5-Axis Linear-Motor Printer</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H5 S5 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#linear-motor">Linear Motor</a></span><a class="node__up" href="#fig-printer-5axis">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
           <p>A 3D printer with linear-motor XY(Z) axes for speed and a two-axis trunnion bed (tilt + rotate) for axes 4 and 5. &quot;Fast as hell&quot; comes from the linear motors: no belts, no screws, 50k+ mm/s² accelerations and ~1 m/s travel, at which point the melt rate of the hotend is the limit. Five axes with a rotary bed enable the things that make multi-axis worth having: support-free 90° overhangs, conformal top layers, layers oriented to load, and printing onto existing parts. The mechanical build is finite; the slicer is half the project, because multi-axis toolpath generation is not a checkbox.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Linear axes: ≥ 1 m/s, ≥ 50 m/s², positioning repeatability ≤ 20 µm.</li><li>Trunnion: ±90° tilt, continuous rotate, ≤ 0.05° repeatability, 200 mm bed.</li><li>High-flow hotend (≥ 40 mm³/s) with input shaping tuned for the new mass and stiffness.</li><li>Software: a working conformal/non-planar workflow (Open5x-style or own), with a demo part that is not printable on a 3-axis machine.</li></ul>
           <dl class="node__rel"><dt>Needs</dt><dd><a href="#linear-motor">Linear Motor</a></dd><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd></dl>
           <p class="node__links"><a href="https://github.com/FreddieHong19/Open5x" rel="noopener">Open5x — accessible 5-axis printing and conformal slicing (reference)</a> · <a href="https://arxiv.org/abs/2202.11426" rel="noopener">Open5x paper (arXiv 2202.11426)</a></p>
             </div>
           </details>
         </article></li>
-            <li><article class="node" id="carrier-ops" data-status="planned" data-tier="2" data-needs="linear-motor tvc-testbed">
+            <li><article class="node" id="drift-suspension" data-status="planned" data-state="locked" data-tier="2" data-needs="drift-car linear-motor">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">carrier-ops</span>
-              <h3 class="tb__name"><a href="#carrier-ops">Carrier Ops</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>drift-suspension</span>
+              <h4 class="tb__name"><a href="#drift-suspension">Drift — Electromagnetic Active Suspension</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S5 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#drift-car">Drift Car (platform)</a>, <a href="#linear-motor">Linear Motor</a></span><a class="node__up" href="#fig-drift-suspension">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Aircraft-carrier operations at RC scale: a linear-motor catapult launches a fixed wing straight into cruise, the wing flies, comes back, pitches up into a tail-sitter hover on its vectored tail motor, finds the landing platform with a downward camera, and sets down on its tail. The platform is the end of the rail, so it launches from and lands on the same two meters of aluminum. No landing gear anywhere. A quad would make the rail theatre, so the aircraft is a wing that has to hover at the end.</p>
-          <h4>Goals</h4>
-          <ul><li>Wing: ~700 mm span flying wing, 600–800 g, motor on a 2-axis vectoring mount at the tail, elevons in the propwash.</li><li>Launch: ~15 m/s off a 2 m rail (≈ 56 m/s²), no hover transition at takeoff.</li><li>Cruise 20–25 m/s; return transition to a stable tail-sitter hover.</li><li>Vision landing: downward camera, AprilTag on the platform, touchdown within ±10 cm, on the tail, motors off.</li><li>Full cycle repeated 10 times in a session without hands.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#linear-motor">Linear Motor</a>, <a href="#tvc-testbed">Thrust-Vectoring Testbed</a></dd></dl>
+          <h5>Summary</h5>
+          <p>A short-stroke linear motor at each corner instead of a spring and damper: the car leans into corners, stays level over jumps, absorbs bumps actively, and hops on command. Bose built this for real cars and never sold it; nobody has done it at RC scale. It is the linear-motor module&#x27;s second customer and the branch that changes the chassis the most, so the platform&#x27;s rev 1 should leave room for it.</p>
+          <h5>Goals</h5>
+          <ul><li>Four modules, ~25 mm stroke, ~20–40 N, ≥ 50 Hz force bandwidth, position + force control on the FOC board.</li><li>Modes: active damping, roll and pitch cancellation in a drift, level over a jump, hop.</li><li>Measured: body roll vs. lateral g with and without the system.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#drift-car">Drift Car (platform)</a>, <a href="#linear-motor">Linear Motor</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+            <li><article class="node" id="qdd-actuator" data-status="planned" data-state="locked" data-tier="2" data-needs="v3-bldc foc-driver dyno">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>qdd-actuator</span>
+              <h4 class="tb__name"><a href="#qdd-actuator">QDD Actuator Module</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>2</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S3 E4</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>1</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a>, <a href="#dyno">Motor Dynamometer</a></span><a class="node__up" href="#fig-qdd-actuator">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>A complete quasi-direct-drive actuator built from scratch: the V3 motor, a low-ratio planetary (6–8:1, backdrivable), the single-channel FOC puck, and output-side magnetic encoder, all in one housing with CAN in and out. The MIT Cheetah / RobStride class of module, made from the copper up. Target ~$80 per unit after the development cost, which is what turns the wheel-leg, the pogo, and the monowheel from &quot;bought actuators&quot; into &quot;my actuators&quot;, and makes ten of them affordable. Sized so <code>wheel-leg</code> and the pogo / monowheel internals share the same module.</p>
+          <h5>Goals</h5>
+          <ul><li>Peak ≈ 12–18 N·m, ≈ 300–400 rpm at the output, ≤ 450 g, 24–48 V, CAN MIT-mode compatible with the UMV runner.</li><li>Backdrivable (reflected inertia low enough to survive landings without a spring), &lt; 0.5° backlash.</li><li>Output encoder + motor encoder; temperature; overcurrent and thermal derating in firmware.</li><li>Dyno-measured: torque constant, efficiency map, thermal limit, backdrive torque.</li><li>Unit cost ≈ $80 in a batch of 10.</li></ul>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a>, <a href="#dyno">Motor Dynamometer</a></dd><dt>Unlocks</dt><dd><a href="#wheel-leg">Wheel-Leg (Beni-class)</a></dd><dt>Also helps</dt><dd><a href="#monowheel">Monowheel</a>, <a href="#pogo">Multi-DOF Pogo Robot</a></dd></dl>
+          <p class="node__links"><a href="https://www.robstride.com/" rel="noopener">RobStride actuators (the reference class)</a></p>
             </div>
           </details>
         </article></li>
           </ol>
         </li>
         <li class="tier" data-tier="3">
-          <h2 class="tier__head"><span class="sec__mark">T3</span> Builds on T2 <span class="tier__n">1</span></h2>
+          <h3 class="tier__head"><span class="sec__mark">T3</span> Builds on T2 <span class="tier__n">1</span></h3>
           <ol class="tier__list">
-            <li><article class="node" id="wheel-leg" data-status="planned" data-tier="3" data-needs="qdd-actuator umv">
+            <li><article class="node" id="wheel-leg" data-status="planned" data-state="locked" data-tier="3" data-needs="qdd-actuator umv">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">wheel-leg</span>
-              <h3 class="tb__name"><a href="#wheel-leg">Wheel-Leg (Beni-class)</a></h3>
+              <span class="tb__no"><span class="node__swatch is-locked" aria-hidden="true"></span>wheel-leg</span>
+              <h4 class="tb__name"><a href="#wheel-leg">Wheel-Leg (Beni-class)</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>3</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S5 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-locked"><span class="node__why">Locked: needs <a href="#qdd-actuator">QDD Actuator Module</a>, <a href="#umv">UMV — Ultra Mobility Vehicle</a></span><a class="node__up" href="#fig-wheel-leg">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
           <p>A small, fast, springy two-wheeled-leg balancer in the class of Beni (≈ 1.75 kg, 29 km/h, 25 cm jump, stairs, self-righting) — explicitly not Handle: no arm, no box. Four of your own QDD actuators in the legs, two direct-drive wheel motors, an IMU, and the RL pipeline from the UMV. What makes it yours rather than a Beni clone is the performance level: real speed on bigger wheels, lean-in cornering and holding a drift, fast stairs down without stopping, self-righting from any orientation, and a stabilized camera head for the vision layer later. The jump is a design decision, not the point.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>≈ 1.5–2.5 kg, ≥ 40 km/h on the flat, balances at rest, survives a shove from any direction at speed.</li><li>Stairs: down a full flight at speed without stopping; up a standard flight.</li><li>Self-rights from any orientation (the tail, if fitted, is the lever for this).</li><li>Jump per the chosen tier (see Open questions): torque-only ≈ 30–40 cm, parallel-elastic ≈ 50–60 cm, latched ≈ 1 m.</li><li>Camera head (2-axis) for tracking a person or the drift car at speed, added later.</li></ul>
           <dl class="node__rel"><dt>Needs</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a>, <a href="#umv">UMV — Ultra Mobility Vehicle</a></dd></dl>
           <p class="node__links"><a href="https://www.mondorobotics.com/" rel="noopener">Beni (Mondo Robotics) — the reference class</a></p>
@@ -478,183 +562,246 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
         </article></li>
           </ol>
         </li>
-        </ol>
+      </ol>
         <div class="tier tier--alone" data-tier="alone">
-          <h2 class="tier__head"><span class="sec__mark">—</span> Standalone <span class="tier__n">9</span></h2>
+          <h3 class="tier__head"><span class="sec__mark">—</span> Standalone <span class="tier__n">12</span></h3>
           <ol class="tier__list">
-          <li><article class="node" id="rcj" data-status="active" data-tier="alone">
+          <li><article class="node" id="drawing-b-01" data-status="done" data-state="built" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">rcj</span>
-              <h3 class="tb__name"><a href="#rcj">RoboCup Junior (Play One)</a></h3>
+              <span class="tb__no"><span class="node__swatch is-built" aria-hidden="true"></span>B-01</span>
+              <h4 class="tb__name"><a href="p-drylab.html">Dry-lab model &amp; measurement</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">In review</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-built"><span class="node__why">Built</span><a class="node__up" href="#fig-drawing-b-01">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Ongoing RoboCup Junior work with Play One, a strong Taiwan team. A team effort on the season&#x27;s schedule, not a solo project; it sits in the tree so the calendar accounts for it and so anything reusable (vision, motor control, mechanisms) can be linked from here.</p>
-          <h4>Goals</h4>
-          <ul><li>Season results; note them here.</li></ul>
+          <p class="node__page"><a href="p-drylab.html">Drawing B-01 →</a></p>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="shooter-2026" data-status="active" data-tier="alone">
+          <li><article class="node" id="whoop" data-status="planned" data-state="ready" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">shooter-2026</span>
-              <h3 class="tb__name"><a href="#shooter-2026">2026 Shooter (finish)</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>whoop</span>
+              <h4 class="tb__name"><a href="#whoop">Whoop</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S1 E1</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-whoop">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>The 2026 shooter, to be finished. Details, current state, and scores are not in this folder yet — fill in from the existing design.</p>
-          <h4>Goals</h4>
-          <ul><li>Finished and demonstrated.</li></ul>
+          <h5>Summary</h5>
+          <p>Build and fly a tiny whoop. It&#x27;s fun, it teaches the FPV stack (Betaflight, DShot, video link) that the PCB drone and carrier ops lean on, and it costs nothing in time. No dependencies either way; fill a gap with it.</p>
+          <h5>Goals</h5>
+          <ul><li>A 65–75 mm whoop that flies well indoors; comfortable on the sticks in acro.</li></ul>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="monowheel" data-status="planned" data-tier="alone" data-uses="foc-driver qdd-actuator">
+          <li><article class="node" id="snakeboard" data-status="planned" data-state="ready" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">monowheel</span>
-              <h3 class="tb__name"><a href="#monowheel">Monowheel</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>snakeboard</span>
+              <h4 class="tb__name"><a href="#snakeboard">Snakeboard</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S4 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-snakeboard">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>A robot that propels itself on a passive board with no drive motor, by coupling body motion to steering: the true snakeboard (two steerable truck pairs and a body rotor; textbook nonholonomic system with real gait theory) or the RipStik-style caster board (a torsion axis and two casters; looks cooler, closer to the toy). Mechanism to be chosen later; the control problem is the project either way.</p>
+          <h5>Goals</h5>
+          <ul><li>Moves from rest on a flat floor with no wheel drive; holds a straight line and turns.</li><li>Reproduces at least two gaits from the literature (drive, rotate) and one of its own.</li><li>Instrumented: rotor angle, truck angles, board pose from an overhead camera or IMU + odometry.</li></ul>
+          <p class="node__links"><a href="https://en.wikipedia.org/wiki/Snakeboard" rel="noopener">Snakeboard (Wikipedia) — Ostrowski &amp; Burdick&#x27;s gait work is the theory reference</a></p>
+            </div>
+          </details>
+        </article></li>
+          <li><article class="node" id="pogo" data-status="planned" data-state="ready" data-tier="alone" data-uses="qdd-actuator">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>pogo</span>
+              <h4 class="tb__name"><a href="#pogo">Multi-DOF Pogo Robot</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S4 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-pogo">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>A robot that rides a passive pogo stick the way a human does: no jumping actuator, the hop comes from a mass moving relative to the stick, pumped at the right phase of the spring. Deliberately mechanism-dense, per Neo: a shuttle mass on a linear axis for the pumping, the whole mass assembly on a two-axis pivot for lean steering, a reaction wheel inside the mass for yaw turns in the air, a tilting foot so the takeoff angle is not set by how the stick happens to land, and possibly an adjustable preload collar to tune hop height without changing the pump. The exact mechanism is still open; the philosophy is fixed.</p>
+          <h5>Goals</h5>
+          <ul><li>Sustained hopping from rest to a steady height by resonance pumping alone.</li><li>Steering and balance by lean (a ballbot on a spring): straight line, then a circle, then a 180° yaw in the air.</li><li>Recover from a mis-timed hop; land and stop on command (or fall gracefully into a cage).</li><li>Instrumented: spring compression, mass position, IMU; logs for the control write-up.</li></ul>
+          <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+          <li><article class="node" id="monowheel" data-status="planned" data-state="ready" data-tier="alone" data-uses="foc-driver qdd-actuator">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>monowheel</span>
+              <h4 class="tb__name"><a href="#monowheel">Monowheel</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S4 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-monowheel">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
           <p>One big ring, 50–60 cm, and inside it a drive unit that rolls on the ring&#x27;s inner surface — the way real monowheels work, the inner wheel is the engine block. Roll balance from a reaction wheel or a small control-moment gyro (or mass shift — open), steering by leaning the internal mass so the ring tilts and carves like a bike. No legs (Ringbot&#x27;s legs were the part Neo did not want). It has everything the UMV has except a steering axis, which makes it harder: the only lateral authority is momentum, on a gyroscopic, underactuated body whose contact patch migrates as it leans.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Rolls and balances at ≥ 3 m/s; steers a figure-eight; stops and stands (or lies down and gets up).</li><li>Ring big enough to read as a wheel, not a toy: 50–60 cm.</li><li>Measured lean-vs-turn-rate map; a write-up of the balance strategy chosen.</li></ul>
           <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a>, <a href="#qdd-actuator">QDD Actuator Module</a></dd></dl>
           <p class="node__links"><a href="https://ieeexplore.ieee.org/document/10423226/" rel="noopener">Ringbot: Monocycle Robot With Legs (IEEE T-RO 2024) — the reference, minus the legs</a></p>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="pogo" data-status="planned" data-tier="alone" data-uses="qdd-actuator">
+          <li><article class="node" id="aimbot" data-status="planned" data-state="ready" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">pogo</span>
-              <h3 class="tb__name"><a href="#pogo">Multi-DOF Pogo Robot</a></h3>
-            </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H4 S4 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
-          </div>
-          <details class="node__more">
-            <summary>Details</summary>
-            <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A robot that rides a passive pogo stick the way a human does: no jumping actuator, the hop comes from a mass moving relative to the stick, pumped at the right phase of the spring. Deliberately mechanism-dense, per Neo: a shuttle mass on a linear axis for the pumping, the whole mass assembly on a two-axis pivot for lean steering, a reaction wheel inside the mass for yaw turns in the air, a tilting foot so the takeoff angle is not set by how the stick happens to land, and possibly an adjustable preload collar to tune hop height without changing the pump. The exact mechanism is still open; the philosophy is fixed.</p>
-          <h4>Goals</h4>
-          <ul><li>Sustained hopping from rest to a steady height by resonance pumping alone.</li><li>Steering and balance by lean (a ballbot on a spring): straight line, then a circle, then a 180° yaw in the air.</li><li>Recover from a mis-timed hop; land and stop on command (or fall gracefully into a cage).</li><li>Instrumented: spring compression, mass position, IMU; logs for the control write-up.</li></ul>
-          <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#qdd-actuator">QDD Actuator Module</a></dd></dl>
-            </div>
-          </details>
-        </article></li>
-          <li><article class="node" id="snakeboard" data-status="planned" data-tier="alone">
-          <div class="tb">
-            <div class="tb__head">
-              <span class="tb__no">snakeboard</span>
-              <h3 class="tb__name"><a href="#snakeboard">Snakeboard</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>aimbot</span>
+              <h4 class="tb__name"><a href="#aimbot">Mechanical Aimbot</a></h4>
             </div>
             <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S4 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-aimbot">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A robot that propels itself on a passive board with no drive motor, by coupling body motion to steering: the true snakeboard (two steerable truck pairs and a body rotor; textbook nonholonomic system with real gait theory) or the RipStik-style caster board (a torsion axis and two casters; looks cooler, closer to the toy). Mechanism to be chosen later; the control problem is the project either way.</p>
-          <h4>Goals</h4>
-          <ul><li>Moves from rest on a flat floor with no wheel drive; holds a straight line and turns.</li><li>Reproduces at least two gaits from the literature (drive, rotate) and one of its own.</li><li>Instrumented: rotor angle, truck angles, board pose from an overhead camera or IMU + odometry.</li></ul>
-          <p class="node__links"><a href="https://en.wikipedia.org/wiki/Snakeboard" rel="noopener">Snakeboard (Wikipedia) — Ostrowski &amp; Burdick&#x27;s gait work is the theory reference</a></p>
+          <h5>Summary</h5>
+          <p>A camera looks at the screen, a model finds the target, and a mechanism moves a real mouse — no software hooks, no memory reading. It is a screen-to-hand latency problem: capture latency plus inference plus mouse actuation, so the system has to predict where the target will be when the mouse gets there. Run it against an offline aim trainer (Aim Lab, Kovaak&#x27;s) and frame it as a tracking/latency project; the score-vs-latency chart is the portfolio artifact.</p>
+          <h5>Goals</h5>
+          <ul><li>End-to-end latency budget measured: camera (global shutter, ≥ 120 fps) → detection → prediction → stage motion.</li><li>A 2-axis stage (or a small SCARA hand) moving a real mouse with ≥ 2 m/s peak and ≤ 0.1 mm repeatability on the pad.</li><li>A trainer score that beats a human on a tracking scenario, plotted against added artificial latency.</li></ul>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="diwheel" data-status="planned" data-tier="alone" data-uses="foc-driver">
+          <li><article class="node" id="kart" data-status="idea" data-state="ready" data-tier="alone" data-uses="v3-bldc foc-driver">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">diwheel</span>
-              <h3 class="tb__name"><a href="#diwheel">Diwheel</a></h3>
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>kart</span>
+              <h4 class="tb__name"><a href="#kart">Go-Kart</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S2 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-kart">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
+          <h5>Summary</h5>
+          <p>An electric go-kart. Two versions of the same node: with a bought motor and controller it is a fun build and the least portfolio-relevant thing on the list; with your own motor (V3 scaled up) and a kW-scale inverter (the FOC board scaled up) it becomes a serious power-electronics project. The upgrade path is what the dashed edges are. Given Taiwan, a scooter conversion is the same project with a licence problem; the kart avoids that.</p>
+          <h5>Goals</h5>
+          <ul><li>COTS version: 3–5 kW, 40+ km/h, real brakes, a frame that survives.</li><li>Own-powertrain version: an in-house motor (10+ kW peak) and inverter (300+ A phase), with dyno data.</li></ul>
+          <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a></dd></dl>
+            </div>
+          </details>
+        </article></li>
+          <li><article class="node" id="diwheel" data-status="planned" data-state="ready" data-tier="alone" data-uses="foc-driver">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-ready" aria-hidden="true"></span>diwheel</span>
+              <h4 class="tb__name"><a href="#diwheel">Diwheel</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S3 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-ready"><span class="node__why">Ready: needs nothing</span><a class="node__up" href="#fig-diwheel">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
           <p>Two big wheels side by side with the body hanging between them as a pendulum — not a Segway with a mast, a robot living inside its wheels. Drives fast, and has an inverted mode: it swings the body up over the axle, balances upside-down, and drives like that. Few actuators, one clever body, and the inverted transition (a swing-up) is the control problem. Uses the FOC board if it exists; a VESC works otherwise.</p>
-          <h4>Goals</h4>
+          <h5>Goals</h5>
           <ul><li>Two wheel motors, body slung between; ≥ 3 m/s; hard braking without the body tumbling (the classic diwheel failure).</li><li>Swing-up to inverted and balance there; drive inverted; swing back down.</li><li>Robust to a shove in both modes.</li></ul>
           <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#foc-driver">FOC Driver Board</a></dd></dl>
           <p class="node__links"><a href="https://en.wikipedia.org/wiki/Diwheel" rel="noopener">Diwheel (Wikipedia; covers EDWARD from Adelaide)</a></p>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="aimbot" data-status="planned" data-tier="alone">
+          <li><article class="node" id="rcj" data-status="active" data-state="active" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">aimbot</span>
-              <h3 class="tb__name"><a href="#aimbot">Mechanical Aimbot</a></h3>
+              <span class="tb__no"><span class="node__swatch is-active" aria-hidden="true"></span>rcj</span>
+              <h4 class="tb__name"><a href="#rcj">RoboCup Junior (Play One)</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H2 S4 E2</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-active"><span class="node__why">In progress</span><a class="node__up" href="#fig-rcj">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>A camera looks at the screen, a model finds the target, and a mechanism moves a real mouse — no software hooks, no memory reading. It is a screen-to-hand latency problem: capture latency plus inference plus mouse actuation, so the system has to predict where the target will be when the mouse gets there. Run it against an offline aim trainer (Aim Lab, Kovaak&#x27;s) and frame it as a tracking/latency project; the score-vs-latency chart is the portfolio artifact.</p>
-          <h4>Goals</h4>
-          <ul><li>End-to-end latency budget measured: camera (global shutter, ≥ 120 fps) → detection → prediction → stage motion.</li><li>A 2-axis stage (or a small SCARA hand) moving a real mouse with ≥ 2 m/s peak and ≤ 0.1 mm repeatability on the pad.</li><li>A trainer score that beats a human on a tracking scenario, plotted against added artificial latency.</li></ul>
+          <h5>Summary</h5>
+          <p>Ongoing RoboCup Junior work with Play One, a strong Taiwan team. A team effort on the season&#x27;s schedule, not a solo project; it sits in the tree so the calendar accounts for it and so anything reusable (vision, motor control, mechanisms) can be linked from here.</p>
+          <h5>Goals</h5>
+          <ul><li>Season results; note them here.</li></ul>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="whoop" data-status="planned" data-tier="alone">
+          <li><article class="node" id="shooter-2026" data-status="active" data-state="active" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">whoop</span>
-              <h3 class="tb__name"><a href="#whoop">Whoop</a></h3>
+              <span class="tb__no"><span class="node__swatch is-active" aria-hidden="true"></span>shooter-2026</span>
+              <h4 class="tb__name"><a href="#shooter-2026">2026 Shooter (finish)</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Planned</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H1 S1 E1</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-active"><span class="node__why">In progress</span><a class="node__up" href="#fig-shooter-2026">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>Build and fly a tiny whoop. It&#x27;s fun, it teaches the FPV stack (Betaflight, DShot, video link) that the PCB drone and carrier ops lean on, and it costs nothing in time. No dependencies either way; fill a gap with it.</p>
-          <h4>Goals</h4>
-          <ul><li>A 65–75 mm whoop that flies well indoors; comfortable on the sticks in acro.</li></ul>
+          <h5>Summary</h5>
+          <p>The 2026 shooter, to be finished. Details, current state, and scores are not in this folder yet — fill in from the existing design.</p>
+          <h5>Goals</h5>
+          <ul><li>Finished and demonstrated.</li></ul>
             </div>
           </details>
         </article></li>
-          <li><article class="node" id="kart" data-status="idea" data-tier="alone" data-uses="v3-bldc foc-driver">
+          <li><article class="node" id="quadrotor" data-status="done" data-state="built" data-tier="alone">
           <div class="tb">
             <div class="tb__head">
-              <span class="tb__no">kart</span>
-              <h3 class="tb__name"><a href="#kart">Go-Kart</a></h3>
+              <span class="tb__no"><span class="node__swatch is-built" aria-hidden="true"></span>C-01</span>
+              <h4 class="tb__name"><a href="p-drone.html">Quadrotor</a></h4>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--idea">Idea</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">H3 S2 E3</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Flown</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-built"><span class="node__why">Built</span><a class="node__up" href="#fig-quadrotor">In the drawing ↑</a></p>
           </div>
           <details class="node__more">
             <summary>Details</summary>
             <div class="node__body prose">
-          <h4>Summary</h4>
-          <p>An electric go-kart. Two versions of the same node: with a bought motor and controller it is a fun build and the least portfolio-relevant thing on the list; with your own motor (V3 scaled up) and a kW-scale inverter (the FOC board scaled up) it becomes a serious power-electronics project. The upgrade path is what the dashed edges are. Given Taiwan, a scooter conversion is the same project with a licence problem; the kart avoids that.</p>
-          <h4>Goals</h4>
-          <ul><li>COTS version: 3–5 kW, 40+ km/h, real brakes, a frame that survives.</li><li>Own-powertrain version: an in-house motor (10+ kW peak) and inverter (300+ A phase), with dyno data.</li></ul>
-          <dl class="node__rel"><dt>Uses if built</dt><dd><a href="#v3-bldc">V3 BLDC Motor (laminated stator)</a>, <a href="#foc-driver">FOC Driver Board</a></dd></dl>
+          <h5>Summary</h5>
+          <p>A quadrotor, built and flown in 2024: the frame, the stack and the attitude loop.</p>
+          <h5>Goals</h5>
+          <ul><li>Built and flown.</li></ul>
+          <p class="node__page"><a href="p-drone.html">Drawing C-01 →</a></p>
+            </div>
+          </details>
+        </article></li>
+          <li><article class="node" id="frc-shooter" data-status="done" data-state="built" data-tier="alone">
+          <div class="tb">
+            <div class="tb__head">
+              <span class="tb__no"><span class="node__swatch is-built" aria-hidden="true"></span>M-02</span>
+              <h4 class="tb__name"><a href="p-shooter.html">FRC shooter subsystem</a></h4>
+            </div>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Tier</dt><dd>—</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Competed</span></dd></div><div class="tb__cell"><dt>Complexity</dt><dd><span class="mono">Not scored</span></dd></div><div class="tb__cell"><dt>Unlocks</dt><dd>—</dd></div></dl>
+            <p class="node__state is-built"><span class="node__why">Built</span><a class="node__up" href="#fig-frc-shooter">In the drawing ↑</a></p>
+          </div>
+          <details class="node__more">
+            <summary>Details</summary>
+            <div class="node__body prose">
+          <h5>Summary</h5>
+          <p>The shooter subsystem built for FRC team 4253&#x27;s 2026 season robot. It competed that season.</p>
+          <h5>Goals</h5>
+          <ul><li>On the 2026 robot and competing.</li></ul>
+          <p class="node__page"><a href="p-shooter.html">Drawing M-02 →</a></p>
             </div>
           </details>
         </article></li>
           </ol>
         </div>
-        </div>
-      </div>
     </section>
     <!-- /tree:generated -->
 
@@ -668,7 +815,7 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
       <div class="colophon__cell"><dt>Contact</dt><dd><a href="mailto:neolava2@gmail.com">neolava2@gmail.com</a></dd></div>
       <div class="colophon__cell"><dt>Instagram</dt><dd><a href="https://www.instagram.com/ne0._s/">@ne0._s</a></dd></div>
     </dl>
-    <p class="colophon__foot">Tree &middot; generated 2026-09-24</p>
+    <p class="colophon__foot">Tree &middot; generated 2026-09-25</p>
   </footer>
 
 </div>

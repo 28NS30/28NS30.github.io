@@ -1,42 +1,50 @@
 /* ---------------------------------------------------------------------------
-   The project tree: drawn edges and tracing, over a page that reads without them.
+   The tech tree: tracing, the title-block panel, and the keyboard.
 
-   With script off, tree.html is a tiered list of title blocks and every card
-   says what it needs and unlocks inside its details. This adds what only a
-   script can: one drawn edge per hard prerequisite, and hovering or focusing a
-   card lights everything it depends on and everything that depends on it.
+   gen_tree.py bakes the whole figure into the page -- every circle, line and
+   name is already placed -- so with script off the drawing still reads and every
+   circle is a link to its card in the parts list. This adds what only a script
+   can: hovering or focusing a project lights everything it depends on and
+   everything that depends on it; choosing one puts its title block in the panel
+   beside the drawing; and the drawing is one stop in the tab order, walked with
+   the arrow keys the way a tree view is.
 
-   The markup is the data. Each card carries data-needs (hard) and data-uses
-   (soft) as space-separated ids; nothing is fetched and nothing is stored.
+   The markup is the data: each card carries data-needs (hard) and data-uses
+   (soft) as space-separated ids. Nothing is fetched and nothing is stored.
    --------------------------------------------------------------------------- */
 (function () {
   'use strict';
   if (!document.documentElement.classList.contains('js')) return;
 
-  var tree = document.querySelector('.tree');
-  if (!tree) return;
-  var scroller = tree.querySelector('.tree__scroll');
-  var svg = tree.querySelector('.tree__edges');
-  var NS = 'http://www.w3.org/2000/svg';
-  var wide = matchMedia('(min-width: 1100px)');
+  var tt = document.querySelector('.tt');
+  if (!tt) return;
+  var svg = tt.querySelector('.tt__svg');
+  var panel = tt.querySelector('.tt__panel');
+  var status = tt.querySelector('.tt__status');
+  var hint = panel ? panel.innerHTML : '';
+  var wide = matchMedia('(min-width: 700px)');           // room to trace a chain
+  var roomy = matchMedia('(min-width: 1400px)');         // room for the panel
   var hover = matchMedia('(hover: hover)');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  // ---- the graph, read from the cards -------------------------------------
-  var nodes = [].slice.call(tree.querySelectorAll('.node'));
+  // ---- the graph, read from the cards ---------------------------------------
   // no prototype, so a hash like #constructor finds nothing rather than a function
   function map() { return Object.create(null); }
-  var byId = map(), needs = map(), uses = map(), neededBy = map(), usedBy = map();
-  function ids(el, attr) {
-    return (el.getAttribute(attr) || '').split(/\s+/).filter(Boolean);
-  }
-  nodes.forEach(function (n) { byId[n.id] = n; neededBy[n.id] = []; usedBy[n.id] = []; });
-  nodes.forEach(function (n) {
-    needs[n.id] = ids(n, 'data-needs').filter(function (d) { return byId[d]; });
-    uses[n.id] = ids(n, 'data-uses').filter(function (d) { return byId[d]; });
-    needs[n.id].forEach(function (d) { neededBy[d].push(n.id); });
-    uses[n.id].forEach(function (d) { usedBy[d].push(n.id); });
+  var cards = map(), circles = map(), needs = map(), uses = map(), neededBy = map(), usedBy = map();
+  var order = [].slice.call(svg.querySelectorAll('.tt__node'));     // tier, then clockwise
+  order.forEach(function (a) { circles[a.getAttribute('data-id')] = a; });
+  [].slice.call(document.querySelectorAll('.tree .node')).forEach(function (c) {
+    cards[c.id] = c; neededBy[c.id] = []; usedBy[c.id] = [];
   });
+  function ids(el, attr) { return (el.getAttribute(attr) || '').split(/\s+/).filter(Boolean); }
+  Object.keys(cards).forEach(function (id) {
+    needs[id] = ids(cards[id], 'data-needs').filter(function (d) { return cards[d]; });
+    uses[id] = ids(cards[id], 'data-uses').filter(function (d) { return cards[d]; });
+    needs[id].forEach(function (d) { neededBy[d].push(id); });
+    uses[id].forEach(function (d) { usedBy[d].push(id); });
+  });
+  var lines = [].slice.call(svg.querySelectorAll('.tt__edge'));
+  var softs = [].slice.call(svg.querySelectorAll('.tt__soft'));
 
   function walk(id, next) {
     var seen = map(), stack = next[id].slice();
@@ -49,251 +57,328 @@
     return seen;
   }
 
-  // ---- edges ---------------------------------------------------------------
-  var hard = [];           // {from, to, el}
-  var softEls = [];
-
-  function el(name, attrs) {
-    var e = document.createElementNS(NS, name);
-    for (var k in attrs) e.setAttribute(k, attrs[k]);
-    return e;
-  }
-
-  function defs() {
-    var d = el('defs', {});
-    [['tree-arrow', 'tree__arrow'], ['tree-arrow-hi', 'tree__arrow tree__arrow--hi']].forEach(function (m) {
-      var mk = el('marker', { id: m[0], viewBox: '0 0 8 8', refX: '7', refY: '4',
-                              markerWidth: '7', markerHeight: '7', orient: 'auto',
-                              markerUnits: 'userSpaceOnUse' });
-      mk.appendChild(el('path', { d: 'M0,0 L8,4 L0,8 z', 'class': m[1] }));
-      d.appendChild(mk);
-    });
-    return d;
-  }
-
-  // Edges meet the title block, not the middle of the card. A card grows when
-  // its details open, and its centre would drift down into the body text.
-  function box(id) {
-    var r = byId[id].querySelector('.tb').getBoundingClientRect();
-    var s = scroller.getBoundingClientRect();
-    var x = scroller.scrollLeft - s.left, y = scroller.scrollTop - s.top;
-    return { left: r.left + x, right: r.right + x, cy: r.top + y + r.height / 2 };
-  }
-
-  function curve(a, b) {
-    var x1, x2, s1, s2, room = gutter();
-    if (b.left >= a.right)      { x1 = a.right; x2 = b.left;  s1 = 1;  s2 = 1;  }
-    else if (b.right <= a.left) { x1 = a.left;  x2 = b.right; s1 = -1; s2 = -1; }
-    // Same column: a loop out into the gutter and back. The last column has
-    // no gutter on its right, so its loops bend left, into the gap before it,
-    // which the standalone rule halves.
-    else if (a.right + room > scroller.scrollWidth - 1) {
-      x1 = a.left; x2 = b.left; s1 = -1; s2 = 1; room /= 2;
-    }
-    else                        { x1 = a.right; x2 = b.right; s1 = 1;  s2 = -1; }
-    x2 -= s2;                   // stop a pixel short so the arrowhead meets the border
-    var d = Math.max(32, 0.45 * Math.abs(x2 - x1));
-    // A loop bulges .75d out. Kept inside its gutter, or it runs under the next
-    // column's cards and reads as edges into them.
-    if (s1 !== s2) d = Math.min(Math.max(d, 0.25 * Math.abs(b.cy - a.cy)), room / 0.75 - 8);
-    return 'M' + x1 + ' ' + a.cy + ' C' + (x1 + s1 * d) + ' ' + a.cy + ', '
-         + (x2 - s2 * d) + ' ' + b.cy + ', ' + x2 + ' ' + b.cy;
-  }
-
-  function gutter() {
-    return parseFloat(getComputedStyle(tree.querySelector('.tree__cols')).columnGap) || 48;
-  }
-
-  function drawEdges() {
-    raf = 0;
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    hard = []; softEls = [];
-    // collapse the layer before measuring: sized to scrollWidth, it is part of
-    // scrollWidth, so otherwise it could only ever grow
-    svg.setAttribute('width', 0);
-    svg.setAttribute('height', 0);
-    if (!wide.matches) {            // stacked below 1100px: no columns to connect
-      trace(current);               // ...and nothing to trace, so clear what was lit
-      return;
-    }
-    svg.setAttribute('width', scroller.scrollWidth);
-    svg.setAttribute('height', scroller.scrollHeight);
-    svg.appendChild(defs());
-    nodes.forEach(function (n) {
-      needs[n.id].forEach(function (from) {
-        var p = el('path', { 'class': 'tree__edge', d: curve(box(from), box(n.id)),
-                             'data-from': from, 'data-to': n.id });
-        svg.appendChild(p);
-        hard.push({ from: from, to: n.id, el: p });
-      });
-    });
-    trace(current);
-  }
-  var raf = 0;
-  function redraw() { if (!raf) raf = requestAnimationFrame(drawEdges); }
-
-  // ---- tracing --------------------------------------------------------------
-  // Three things can ask for a card to be lit, most recent intent first: the
-  // pointer, the keyboard, and a card chosen by #link. Kept apart so that one
-  // letting go hands back to the next, rather than clearing everything.
+  // ---- tracing -----------------------------------------------------------------
+  // Three things can ask for a project to be lit, most recent intent first: the
+  // pointer, the keyboard, and a project chosen. Kept apart so that one letting
+  // go hands back to the next rather than clearing everything.
   var hovered = null, focused = null, sticky = null;
-  var current = null;      // what is lit now
 
   function relight() { trace(hovered || focused || sticky); }
 
   function trace(id) {
-    current = id || null;
-    softEls.forEach(function (s) { s.remove(); });
-    softEls = [];
-    // Stacked, there are no edges to follow, and dimming every other card in a
-    // long list only fades the page (on touch it stays faded until the next tap).
-    if (!current || !wide.matches) {
-      nodes.forEach(function (n) { n.classList.remove('is-focus', 'is-related', 'is-dim'); });
-      hard.forEach(function (e) { e.el.classList.remove('is-hi', 'is-dim'); });
-      return;
+    var on = !!(id && wide.matches && cards[id]);
+    tt.classList.toggle('is-tracing', on);
+    var anc = on ? walk(id, needs) : map(), desc = on ? walk(id, neededBy) : map(), near = map();
+    if (on) {
+      uses[id].forEach(function (k) { near[k] = true; });
+      usedBy[id].forEach(function (k) { near[k] = true; });
     }
-    var anc = walk(id, needs), desc = walk(id, neededBy), soft = map();
-    uses[id].forEach(function (k) { soft[k] = true; });
-    usedBy[id].forEach(function (k) { soft[k] = true; });
-    nodes.forEach(function (n) {
-      var rel = anc[n.id] || desc[n.id] || soft[n.id];
-      n.classList.toggle('is-focus', n.id === id);
-      n.classList.toggle('is-related', !!rel && n.id !== id);
-      n.classList.toggle('is-dim', !rel && n.id !== id);
+    order.forEach(function (a) {
+      var k = a.getAttribute('data-id');
+      a.classList.toggle('is-focus', on && k === id);
+      a.classList.toggle('is-related', on && k !== id && !!(anc[k] || desc[k] || near[k]));
     });
-    // an edge is lit when it lies on a chain through the focused card
-    hard.forEach(function (e) {
-      var up = anc[e.from] && (e.to === id || anc[e.to]);
-      var down = desc[e.to] && (e.from === id || desc[e.from]);
-      e.el.classList.toggle('is-hi', !!(up || down));
-      e.el.classList.toggle('is-dim', !(up || down));
+    // a line is lit when it lies on a chain through the chosen project; a spoke
+    // from the hub is lit when the chain reaches back to it
+    lines.forEach(function (p) {
+      var from = p.getAttribute('data-from'), to = p.getAttribute('data-to'), hi = false;
+      if (on) {
+        if (!from) hi = to === id ? !needs[id].length : !!(anc[to] && !needs[to].length);
+        else hi = !!((anc[from] && (to === id || anc[to])) || (desc[to] && (from === id || desc[from])));
+      }
+      p.classList.toggle('is-hi', hi);
     });
-    // soft edges exist only while one of their ends is focused
-    if (wide.matches && svg.firstChild) {
-      uses[id].forEach(function (k) { addSoft(k, id); });
-      usedBy[id].forEach(function (k) { addSoft(id, k); });
-    }
-  }
-  function addSoft(from, to) {
-    var p = el('path', { 'class': 'tree__edge tree__edge--soft', d: curve(box(from), box(to)) });
-    svg.appendChild(p);
-    softEls.push(p);
+    softs.forEach(function (p) {
+      p.classList.toggle('is-shown', on && (p.getAttribute('data-from') === id || p.getAttribute('data-to') === id));
+    });
   }
 
-  function nodeOf(t) { return t && t.closest ? t.closest('.node') : null; }
+  function nodeOf(t) {
+    if (!t || !t.closest) return null;
+    var a = t.closest('.tt__svg .tt__node');
+    if (a) return a.getAttribute('data-id');
+    var c = t.closest('.tree .node');
+    return c ? c.id : null;
+  }
+
+  // (hover: hover): the mouse events a touch screen invents on a tap would
+  // otherwise start a trace that nothing ends
+  function enter(e) { if (hover.matches) { hovered = nodeOf(e.currentTarget); relight(); } }
+  function leave(e) { if (hovered === nodeOf(e.currentTarget)) { hovered = null; relight(); } }
+  order.concat(Object.keys(cards).map(function (k) { return cards[k]; })).forEach(function (el) {
+    el.addEventListener('mouseenter', enter);
+    el.addEventListener('mouseleave', leave);
+  });
+
+  // Focus from a mouse click is not the keyboard's intent and would outlast
+  // the pointer, so only :focus-visible focus counts, and it is the newest.
+  function keyboard(t) { try { return t.matches(':focus-visible'); } catch (e) { return true; } }
+  document.addEventListener('focusin', function (e) {
+    // the one tab stop follows focus however it arrived (a click, a link)
+    var c = e.target.closest && e.target.closest('.tt__svg .tt__node');
+    if (c && c !== current) rove(c, false);
+    var id = nodeOf(e.target);
+    if (!id) return;
+    focused = keyboard(e.target) ? id : null;
+    if (focused) hovered = null;
+    relight();
+  });
+  document.addEventListener('focusout', function (e) {
+    if (!nodeOf(e.relatedTarget)) { focused = null; relight(); }
+  });
+
+  // ---- choosing a project -------------------------------------------------------------
+  function mark(id) {
+    if (sticky && circles[sticky]) { circles[sticky].classList.remove('is-sticky'); circles[sticky].removeAttribute('aria-current'); }
+    if (sticky && cards[sticky]) cards[sticky].classList.remove('is-sticky');
+    sticky = id || null;
+    if (sticky && circles[sticky]) { circles[sticky].classList.add('is-sticky'); circles[sticky].setAttribute('aria-current', 'true'); }
+    if (sticky && cards[sticky]) cards[sticky].classList.add('is-sticky');
+  }
+
+  // focus back on a circle, and the circle in view: preventScroll alone could
+  // leave the keyboard somewhere the eye is not
+  function refocus(a) {
+    if (!a) return;
+    a.focus({ preventScroll: true });
+    a.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+  }
+
+  function fill(id) {
+    if (!panel) return;
+    var card = cards[id];
+    if (!card) { panel.innerHTML = hint; return; }
+    var out = document.createElement('div');
+    var block = document.createElement('article');
+    block.className = 'node';
+    block.appendChild(card.querySelector('.tb').cloneNode(true));
+    // the page's own h2 comes after the panel: the clone's title is a line, not a heading
+    var head = block.querySelector('.tb__name');
+    if (head) {
+      var line = document.createElement('p');
+      line.className = 'tb__name';
+      var link = head.querySelector('a');
+      if (link && link.getAttribute('href') === '#' + id) line.textContent = link.textContent;
+      else while (head.firstChild) line.appendChild(head.firstChild);
+      head.parentNode.replaceChild(line, head);
+    }
+    out.appendChild(block);
+    // the first paragraph of the Summary, then what it needs and unlocks
+    var body = card.querySelector('.node__body');
+    var heads = body ? [].slice.call(body.querySelectorAll('h5')) : [];
+    for (var k = 0; k < heads.length; k++) {
+      if (/^summary$/i.test(heads[k].textContent.trim())) {
+        var p = heads[k].nextElementSibling;
+        if (p && p.tagName === 'P') {
+          var sum = p.cloneNode(true);
+          sum.className = 'tt__psum';
+          out.appendChild(sum);
+        }
+        break;
+      }
+    }
+    var rel = body && body.querySelector('.node__rel');
+    if (rel) {
+      rel = rel.cloneNode(true);
+      // a locked card's state line already links what it needs
+      var said = [].slice.call(block.querySelectorAll('.node__why a')).map(function (x) { return x.getAttribute('href'); });
+      [].slice.call(rel.querySelectorAll('dt')).forEach(function (dt) {
+        if (!/^needs$/i.test(dt.textContent.trim())) return;
+        var dd = dt.nextElementSibling;
+        if (!dd) return;
+        var links = [].slice.call(dd.querySelectorAll('a'));
+        var fresh = links.filter(function (x) { return said.indexOf(x.getAttribute('href')) < 0; });
+        if (!fresh.length) { rel.removeChild(dd); rel.removeChild(dt); return; }
+        // keep the built prerequisites the state line does not name
+        dd.innerHTML = '';
+        fresh.forEach(function (x, k) { if (k) dd.appendChild(document.createTextNode(', ')); dd.appendChild(x); });
+      });
+      if (rel.children.length) out.appendChild(rel);
+    }
+    var go = document.createElement('p');
+    go.className = 'tt__pgo';
+    var more = document.createElement('a');
+    more.href = '#' + id;
+    more.className = 'tt__details';
+    more.textContent = 'Details ↓';
+    go.appendChild(more);
+    var page = body && body.querySelector('.node__page a');
+    var titled = block.querySelector('.tb__name a');
+    if (page && !(titled && titled.getAttribute('href') === page.getAttribute('href'))) go.appendChild(page.cloneNode(true));
+    out.appendChild(go);
+    panel.innerHTML = '';
+    panel.appendChild(out);
+  }
+
+  function select(id, push) {
+    if (!cards[id]) return;
+    var had = panel && panel.contains(document.activeElement);
+    mark(id);
+    hovered = null;                 // the choice is the newest intent
+    relight();
+    if (circles[id]) rove(circles[id], false);
+    if (roomy.matches) {
+      fill(id);
+      if (status) status.textContent = 'Selected: ' + (cards[id].querySelector('.tb__name') || {}).textContent;
+      // rebuilding the panel under the focus would drop it to the page top
+      if (had && circles[id]) refocus(circles[id]);
+    }
+    // entries the drawing makes are tagged: Back and Forward over them stay on
+    // the drawing, while a #link in the parts list still goes to its card
+    if (push && location.hash !== '#' + id) history.pushState({ tt: id }, '', '#' + id);
+  }
+
+  function clear() {
+    var had = panel && panel.contains(document.activeElement), was = sticky;
+    mark(null);
+    focused = null;
+    relight();
+    if (panel) panel.innerHTML = hint;
+    if (status) status.textContent = '';
+    if (had && circles[was]) refocus(circles[was]);
+  }
+
+  function release() {
+    clear();
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  // ---- the keyboard: one tab stop, walked like a tree view ------------------------------
+  var current = order[0];
+  function rove(a, focus) {
+    if (!a) return;
+    order.forEach(function (x) { x.setAttribute('tabindex', x === a ? '0' : '-1'); });
+    current = a;
+    if (focus) a.focus();
+  }
+  rove(current, false);
+  svg.addEventListener('keydown', function (e) {
+    var a = e.target.closest && e.target.closest('.tt__node');
+    if (!a) return;
+    var k = order.indexOf(a), to = null, id = a.getAttribute('data-id');
+    if (e.key === 'ArrowDown') to = order[Math.min(order.length - 1, k + 1)];
+    else if (e.key === 'ArrowUp') to = order[Math.max(0, k - 1)];
+    else if (e.key === 'Home') to = order[0];
+    else if (e.key === 'End') to = order[order.length - 1];
+    else if (e.key === 'ArrowRight') to = svg.querySelector('.tt__node[data-parent="' + id + '"]');
+    else if (e.key === 'ArrowLeft') to = circles[a.getAttribute('data-parent')] || null;
+    else if (e.key.length === 1 && /\S/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      // type-ahead: the next project whose name starts with the letter
+      var ch = e.key.toLowerCase();
+      for (var j = 1; j <= order.length; j++) {
+        var c = order[(k + j) % order.length];
+        if ((c.getAttribute('data-short') || c.getAttribute('aria-label') || '').toLowerCase().charAt(0) === ch) { to = c; break; }
+      }
+    } else return;
+    e.preventDefault();
+    if (to) rove(to, true);
+  });
+
+  // ---- clicks ------------------------------------------------------------------------------
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var a = t.closest && t.closest('a[href]');
+    // a modified click means a new tab or window: leave it to the browser
+    if (a && (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) return;
+    var circle = t.closest && t.closest('.tt__svg .tt__node');
+    if (circle) {
+      var id = circle.getAttribute('data-id');
+      if (roomy.matches) { e.preventDefault(); select(id, true); }
+      else mark(id);                 // the link goes on to its card, marked
+      return;
+    }
+    if (a && a.classList.contains('node__up')) {
+      // back up to the drawing: land on the circle, ready for the arrow keys
+      var id2 = (a.getAttribute('href') || '').replace(/^#fig-/, '');
+      if (circles[id2]) {
+        e.preventDefault();
+        circles[id2].scrollIntoView({ block: 'center', behavior: reduce.matches ? 'auto' : 'smooth' });
+        rove(circles[id2], false);
+        circles[id2].focus({ preventScroll: true });
+        select(id2, false);
+      }
+      return;
+    }
+    var h = a && a.getAttribute('href');
+    if (a && a.classList.contains('tt__details') && cards[idOf(h)]) {
+      e.preventDefault();
+      var card = cards[idOf(h)], more = card.querySelector('.node__more');
+      if (more) more.open = true;
+      history.pushState(null, '', h);
+      card.scrollIntoView({ block: 'start', behavior: reduce.matches ? 'auto' : 'smooth' });
+      var into = card.querySelector('.node__more > summary') || card.querySelector('.tb__name a');
+      if (into) into.focus({ preventScroll: true });
+      return;
+    }
+    if (h && h.charAt(0) === '#' && cards[idOf(h)]) {
+      // a project named in the panel moves the panel; one in the parts list
+      // goes to its card as a link should, and stays marked there
+      if (panel && panel.contains(a) && !a.classList.contains('tt__details') && roomy.matches) {
+        e.preventDefault();
+        select(idOf(h), true);
+      } else {
+        mark(idOf(h));
+      }
+      return;
+    }
+    if (sticky && !(t.closest && (t.closest('.tt__panel') || t.closest('.tree .node')))) release();
+  });
 
   // a hand-typed or truncated hash can be malformed percent-encoding, which
   // decodeURIComponent throws on; that should select nothing, not stop the page
   function idOf(hash) {
     try { return decodeURIComponent(hash.replace(/^#/, '')); } catch (e) { return ''; }
   }
-
-  // (hover: hover) so the mouse events a touch screen invents on a tap do not
-  // start a trace that nothing will end
-  nodes.forEach(function (n) {
-    n.addEventListener('mouseenter', function () { if (hover.matches) { hovered = n.id; relight(); } });
-    n.addEventListener('mouseleave', function () { if (hovered === n.id) { hovered = null; relight(); } });
-  });
-  // Focus from a mouse click (Chrome focuses a clicked <summary>) is not the
-  // keyboard's intent and would outlast the pointer, so only :focus-visible
-  // focus counts. Keyboard focus is the newest intent and takes over from a
-  // pointer that happens to rest on another card.
-  function keyboard(t) {
-    try { return t.matches(':focus-visible'); } catch (e) { return true; }
-  }
-  tree.addEventListener('focusin', function (e) {
-    var n = nodeOf(e.target);
-    if (!n) return;
-    focused = keyboard(e.target) ? n.id : null;
-    if (focused) hovered = null;
-    relight();
-  });
-  tree.addEventListener('focusout', function (e) {
-    if (!nodeOf(e.relatedTarget)) { focused = null; relight(); }
-  });
-
-  // ---- choosing a card: #links, the title block, back and forward ----------
-  function select(id, scroll) {
-    var n = byId[id];
-    if (!n) return;
-    var d = n.querySelector('.node__more');
-    if (d && !d.open) d.open = true;
-    mark(id);
-    // the choice is the most recent intent, so it wins over a resting pointer
-    hovered = null;
-    relight();
-    if (scroll) {
-      n.scrollIntoView({ block: 'nearest', inline: 'nearest',
-                         behavior: reduce.matches ? 'auto' : 'smooth' });
-      // move the keyboard to where the eye went, as a real fragment jump would
-      var a = n.querySelector('.tb__name a');
-      if (a) a.focus({ preventScroll: true });
-    }
-  }
-  // the chosen card's ring; :target cannot do it, since pushState never moves it
-  function mark(id) {
-    if (sticky && byId[sticky]) byId[sticky].classList.remove('is-sticky');
-    sticky = id || null;
-    if (sticky) byId[sticky].classList.add('is-sticky');
-  }
-  function release() {
-    mark(null);
-    relight();
-    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-  }
-
-  tree.addEventListener('click', function (e) {
-    var a = e.target.closest && e.target.closest('a[href^="#"]');
-    // a modified click means a new tab or window: leave it to the browser, and
-    // the new page selects the card from its hash
-    if (a && !(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)) {
-      var id = idOf(a.getAttribute('href'));
-      if (byId[id]) {
-        e.preventDefault();
-        if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
-        select(id, true);
-        return;
-      }
-    }
-    if (!nodeOf(e.target) && sticky) release();
-  });
-  document.addEventListener('click', function (e) {
-    if (sticky && !tree.contains(e.target)) release();
-  });
-  // Esc lets go of the keyboard's card too: after a #link the focus sits in the
-  // chosen card, and without this Esc would seem to do nothing
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && (sticky || focused)) { focused = null; release(); }
+    if (e.key === 'Escape' && (sticky || focused)) release();
   });
-  addEventListener('popstate', function () {
+  addEventListener('popstate', function (e) {
     var id = idOf(location.hash);
-    if (byId[id]) select(id, true);
-    else { if (focused === sticky) focused = null; mark(null); relight(); }
+    if (!cards[id]) { clear(); return; }
+    if (e.state && e.state.tt && roomy.matches) {
+      select(id, false);
+      if (circles[id]) requestAnimationFrame(function () { circles[id].scrollIntoView({ block: 'nearest' }); });
+    } else {
+      // a card's own entry: the browser has gone to the card; only mark it
+      mark(id);
+      relight();
+      if (roomy.matches) fill(id);
+    }
   });
-
-  // ---- keeping the edges on the cards --------------------------------------
-  // `toggle` does not bubble, so listen in the capture phase. A ResizeObserver
-  // rather than a window resize listener, because a column changes height when
-  // any card in it opens, and a viewport can change without `resize` firing.
-  tree.addEventListener('toggle', redraw, true);
-  if ('ResizeObserver' in window) new ResizeObserver(redraw).observe(tree.querySelector('.tree__cols'));
-  else addEventListener('resize', redraw);
-  if (wide.addEventListener) wide.addEventListener('change', redraw);
-  if (hover.addEventListener) hover.addEventListener('change', function () { hovered = null; relight(); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+  function media() {
+    if (!wide.matches) hovered = null;
+    if (roomy.matches && sticky) fill(sticky);
+    relight();
+  }
+  [wide, roomy, hover].forEach(function (m) { if (m.addEventListener) m.addEventListener('change', media); });
 
   // paper gets every card open; the screen gets back what it had
   var opened = [];
   addEventListener('beforeprint', function () {
     opened = [];
-    tree.querySelectorAll('.node__more:not([open])').forEach(function (d) { d.open = true; opened.push(d); });
+    document.querySelectorAll('.tree .node__more:not([open])').forEach(function (d) { d.open = true; opened.push(d); });
   });
   addEventListener('afterprint', function () {
     opened.forEach(function (d) { d.open = false; });
     opened = [];
   });
 
-  drawEdges();
+  // A shared link to a project opens on the drawing where there is room to
+  // show it beside the panel; elsewhere the browser has already gone to the
+  // card, as a fragment link should.
   var first = idOf(location.hash);
-  if (byId[first]) select(first, true);
+  if (cards[first]) {
+    select(first, false);
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    var returning = nav && (nav.type === 'back_forward' || nav.type === 'reload');
+    if (roomy.matches && circles[first] && !returning) {
+      rove(circles[first], false);
+      // after load: the browser's own jump to the fragment comes later than
+      // this script and would otherwise win
+      var land = function () {
+        requestAnimationFrame(function () { circles[first].scrollIntoView({ block: 'center' }); });
+      };
+      if (document.readyState === 'complete') land(); else addEventListener('load', land);
+    }
+  }
 })();

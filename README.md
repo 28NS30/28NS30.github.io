@@ -29,8 +29,8 @@ p-drone.html       C-01  quadrotor                 ← stub
 p-shooter.html     M-02  FRC shooter subsystem     ← real geometry, write-up pending
 p-drylab.html      B-01  iGEM dry lab              ← stub
 p-umv.html         C-02  ultra-mobility vehicle    ← stub, leads the index
-tree.html          project tree                    ← generated from ~/Farm; never edit
-tree.js            edges and tracing for the tree
+tree.html          tech tree                       ← generated from ~/Farm; never edit
+tree.js            tracing, panel, keys for the tree
 style.css          the whole design system
 theme.js           the Auto / Light / Dark control
 favicon.svg        theme-aware, light and dark
@@ -50,13 +50,15 @@ sections when writing a stub up properly.
 
 ---
 
-## Project tree
+## Tech tree
 
-`tree.html` is every project and what has to exist before it can start: tiers
-left to right in build order, the standalone projects apart behind a dashed
-rule. It is generated, not written. The data lives in `~/Farm`, which owns
-every project's status, scores, dependencies, plan and log; this repo owns only
-the rendering, in the same title blocks the index uses.
+`tree.html` is every project as a tech tree, drawn the way Polytopia draws one:
+a hub, rings outward by tier, one circle per project. Built work is solid ink,
+what can start now carries the construction-blue ring, what is in progress is
+hazard yellow, and what is still waiting on something unbuilt is hollow. A
+project sits one ring out from the furthest thing it needs; the lines take the
+state of the circle they lead into. Below the drawing, the parts list has every
+project as a title block, grouped by tier. It is generated, not written.
 
 ```bash
 python3 gen_tree.py          # runs Farm's build, then renders both pages
@@ -64,24 +66,45 @@ python3 gen_tree.py --check  # are the pages what Farm says now? exit 1 if not
 python3 consistency.py       # must say "everything agrees" before a commit
 ```
 
+Where it comes from:
+
+- **Farm** (`~/Farm`) owns every project's status, scores, dependencies, plan
+  and log. The built projects on the index are Farm nodes too, with
+  `status: done` and `site: {drawing: "E-01", page: "p-bldc.html"}`; the tree
+  shows the index card's own status word for them (Complete, Flown, Competed).
+- **The index** owns the drawings. Every drawing card needs a Farm node, except
+  those listed in `OUTSIDE_FARM` in `gen_tree.py` (B-01: Farm is the robotics
+  tree), which join the tree from their card alone. A new drawing with neither
+  stops the generator, because the tree claims every project.
+
+The drawing is laid out by `gen_tree.py` and baked into the page, so it reads
+with script off and prints. The names are fitted inside the circles with the
+site's own font metrics (it needs `fonttools` and `brotli`). The layout is held
+where it was from one run to the next: a finished project changes colour and
+nothing moves; adding or relinking projects lays it out again, as close to the
+old drawing as the new structure allows (`--reflow` starts afresh). Lines never
+pass through a circle they do not join; ones that would are routed along the
+empty band between rings.
+
+`tree.js` adds what only a script can: hovering or focusing a project lights
+its whole chain, both ways; choosing one puts its title block in the panel
+beside the drawing (1400px and wider); and the drawing is one tab stop, walked
+with the arrow keys (Up/Down in order, Right to a child, Left to the parent,
+a letter to jump).
+
 `--check` also notices Farm edits that have not been built yet. The generator
 refuses to write `tree.html` from a public export older than the full one (a
 plain `build.py` refreshes only the full one), or from one carrying a link that
 is not http(s) or mailto; it prints a `note:` when public prose names a hidden
-project or a private file.
+project or a private file, or when a name only fits its circle set smaller.
 
 `gen_tree.py` writes two pages from one template. `tree.html` gets the public
 projects and only their Summary and Goals; it is committed and deploys.
-`tree.local.html` gets everything — plans, next actions, open questions,
-decisions, logs, cost, time, all five scores, links into the Farm folder — and
-is gitignored. Open it from Finder; it is the private view of the tree.
-
-Both are static HTML with the data in the markup, so they work as `file://`
-documents and read with scripting off: a tiered list of title blocks whose
-Needs / Unlocks are in each card's details. `tree.js` draws the edges and lights
-a card's whole chain on hover or focus. A node names its drawing page in Farm
-with `site: {drawing: "C-02", page: "p-umv.html"}`; the generator refuses to run
-if that page is missing or its Drawing disagrees.
+`tree.local.html` gets everything: plans, next actions, open questions,
+decisions, logs, cost, time as each circle's "price", progress arcs, all five
+scores, links into the Farm folder, and links proposed but not yet confirmed
+(an open question that reads ``To confirm: needs `id` `` in node.md, drawn dotted
+with a ?). It is gitignored; open it from Finder.
 
 ---
 

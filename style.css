@@ -810,7 +810,8 @@ body{
   padding: 2px 7px;
   border: 1px solid var(--rule);
 }
-.chip--live{ background: var(--hazard); border-color: var(--hazard); color: #1a1400; }
+/* --l-ink in both themes: dark text on hazard reads 7.3:1 light, 8.6:1 dark */
+.chip--live{ background: var(--hazard); border-color: var(--hazard); color: var(--l-ink); }
 
 /* ---------- project page ---------- */
 .crumb{
@@ -1124,19 +1125,19 @@ body{
   animation: draw-x var(--t-draw) var(--ease-plot) .25s both;
 }
 
-/* ---------- project tree ----------
-   tree.html and tree.local.html, rendered by gen_tree.py from Farm's data. Every
-   project is a title block -- the same component the index and the spec panels
-   use -- so a reader knows how to read a card before reaching one. Tiers are
-   columns in the order things can be built; standalone projects sit apart
-   behind a dashed rule. The edges are drawn by tree.js over a page that already
-   reads without them: each card lists what it needs and unlocks in its details.
+/* ---------- tech tree ----------
+   tree.html and tree.local.html, rendered by gen_tree.py from Farm's data and
+   the index's own drawing cards. The figure is a tech tree the way Polytopia
+   draws one: a hub, rings outward by tier, one circle per project, lines that
+   take the state of the circle they lead into. Built work is solid ink; what
+   can start now carries the construction-blue ring; what is waiting on
+   something unbuilt is hollow. The geometry and lettering are baked in by the
+   generator, so the figure reads with script off; tree.js only traces chains
+   and fills the title-block panel.
 
-   Stacked by default, columns from 1100px. Mobile-first so the no-script,
-   narrow-screen and print cases are the base rules, not the overrides. */
-.tree{ --tree-col: 232px; margin: 0 0 var(--sp-xl); }
-
-.tree__legend{
+   Below the figure is the parts list: every project as a title block, grouped
+   by tier. It is the reading path with no script, on a phone and on paper. */
+.tt__key{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1145,11 +1146,11 @@ body{
   padding: var(--sp-xs) 0;
   border-block: 1px solid var(--rule-soft);
 }
-.tree__key{
+.tt__board{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-2xs) var(--sp-s);
+  gap: var(--sp-2xs) var(--sp-m);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1159,10 +1160,12 @@ body{
   text-transform: uppercase;
   color: var(--graphite);
 }
-.tree__key li{ display: inline-flex; align-items: center; gap: var(--sp-2xs); }
-.tree__sample{ width: var(--sp-l); height: var(--sp-2xs); overflow: visible; }
-.tree__sample line{ stroke: var(--rule); stroke-width: 1.5; }
-.tree__sample--soft line{ stroke: var(--graphite); stroke-dasharray: 5 4; }
+.tt__board li{ display: inline-flex; align-items: center; gap: var(--sp-2xs); }
+.tt__count{ color: var(--ink); }
+.tt__swatch{ width: var(--sp-m); height: var(--sp-m); overflow: visible; flex: none; }
+.tt__sample{ width: var(--sp-l); height: var(--sp-2xs); overflow: visible; flex: none; }
+.tt__sample line{ stroke: var(--graphite); stroke-width: 1.5; }
+.tt__sample--soft line{ stroke-dasharray: 5 4; }
 .tree__note{
   margin: 0;
   font-family: var(--mono);
@@ -1195,6 +1198,7 @@ body{
   font-family: var(--mono);
   font-size: var(--t-meta);
 }
+.tree__confirm{ border-left-color: var(--construct); }
 .tree__warnings h2{
   margin: 0 0 var(--sp-2xs);
   font-size: var(--t-micro);
@@ -1203,11 +1207,145 @@ body{
   text-transform: uppercase;
   color: var(--graphite);
 }
+.tree__warnings p{ margin: 0 0 var(--sp-2xs); color: var(--graphite); }
 .tree__warnings ul{ margin: 0; padding-left: var(--sp-s); }
 
-/* ---- tiers, stacked ---- */
-.tree__scroll{ position: relative; }
-.tree__edges{ display: none; }
+/* ---- the figure ----
+   Lettering is 11.2px in SVG user units: --t-micro at 1:1, the balloon height
+   on every circle (consistency.py holds the two together). px, not rem, because
+   the generator fits each name to its circle at exactly that size. */
+.tt{ position: relative; margin: 0 0 var(--sp-xl); }
+.tt__fig{ margin: 0 auto; width: min(100%, var(--fig-w)); }
+.tt__svg{ display: block; width: 100%; height: auto; overflow: visible; }
+.tt__cap{
+  margin: var(--sp-s) 0 0;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .06em;
+  color: var(--graphite);
+  text-align: center;
+}
+.tt__panel{ display: none; }
+.tt__cap-narrow, .tt__cap-kbd{ display: none; }
+html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with script */
+@media (max-width: 699px){
+  .tt__cap-wide, html.js .tt__cap-kbd{ display: none; }
+  .tt__cap-narrow{ display: inline; }
+}
+/* the selection, said once and briefly; the whole title block is a Tab away */
+.tt__status{ position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+
+/* construction: the outer rings are chain lines, the way a drafter draws a
+   pitch circle, and only over the span each ring uses */
+/* construction weight, so a short piece between two circles cannot pass for a link */
+.tt__ring{ fill: none; stroke: var(--rule-soft); stroke-width: .75; stroke-dasharray: 16 4 3 4; }
+.tt__tier, .tt__dimtext{
+  font-family: var(--mono);
+  font-size: 11.2px;
+  letter-spacing: .08em;
+  fill: var(--construct);
+}
+.tt__tier{ text-anchor: middle; }
+.tt__dim{ fill: none; stroke: var(--construct); stroke-width: 1; }
+
+/* lines take the state of the circle they lead into, as Polytopia's do */
+.tt__edge{ fill: none; stroke: var(--rule); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.tt__edge.is-built{ stroke: var(--ink); stroke-width: 2.5; }
+.tt__edge.is-active{ stroke: var(--hazard); stroke-width: 2.5; }
+.tt__edge.is-ready{ stroke: var(--graphite); }
+.tt__edge--proposed{ stroke: var(--graphite); stroke-width: 1.5; stroke-dasharray: 1 4; }
+.tt__q{ font-family: var(--mono); font-size: 11.2px; fill: var(--construct); text-anchor: middle;
+        paint-order: stroke; stroke: var(--film); stroke-width: 4px; }
+.tt__soft{ display: none; fill: none; stroke: var(--graphite); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.tt__soft.is-shown{ display: inline; }
+
+.tt__hub circle{ fill: var(--ink); }
+.tt__hubname{ font-family: var(--cond); font-size: 17px; letter-spacing: .12em; fill: var(--film); text-anchor: middle; }
+.tt__hubsub{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .1em; fill: var(--film); text-anchor: middle; }
+
+/* a circle: built is solid ink (researched); in progress is hazard; ready
+   carries the construction-blue ring (it can start now); locked is hollow */
+a.tt__node{ cursor: pointer; }
+.tt__node:focus{ outline: none; }
+.tt__disc{ fill: var(--film-2); stroke: var(--rule); stroke-width: 1.2; }
+.tt__halo{ fill: none; stroke: none; }
+.tt__name{ font-family: var(--cond); font-size: 11.2px; letter-spacing: .02em; fill: var(--graphite); text-anchor: middle; }
+.tt__code{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; }
+:is(.tt__node, .tt__key-node).is-built .tt__disc{ fill: var(--ink); stroke: var(--ink); }
+.tt__node.is-built .tt__name, .tt__node.is-built .tt__code{ fill: var(--film); }
+/* hazard against the film is 1.98:1 in light; the ink outline carries the edge */
+:is(.tt__node, .tt__key-node).is-active .tt__disc{ fill: var(--hazard); stroke: var(--ink); }
+.tt__node.is-active .tt__name, .tt__node.is-active .tt__code{ fill: var(--l-ink); }
+.tt__prog{ fill: none; stroke: var(--ink); stroke-width: 3; }
+:is(.tt__node, .tt__key-node).is-ready .tt__disc{ stroke: var(--construct); stroke-width: 2.5; }
+.tt__node.is-ready .tt__name, .tt__node.is-ready .tt__code{ fill: var(--ink); }
+:is(.tt__node, .tt__key-node).is-locked .tt__disc{ fill: var(--film); }
+:is(.tt__node, .tt__key-node).is-idea .tt__disc{ stroke-dasharray: 5 3; }
+/* --rule is 1.79:1; a dashed ring needs the heavier line to read as a ring */
+:is(.tt__node, .tt__key-node).is-locked.is-idea .tt__disc{ stroke: var(--graphite); }
+:is(.tt__node, .tt__key-node).is-dropped .tt__disc{ fill: var(--film); stroke-dasharray: 2 3; }
+
+/* focus and tracing: halos and lines, never faded circles -- a dimmed name
+   would drop under AA in every state. Screen only: paper shows the tree, not
+   whichever chain was lit when it was printed. */
+.tt__halo{ vector-effect: non-scaling-stroke; }
+@media screen{
+  .tt__node:hover .tt__halo{ stroke: var(--rule); stroke-width: 1; }
+  .tt__node:focus-visible .tt__halo{ stroke: var(--construct); stroke-width: 2; }
+  .tt__node.is-related .tt__halo{ stroke: var(--construct); stroke-width: 1; }
+  .tt__node.is-focus .tt__halo{ stroke: var(--ink); stroke-width: 2; }
+  .tt__node.is-sticky .tt__halo{ stroke: var(--construct); stroke-width: 2.5; }
+  /* chosen and focused at once: the focus has to show over the choice */
+  .tt__node.is-sticky:focus-visible .tt__halo{ stroke: var(--ink); stroke-width: 3; }
+  .tt.is-tracing .tt__edge{ opacity: .15; }
+  .tt.is-tracing .tt__edge.is-hi{ opacity: 1; stroke: var(--construct); stroke-width: 2; }
+}
+/* scaled down on a phone the blue focus halo reads as the ready ring: ink */
+@media screen and (max-width: 699px){
+  .tt__node:focus-visible .tt__halo{ stroke: var(--ink); stroke-width: 2.5; }
+}
+
+/* the plot arrives the way the index's does: wiped out from the hub */
+@keyframes tt-wipe{
+  from{ clip-path: circle(0% at var(--hub-x) var(--hub-y)); }
+  to{ clip-path: circle(150% at var(--hub-x) var(--hub-y)); }
+}
+@media (prefers-reduced-motion: no-preference){
+  .tt__svg{ animation: tt-wipe 1.35s var(--ease-plot) both; }
+}
+
+/* the title-block panel: a slot the sheet reserves, the way a drawing keeps
+   its title block in one place -- only where there is room beside the figure */
+@media (min-width: 1400px){
+  html.js .tt__sheet{
+    display: grid;
+    grid-template-columns: minmax(0, var(--fig-w)) 20rem;
+    gap: var(--sp-l);
+    align-items: start;
+    justify-content: center;
+    width: calc(100vw - 2 * var(--sp-xl));
+    margin-left: calc(50% - 50vw + var(--sp-xl));
+  }
+  html.js .tt__fig{ width: 100%; }
+  html.js .tt__panel{ display: block; position: sticky; top: var(--sp-xl); }
+}
+.tt__hint{ margin: 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .06em; color: var(--graphite); }
+.tt__panel .node{ scroll-margin: 0; }
+.tt__panel .node__up{ display: none; }
+.node__state a, .tt__panel .node__rel a, .tt__pgo a{
+  color: var(--construct);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  transition: color var(--t-tap) ease;
+}
+.node__state a:hover, .tt__panel .node__rel a:hover, .tt__pgo a:hover{ color: var(--ink); }
+.tt__psum{ margin: var(--sp-s) 0 0; font-size: var(--t-meta); line-height: 1.55; }
+.tt__panel .node__rel{ font-size: var(--t-meta); }
+.tt__pgo{ display: flex; flex-wrap: wrap; gap: var(--sp-2xs) var(--sp-m); margin: var(--sp-s) 0 0;
+          font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .08em; text-transform: uppercase; }
+
+/* ---- the parts list ---- */
+.tree{ margin: 0 0 var(--sp-xl); }
 .tree__tiers{ list-style: none; margin: 0; padding: 0; }
 .tier{ margin: 0 0 var(--sp-xl); }
 .tier__head{
@@ -1242,11 +1380,11 @@ body{
 
 /* ---- a card ---- */
 .node{
-  position: relative;               /* above the edge layer */
+  position: relative;
   border: 1px solid var(--rule);
   background: var(--film-2);
   scroll-margin: var(--sp-xl);
-  transition: border-color var(--t-tap) ease, opacity var(--t-tap) ease;
+  transition: border-color var(--t-tap) ease;
 }
 .node:hover, .node:focus-within{ border-color: var(--ink); }
 .node:hover .tb__no{ color: var(--construct); }
@@ -1255,7 +1393,7 @@ body{
    over the whole card would sit on top of its summary and swallow the click. */
 .node .tb{ position: relative; }
 /* 1fr is minmax(auto, 1fr): a column will not shrink below its longest word,
-   and in a 232px card "COMPLEXITY" set in spaced mono pushed the grid out of
+   and in a narrow card "COMPLEXITY" set in spaced mono pushed the grid out of
    the card. minmax(0, 1fr) keeps both columns inside it. */
 .node .tb__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
 /* an odd cell out takes the whole row rather than leaving a hole beside it */
@@ -1268,15 +1406,45 @@ body{
 .node .tb__name{ min-height: 0; }
 .node .tb__cell dt{ letter-spacing: .06em; }
 .node .tb__cell .mono{ font-family: var(--mono); font-size: var(--t-meta); font-weight: 400; letter-spacing: .04em; }
-/* without script, following a #link still marks where you landed */
 /* Without script a #link lands on :target. With script the chosen card is
    marked by tree.js instead: history.pushState never moves :target, so the
    card from the loaded URL would keep its ring after every later choice. */
 html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct); outline-offset: 2px; }
 .node--dropped{ opacity: .5; }
 
+/* the card's circle, small: the same four states as the figure */
+.node__swatch{
+  display: inline-block;
+  width: .75em;
+  height: .75em;
+  margin-right: var(--sp-2xs);
+  vertical-align: -.05em;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--film);
+}
+.node__swatch{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.node__swatch.is-built{ background: var(--ink); border-color: var(--ink); }
+.node__swatch.is-active{ background: var(--hazard); border-color: var(--ink); }
+.node__swatch.is-ready{ background: var(--film-2); border: 2px solid var(--construct); }
+/* why it is in that state, in words: the colour is never the only signal */
+.node__state{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3xs) var(--sp-xs);
+  margin: var(--sp-2xs) 0 0;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .06em;
+  color: var(--graphite);
+}
+/* above the title's whole-block overlay, or these links could not be clicked */
+.node__state a{ position: relative; z-index: 1; }
+.node__why{ flex: 1 1 auto; }
+.node__up{ margin-left: auto; }
+
 .node__bar{ height: 3px; margin-top: var(--sp-xs); background: var(--rule-soft); }
-.node__bar span{ display: block; height: 100%; background: var(--construct); }
+.node__bar span{ display: block; height: 100%; background: var(--construct); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .node__todo{ color: var(--construct); }
 
 .node__more{ border-top: 1px solid var(--rule-soft); }
@@ -1301,7 +1469,7 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
 
 /* body size while a card is a reading width; meta in the narrow columns */
 .node__body{ padding: 0 var(--sp-s) var(--sp-s); font-size: var(--t-body); line-height: 1.55; }
-.node__body h4{
+.node__body h5{
   margin: var(--sp-s) 0 var(--sp-2xs);
   font-family: var(--mono);
   font-size: var(--t-micro);
@@ -1310,7 +1478,7 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
   text-transform: uppercase;
   color: var(--graphite);
 }
-.node__body h4:first-child{ margin-top: var(--sp-2xs); }
+.node__body h5:first-child{ margin-top: var(--sp-2xs); }
 /* (0,1,1) to beat .prose p, which would space a card like an article; the
    component paragraphs and lists further down are .node__body .x, (0,2,0) */
 .node__body p{ margin: 0 0 var(--sp-xs); }
@@ -1342,12 +1510,11 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
 .node__body th{ font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; color: var(--graphite); }
 .node__body li > ul, .node__body li > ol{ margin: var(--sp-3xs) 0 0; }
 .node__body .tasks .tasks{ padding-left: var(--sp-s); }
-.node__body h5, .node__body h6{
+.node__body h6{
   margin: var(--sp-xs) 0 var(--sp-3xs);
   font-size: 1em;
   font-weight: 600;
 }
-.node__body h6{ font-weight: 400; color: var(--graphite); }
 .node__body pre{
   margin: 0 0 var(--sp-xs);
   padding: var(--sp-2xs) var(--sp-xs);
@@ -1403,87 +1570,7 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
 .node__body .node__files{ margin: 0; padding: 0; list-style: none; }
 .node__body .node__path{ margin: var(--sp-3xs) 0 0; font-size: var(--t-meta); color: var(--graphite); }
 
-/* ---- tracing (tree.js) ---- */
-.node.is-dim{ opacity: .35; }
-/* a keyboard focus ring at 35% is no focus ring */
-.node.is-dim:has(:focus-visible){ opacity: 1; }
-.node.node--dropped.is-dim:has(:focus-visible){ opacity: .5; }   /* back to what dropped is */
-.node.is-related{ border-color: var(--construct); }
-.node.is-focus{ border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-
-.tree__edge{
-  fill: none;
-  stroke: var(--rule);
-  stroke-width: 1.5;
-  marker-end: url(#tree-arrow);
-  transition: stroke var(--t-tap) ease, opacity var(--t-tap) ease;
-}
-.tree__edge.is-hi{ stroke: var(--construct); stroke-width: 2; marker-end: url(#tree-arrow-hi); }
-.tree__edge.is-dim{ opacity: .15; }
-.tree__edge--soft{ stroke: var(--graphite); stroke-dasharray: 5 4; marker-end: none; }
-.tree__arrow{ fill: var(--rule); }
-.tree__arrow--hi{ fill: var(--construct); }
-
-/* ---- tiers as columns ---- */
 @media (min-width: 1100px){
-  /* Out past the reading measure to the sheet frame, so five columns fit a
-     1440 screen without the tree scrolling sideways. 100vw is inset by 16px a
-     side on purpose: it counts a classic scrollbar, and the inset absorbs one
-     up to 32px wide, so the page itself never scrolls sideways. Anything
-     narrower than the tree scrolls inside this box instead. */
-  .tree__scroll{
-    width: calc(100vw - 2 * var(--sp-s));
-    margin-left: calc(50% - 50vw + var(--sp-s));
-    padding: var(--sp-s) var(--sp-2xs) var(--sp-m);
-    overflow-x: auto;
-    /* the site hides scrollbars everywhere (the * rule at the top); this is
-       the one box that scrolls sideways, and without a bar a column cut off
-       at the right edge gives no sign that it is there */
-    scrollbar-width: thin;
-    scrollbar-color: var(--rule) transparent;
-  }
-  .tree__edges{
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow: visible;
-    pointer-events: none;
-  }
-  /* One grid for every column so they share a width; the tiers take a
-     subgrid of it. The tiers stretch to the tallest TIER and centre their
-     cards in that height; the standalone column is not in that row's sizing
-     and starts at the top. */
-  .tree__cols{
-    position: relative;             /* cards paint over the edge layer */
-    display: grid;
-    grid-template-columns: repeat(var(--cols), minmax(var(--tree-col), 1fr));
-    column-gap: var(--sp-xl);
-    align-items: start;
-  }
-  .tree__tiers{
-    grid-column: 1 / span var(--tiers);
-    display: grid;
-    grid-template-columns: subgrid;
-  }
-  .tier{ display: flex; flex-direction: column; margin: 0; }
-  .tier__head{ font-size: var(--t-body); }
-  /* auto margins centre each column's cards in the height the tallest column
-     sets, which keeps the long edges short */
-  .tier__list{ display: flex; flex-direction: column; gap: var(--sp-s); margin-block: auto; }
-  /* The standalone column is set apart by a dashed rule drawn down the middle
-     of the gap before it -- not by padding, which made its cards 32px narrower
-     than every other column's and pushed their title blocks out of the card. */
-  .tier--alone{ position: relative; }
-  .tier--alone::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(var(--sp-xl) / -2);
-    border-left: 1px dashed var(--rule);
-  }
-  .node .tb__name{ font-size: var(--t-body); }
   .node__body{ font-size: var(--t-meta); }
 }
 
@@ -1569,7 +1656,8 @@ a:focus-visible, button:focus-visible{
     --pole-n-tint: var(--l-pole-n-tint); --pole-s-tint: var(--l-pole-s-tint);
     color-scheme: light;
   }
-  .sheet-frame, .masthead__nav, .skip{ display: none; }
+  /* chrome, not content: the scroll bar would print at wherever the page was */
+  .sheet-frame, .masthead__nav, .skip, .plot-progress{ display: none !important; }
   body{ background: #fff; background-image: none; }
   .wrap{ max-width: none; padding-inline: 0; }
 
@@ -1619,14 +1707,15 @@ a:focus-visible, button:focus-visible{
   }
   .index--fan .fig--pending > span{ opacity: 1; }
 
-  /* The tree on paper is the stacked layout, every card whole and open. The
-     edge layer is screen-only; the relationships are in each card's text. */
-  .tree__edges{ display: none !important; }
-  .tree__scroll{ width: auto !important; margin-left: 0 !important; padding: 0; overflow: visible; }
-  .tree__cols, .tree__tiers{ display: block !important; }
-  .tier{ display: block !important; margin: 0 0 var(--sp-l); }
-  .tier__list{ display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tier--alone::before{ display: none; }
+  /* The tree on paper: the drawing whole on one sheet, then the parts list,
+     every card open. The panel, halos and soft lines are screen-only. */
+  .tt__fig{ max-width: 180mm; break-inside: avoid; }
+  .tt__key{ break-inside: avoid; break-after: avoid; }     /* the key stays with its drawing */
+  /* !important beats the wipe without cancelling it, so nothing replays after */
+  .tt__svg{ clip-path: none !important; }
+  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__up, .tt__key-soft{ display: none !important; }
+  .tier{ margin: 0 0 var(--sp-l); }
+  .tier__list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tier__head{ break-after: avoid; }
   .node{ break-inside: avoid; opacity: 1 !important; border-color: var(--rule) !important;
          box-shadow: none !important; outline: none !important; }
