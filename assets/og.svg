@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <style>
     .stator circle, .stator path { fill: none; }
-    .stator__rotor circle { stroke: #A9B1AA; stroke-width: 1.2; }
-    .stator__mag path { fill: #D1D6D0; stroke: #A9B1AA; stroke-width: 1.2; }
-    .stator__iron circle, .stator__iron path { stroke: #151917; stroke-width: 1.7; }
+    .stator__rotor circle { stroke: #B3BAC0; stroke-width: 1.2; }
+    .stator__mag path { fill: #E2E6E9; stroke: #B3BAC0; stroke-width: 1.2; }
+    .stator__iron circle, .stator__iron path { stroke: #161C22; stroke-width: 1.7; }
     .stator__dim line { stroke: #1E4FD8; stroke-width: 1.1; }
     .stator__dim text { fill: #1E4FD8; font-family: IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; letter-spacing: .05em; }
   </style>
 
-  <rect width="1200" height="630" fill="#E6E9E5"/>
+  <rect width="1200" height="630" fill="#EEF1F3"/>
 
   <!-- drafting graticule, 34px as on the site -->
   <defs>
     <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
-      <path d="M34 0 H0 V34" fill="none" stroke="#151917" stroke-opacity=".030" stroke-width="1"/>
+      <path d="M34 0 H0 V34" fill="none" stroke="#161C22" stroke-opacity=".030" stroke-width="1"/>
     </pattern>
   </defs>
   <rect width="1200" height="630" fill="url(#grid)"/>
 
   <!-- sheet frame + four corner registration ticks -->
-  <rect x="22.5" y="22.5" width="1155" height="585" fill="none" stroke="#A9B1AA"/>
-  <g stroke="#A9B1AA" stroke-width="1">
+  <rect x="22.5" y="22.5" width="1155" height="585" fill="none" stroke="#B3BAC0"/>
+  <g stroke="#B3BAC0" stroke-width="1">
     <line x1="22"   y1="60"  x2="60"   y2="22"/>
     <line x1="1178" y1="60"  x2="1140" y2="22"/>
     <line x1="1178" y1="570" x2="1140" y2="608"/>
@@ -29,9 +29,9 @@
 
   <!-- identity -->
   <text x="76" y="128" font-family="IBM Plex Sans Condensed, IBM Plex Sans, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="600"
-        letter-spacing="3.2" fill="#151917">NEO SU</text>
+        letter-spacing="3.2" fill="#161C22">NEO SU</text>
   <text x="76" y="168" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" letter-spacing="2.6"
-        fill="#545C57">TAIPEI &#183; MOTOR DESIGN, GEARBOXES, CONTROL</text>
+        fill="#525A62">TAIPEI &#183; MOTOR DESIGN, GEARBOXES, CONTROL</text>
 
   <!-- The card used to carry "SIX BUILDS, AND HOW THEY CONNECT" over the
        eyebrow "MOTORS - GEARBOXES - CONTROL". Two problems: it was the
@@ -43,7 +43,7 @@
   <text x="76" y="268" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" letter-spacing="2.8"
         fill="#1E4FD8">01</text>
   <text x="76" y="352" font-family="IBM Plex Sans Condensed, IBM Plex Sans, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="66" font-weight="600"
-        letter-spacing="-1" fill="#151917">DRAWING INDEX</text>
+        letter-spacing="-1" fill="#161C22">DRAWING INDEX</text>
 
   <!-- dimension line, the site's annotation device -->
   <text x="76" y="492" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" letter-spacing="1.8"

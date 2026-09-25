@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    .field { fill: #E6E9E5; }
-    .line  { fill: none; stroke: #151917; stroke-width: 1.5; }
+    .field { fill: #EEF1F3; }
+    .line  { fill: none; stroke: #161C22; stroke-width: 1.5; }
     .mark  { fill: none; stroke: #1E4FD8; stroke-width: 1.5; }
     @media (prefers-color-scheme: dark){
       .field { fill: #141816; }
