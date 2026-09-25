@@ -1,5 +1,6 @@
 /* ---------------------------------------------------------------------------
-   The tech tree: tracing, the title-block panel, and the keyboard.
+   The graph: tracing, the title-block panel, the keyboard, and on the Work
+   page the switch between the grid and the graph.
 
    gen_tree.py bakes the whole figure into the page -- every circle, line and
    name is already placed -- so with script off the drawing still reads and every
@@ -8,6 +9,11 @@
    everything that depends on it; choosing one puts its title block in the panel
    beside the drawing; and the drawing is one stop in the tab order, walked with
    the arrow keys the way a tree view is.
+
+   The Work page shows one view at a time. The address says which: #graph, or
+   the #id of anything in the graph, is the graph; no fragment is the grid. The
+   switch writes it with replaceState, so it survives a reload and a trip to a
+   project page and back without adding a step to Back.
 
    The markup is the data: each card carries data-needs (hard) and data-uses
    (soft) as space-separated ids. Nothing is fetched and nothing is stored.
@@ -23,7 +29,8 @@
   var status = tt.querySelector('.tt__status');
   var hint = panel ? panel.innerHTML : '';
   var wide = matchMedia('(min-width: 700px)');           // room to trace a chain
-  var roomy = matchMedia('(min-width: 1400px)');         // room for the panel
+  // room for the panel: the Work page's small graph keeps it in the column
+  var roomy = matchMedia(tt.classList.contains('tt--compact') ? '(min-width: 1100px)' : '(min-width: 1400px)');
   var hover = matchMedia('(hover: hover)');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -44,6 +51,9 @@
     uses[id].forEach(function (d) { usedBy[d].push(id); });
   });
   var lines = [].slice.call(svg.querySelectorAll('.tt__edge'));
+  // the wipe is the drawing's first appearance; showing it again (the Work
+  // page's switch) must not replay it, or the circles cannot be clicked while it runs
+  svg.addEventListener('animationend', function () { tt.classList.add('is-drawn'); });
   var softs = [].slice.call(svg.querySelectorAll('.tt__soft'));
 
   function walk(id, next) {
@@ -55,6 +65,61 @@
       stack.push.apply(stack, next[k]);
     }
     return seen;
+  }
+
+  // ---- grid or graph (the Work page) -------------------------------------------
+  var work = tt.closest('.work');
+  var graphView = work && work.querySelector('.work__graph');
+  var switcher = work && work.querySelector('.view');
+  function inGraph() { return !!(work && work.classList.contains('is-graph')); }
+  // what a fragment asks for: 'graph', 'grid', or null for neither (#index, #body)
+  function wants(hash) {
+    if (!work) return null;
+    var id = idOf(hash);
+    if (!id) return 'grid';
+    var t = document.getElementById(id);
+    if (!t) return null;
+    if (graphView.contains(t)) return 'graph';
+    return t.closest('.index') ? 'grid' : null;
+  }
+  function show(view) {
+    if (!work) return;
+    var graph = view === 'graph';
+    work.classList.toggle('is-graph', graph);
+    [].slice.call(switcher.querySelectorAll('.view__btn')).forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view));
+    });
+    if (!graph && sticky) clear();
+  }
+  // Back or Forward can hide the view the focus was in: hand it to the view
+  // now showing -- the project it came from if that has a place there, else
+  // the pressed button -- or the next Tab starts from a hidden element
+  function settle(from) {
+    var a = document.activeElement;
+    if (a && a !== document.body && !(inGraph() ? work.querySelector('.index') : graphView).contains(a)) return;
+    var to = inGraph() ? circles[idOf(location.hash)] || circles[from]
+                       : from && window.CSS && work.querySelector('.index a[href="#' + CSS.escape(from) + '"]');
+    (to || switcher.querySelector('[aria-pressed="true"]')).focus({ preventScroll: true });
+  }
+  if (switcher) {
+    switcher.hidden = false;
+    // the views are one at a time only from here: if this never ran, both stand
+    work.classList.add('has-view');
+    show(inGraph() ? 'graph' : 'grid');
+    switcher.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.view__btn');
+      if (!b || b.getAttribute('aria-pressed') === 'true') return;
+      var view = b.getAttribute('data-view');
+      show(view);
+      if (wants(location.hash) === view) return;
+      // At rest (no project in the address) the switch rewrites the entry, so
+      // Back does not step through views. An entry that names a project is
+      // kept, with the switch as a new step after it, or Back would land on a
+      // copy of the page it is already on.
+      var url = location.pathname + location.search + (view === 'graph' ? '#graph' : '');
+      if (location.hash && location.hash !== '#graph') history.pushState(null, '', url);
+      else history.replaceState(null, '', url);
+    });
   }
 
   // ---- tracing -----------------------------------------------------------------
@@ -171,7 +236,7 @@
     out.appendChild(block);
     // the first paragraph of the Summary, then what it needs and unlocks
     var body = card.querySelector('.node__body');
-    var heads = body ? [].slice.call(body.querySelectorAll('h5')) : [];
+    var heads = body ? [].slice.call(body.querySelectorAll('.node__h')) : [];
     for (var k = 0; k < heads.length; k++) {
       if (/^summary$/i.test(heads[k].textContent.trim())) {
         var p = heads[k].nextElementSibling;
@@ -246,7 +311,9 @@
 
   function release() {
     clear();
-    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    // at rest the Work page's address still says which view it is on
+    var rest = inGraph() ? '#graph' : '';
+    if (location.hash !== rest) history.replaceState(null, '', location.pathname + location.search + rest);
   }
 
   // ---- the keyboard: one tab stop, walked like a tree view ------------------------------
@@ -306,6 +373,21 @@
       return;
     }
     var h = a && a.getAttribute('href');
+    if (a && work && !inGraph() && h && h.charAt(0) === '#' && cards[idOf(h)]) {
+      // from the grid: the project's place in the graph, chosen there
+      var id3 = idOf(h);
+      show('graph');
+      if (roomy.matches && circles[id3]) {
+        e.preventDefault();
+        select(id3, true);
+        rove(circles[id3], false);
+        circles[id3].focus({ preventScroll: true });
+        circles[id3].scrollIntoView({ block: 'center', behavior: reduce.matches ? 'auto' : 'smooth' });
+      } else {
+        mark(id3);                   // the link goes on to its card, now shown
+      }
+      return;
+    }
     if (a && a.classList.contains('tt__details') && cards[idOf(h)]) {
       e.preventDefault();
       var card = cards[idOf(h)], more = card.querySelector('.node__more');
@@ -339,7 +421,10 @@
     if (e.key === 'Escape' && (sticky || focused)) release();
   });
   addEventListener('popstate', function (e) {
+    var want = wants(location.hash), was = sticky;
+    if (want) show(want);
     var id = idOf(location.hash);
+    if (want) requestAnimationFrame(function () { settle(was); });
     if (!cards[id]) { clear(); return; }
     if (e.state && e.state.tt && roomy.matches) {
       select(id, false);

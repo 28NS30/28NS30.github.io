@@ -45,11 +45,11 @@
   <text x="76" y="352" font-family="IBM Plex Sans Condensed, IBM Plex Sans, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="66" font-weight="600"
         letter-spacing="-1" fill="#151917">DRAWING INDEX</text>
   <text x="76" y="404" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" letter-spacing="2.2"
-        fill="#545C57">C-02 &#183; M-02 &#183; B-01 &#183; E-01 &#183; M-01 &#183; C-01</text>
+        fill="#545C57">C-02 &#183; M-02 &#183; E-01 &#183; M-01 &#183; C-01</text>
 
   <!-- dimension line, the site's annotation device -->
   <text x="76" y="492" font-family="IBM Plex Mono, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" letter-spacing="1.8"
-        fill="#1E4FD8">6 DRAWINGS &#183; 2024 &#8211; PRESENT</text>
+        fill="#1E4FD8">5 DRAWINGS &#183; 2024 &#8211; PRESENT</text>
   <g stroke="#1E4FD8" stroke-width="1">
     <line x1="76"  y1="508" x2="76"  y2="524"/>
     <line x1="486" y1="508" x2="486" y2="524"/>

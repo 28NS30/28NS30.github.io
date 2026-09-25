@@ -20,17 +20,15 @@ work on its own.
 ## Files
 
 ```
-index.html         drawing index (homepage)
+index.html         drawing index (homepage): grid, or graph   ← two blocks generated from ~/Farm
 about.html         about
 404.html           designed not-found sheet
 p-bldc.html        E-01  brushless DC motor        ← written
 p-cycloidal.html   M-01  cycloidal gearbox         ← stub
 p-drone.html       C-01  quadrotor                 ← stub
 p-shooter.html     M-02  FRC shooter subsystem     ← real geometry, write-up pending
-p-drylab.html      B-01  iGEM dry lab              ← stub
 p-umv.html         C-02  ultra-mobility vehicle    ← stub, leads the index
-tree.html          tech tree                       ← generated from ~/Farm; never edit
-tree.js            tracing, panel, keys for the tree
+tree.js            the grid/graph switch; tracing, panel and keys for the graph
 style.css          the whole design system
 theme.js           the Auto / Light / Dark control
 favicon.svg        theme-aware, light and dark
@@ -50,68 +48,87 @@ sections when writing a stub up properly.
 
 ---
 
-## Tech tree
+## Grid and graph
 
-`tree.html` is the robotics projects as a tech tree, drawn the way Polytopia draws one:
-a hub, rings outward by tier, one circle per project. Built work is solid ink,
-what can start now carries the construction-blue ring, what is in progress is
-hazard yellow, and what is still waiting on something unbuilt is hollow. A
-project sits one ring out from the furthest thing it needs; the lines take the
-state of the circle they lead into. Below the drawing, the parts list has every
-project as a title block, grouped by tier. It is generated, not written.
+The Work page shows the projects two ways, switched in the section head. The
+grid is the drawing cards: every public project done or under way, newest
+first. The
+graph is the same projects plus what each one directly unlocks, drawn as a tech
+tree the way Polytopia draws one: a hub, rings outward by tier, one circle per
+project. Built work is solid ink, what is in progress is hazard yellow, what can
+start now carries the construction-blue ring, and what is still waiting on
+something unbuilt is hollow. A project sits one ring out from the furthest thing
+it needs; the lines take the state of the circle they lead into. A `+1` in a
+circle counts a prerequisite not drawn; the project's card names it.
+
+With no script the switch is hidden and both views stand, the graph under its
+own heading. The address says which view is showing: `index.html#graph`, or
+`#` and the id of any project in the graph, opens on the graph.
+
+Most of the grid is written by hand: a drawing card is the project's page on the
+index. The rest is generated, between `<!-- generated:... -->` markers that must
+not be edited:
+
+- **grid**: a card for each public project Farm has done or under way that has
+  no drawing card yet (PCB Motor today), after C-02: under way first, then done.
+  It has no number, revision, year or discipline, because Farm has none; it
+  links to the project in the graph. When the project gets a page and a drawing
+  card, it drops out of this block.
+- **graph**: the figure, its legend, and a card per project below it, grouped by
+  tier. The cards are what a screen reader, a phone and paper read, and what the
+  panel beside the figure shows.
 
 ```bash
-python3 gen_tree.py          # runs Farm's build, then renders both pages
-python3 gen_tree.py --check  # are the pages what Farm says now? exit 1 if not
+python3 gen_tree.py          # runs Farm's build, then rewrites both blocks + tree.local.html
+python3 gen_tree.py --check  # are they what Farm says now? exit 1 if not
 python3 consistency.py       # must say "everything agrees" before a commit
 ```
 
 Where it comes from:
 
 - **Farm** (`~/Farm`) owns every project's status, scores, dependencies, plan
-  and log. The projects drawn on the index are Farm nodes too, carrying
-  `site: {drawing: "E-01", page: "p-bldc.html"}`; Farm owns their status. Where
-  Farm says done, the tree shows the index card's own word (Complete, Flown);
-  where the two disagree, the generator and consistency.py print a note.
-- **The index** owns the drawings. Every drawing card needs a Farm node, except
-  those listed in `gen_tree.py`: `LEFT_OUT` (B-01, the iGEM dry lab, is not a
-  step in the build and is not on the tree) and `OUTSIDE_FARM` (drawings that
-  join the tree from their card alone; none today). A new drawing with neither
-  stops the generator, because the tree claims every project it shows.
-- **What is public** is Farm's `public:` flag: RoboCup Junior is `public: false`,
-  so it is on the local page and not the published one.
+  and log. The projects on the index are Farm nodes too, carrying
+  `site: {drawing: "E-01", page: "p-bldc.html"}`.
+- **The index** owns the drawings. On the Work page a drawing's card wins: the
+  graph takes its title and its status (a card in progress draws in progress;
+  any other status word draws built, and is the word shown), so the grid and
+  the graph never disagree. Where Farm says otherwise, the generator prints a
+  note. Every drawing card needs a public Farm node, or the generator stops.
+- **What is public** is Farm's `public:` flag, and only a project's Summary and
+  Goals are published.
+
+The generator also keeps two things outside the blocks in step: the "6 builds"
+on the hero's dimension and the "6 projects" in the section head (every card in
+the grid), and the home page's `lastmod` in `sitemap.xml`, moved to the day
+`index.html` changes. `--check` reports either when it is out of date.
 
 The drawing is laid out by `gen_tree.py` and baked into the page, so it reads
 with script off and prints. The names are fitted inside the circles with the
 site's own font metrics (it needs `fonttools` and `brotli`). The layout is held
 where it was from one run to the next: a finished project changes colour and
 nothing moves; adding or relinking projects lays it out again, as close to the
-old drawing as the new structure allows (`--reflow` starts afresh). At rest
-the drawing is a tree: each circle has one line in, from the prerequisite
-nearest it, and a `+1` or `+2` in the circle counts the others, which are drawn
-with the rest of the chain when the project is hovered, focused or chosen.
-Lines never pass through a circle they do not join and never run along an
-unrelated line; ones that would are routed along the empty band between rings.
+old drawing as the new structure allows (`--reflow` starts afresh). Lines never
+pass through a circle they do not join and never run along an unrelated line.
 
-`tree.js` adds what only a script can: hovering or focusing a project lights
-its whole chain, both ways; choosing one puts its title block in the panel
-beside the drawing (1400px and wider); and the drawing is one tab stop, walked
-with the arrow keys (Up/Down in order, Right to a child, Left to the parent,
-a letter to jump).
+`tree.js` adds what only a script can: the switch; hovering or focusing a
+project lights its whole chain, both ways; choosing one puts its title block in
+the panel beside the drawing where there is room (1100px and wider for a graph
+up to 760 wide, as the Work page's is; 1400px for a larger one, as the local
+page's is); and the drawing is one tab
+stop, walked with the arrow keys (Up/Down in order, Right to a child, Left to
+the parent, a letter to jump).
 
 `--check` also notices Farm edits that have not been built yet. The generator
-refuses to write `tree.html` from a public export older than the full one (a
-plain `build.py` refreshes only the full one), or from one carrying a link that
-is not http(s) or mailto; it prints a `note:` when public prose names a hidden
-project or a private file, or when a name only fits its circle set smaller.
+refuses to write from a public export older than the full one (a plain
+`build.py` refreshes only the full one), or from one carrying a link that is not
+http(s) or mailto; it prints a `note:` when public prose names a hidden project
+or a private file, or when a name only fits its circle set smaller.
 
-`gen_tree.py` writes two pages from one template. `tree.html` gets the public
-projects and only their Summary and Goals; it is committed and deploys.
-`tree.local.html` gets everything: plans, next actions, open questions,
-decisions, logs, cost, time as each circle's "price", progress arcs, all five
-scores, links into the Farm folder, and links proposed but not yet confirmed
-(an open question that reads ``To confirm: needs `id` `` in node.md, drawn dotted
-with a ?). It is gitignored; open it from Finder.
+`tree.local.html` is the whole tree, every project Farm has: plans, next
+actions, open questions, decisions, logs, cost, time as each circle's "price",
+progress arcs, all five scores, links into the Farm folder, and links proposed
+but not yet confirmed (an open question that reads ``To confirm: needs `id` ``
+in node.md, drawn dotted with a ?). It is gitignored; open it from Finder.
 
 ---
 
@@ -196,9 +213,7 @@ crops — render onto a 1200×1200 canvas with the artwork centred, then
 
 The absolute URLs in each page's `<link rel="canonical">` and `og:` tags, in
 `sitemap.xml` and in `robots.txt` point at `28ns30.github.io`. On a custom
-domain, update them with one find-and-replace over those files, then run
-`python3 gen_tree.py`: it takes the address from `p-umv.html`'s canonical, so
-`tree.html` and its sitemap entry follow.
+domain, update them with one find-and-replace over those files.
 
 ---
 

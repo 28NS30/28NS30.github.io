@@ -750,6 +750,64 @@ body{
   border: 1px solid var(--rule);
 }
 
+/* ---------- the Work page: grid or graph ----------
+   One section, two views of it: the drawing cards, and the graph of what they
+   unlock. The switch is a pair of pressed-state buttons in the section head,
+   set like two title-block cells; tree.js shows it. With no script it stays
+   hidden and both views stand, the graph under its own heading. */
+.work .sec__head{ flex-wrap: wrap; row-gap: var(--sp-2xs); }
+.view{
+  display: inline-flex;
+  align-self: center;
+  border: 1px solid var(--rule);
+}
+.view__btn{
+  min-height: var(--sp-l);
+  margin: 0;
+  padding: 0 var(--sp-xs);
+  border: 0;
+  background: var(--film-2);
+  color: var(--graphite);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t-tap) ease, background-color var(--t-tap) ease;
+}
+.view__btn + .view__btn{ border-left: 1px solid var(--rule); }
+.view__btn:hover{ color: var(--ink); }
+.view__btn[aria-pressed="true"]{ background: var(--ink); color: var(--film); cursor: default; }
+.view__btn:focus-visible{ outline-offset: 2px; }
+
+/* one view at a time only once the switch exists (.has-view): if tree.js
+   never runs, both views stand, as they do with no script at all */
+.work.has-view:not(.is-graph) .work__graph,
+.work.has-view.is-graph .index{ display: none; }
+/* the count is the grid's; kept in place so the switch does not move under the pointer */
+.work.has-view.is-graph .sec__count{ visibility: hidden; }
+/* in forced colours the ink fill is dropped: the pressed button keeps a system highlight */
+@media (forced-colors: active){
+  .view__btn[aria-pressed="true"]{ forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+.work__graph{ margin-top: var(--sp-xl); }
+/* a link to #graph lands with the section head, and the switch, in view */
+.work__graph{ scroll-margin-top: calc(var(--t-h2) * 1.3 + var(--sp-l) + var(--sp-2xl) + var(--sp-s)); }
+/* the section head's rule is just above: the key needs only the one below it */
+.work__graph .tt__key{ border-top: 0; padding-top: 0; }
+.work.has-view .work__graph{ margin-top: 0; }
+.work__title{
+  margin: 0 0 var(--sp-s);
+  font-family: var(--cond);
+  font-size: var(--t-h3);
+  font-weight: 300;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+/* with the switch the pressed Graph button says it; the heading stays for a screen reader */
+.work.has-view .work__title{ position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+
 /* ---------- title block (the signature component) ---------- */
 .tb{ padding: var(--sp-s); }
 
@@ -1132,9 +1190,9 @@ body{
   animation: draw-x var(--t-draw) var(--ease-plot) .25s both;
 }
 
-/* ---------- tech tree ----------
-   tree.html and tree.local.html, rendered by gen_tree.py from Farm's data and
-   the index's own drawing cards. The figure is a tech tree the way Polytopia
+/* ---------- the graph (tech tree) ----------
+   The Work page's graph and tree.local.html, rendered by gen_tree.py from
+   Farm's data and the index's own drawing cards. The figure is a tech tree the way Polytopia
    draws one: a hub, rings outward by tier, one circle per project, lines that
    take the state of the circle they lead into. Built work is solid ink; what
    can start now carries the construction-blue ring; what is waiting on
@@ -1142,8 +1200,9 @@ body{
    generator, so the figure reads with script off; tree.js only traces chains
    and fills the title-block panel.
 
-   Below the figure is the parts list: every project as a title block, grouped
-   by tier. It is the reading path with no script, on a phone and on paper. */
+   Below the figure is the parts list: every project in it as a title block,
+   grouped by tier. It is the reading path with no script, on a phone and on
+   paper. */
 .tt__key{
   display: flex;
   flex-wrap: wrap;
@@ -1338,12 +1397,14 @@ html.js .tt__key-screen{ display: inline; }
 }
 @media (prefers-reduced-motion: no-preference){
   .tt__svg{ animation: tt-wipe 1.35s var(--ease-plot) both; }
+  /* drawn once: shown again by the Work page's switch, it is simply there */
+  .tt.is-drawn .tt__svg{ animation: none; }
 }
 
 /* the title-block panel: a slot the sheet reserves, the way a drawing keeps
    its title block in one place -- only where there is room beside the figure */
 @media (min-width: 1400px){
-  html.js .tt__sheet{
+  html.js .tt:not(.tt--compact) .tt__sheet{
     display: grid;
     grid-template-columns: minmax(0, var(--fig-w)) 20rem;
     gap: var(--sp-l);
@@ -1354,6 +1415,18 @@ html.js .tt__key-screen{ display: inline; }
   }
   html.js .tt__fig{ width: 100%; }
   html.js .tt__panel{ display: block; position: sticky; top: var(--sp-xl); }
+}
+/* the Work page's graph is small enough to keep the panel in the column */
+@media (min-width: 1100px){
+  html.js .tt--compact .tt__sheet{
+    display: grid;
+    grid-template-columns: minmax(0, var(--fig-w)) 20rem;
+    gap: var(--sp-l);
+    align-items: start;
+    justify-content: center;
+  }
+  html.js .tt--compact .tt__fig{ width: 100%; }
+  html.js .tt--compact .tt__panel{ display: block; position: sticky; top: var(--sp-xl); }
 }
 .tt__hint{ margin: 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .06em; color: var(--graphite); }
 .tt__panel .node{ scroll-margin: 0; }
@@ -1495,7 +1568,7 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
 
 /* body size while a card is a reading width; meta in the narrow columns */
 .node__body{ padding: 0 var(--sp-s) var(--sp-s); font-size: var(--t-body); line-height: 1.55; }
-.node__body h5{
+.node__body .node__h{
   margin: var(--sp-s) 0 var(--sp-2xs);
   font-family: var(--mono);
   font-size: var(--t-micro);
@@ -1504,7 +1577,7 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
   text-transform: uppercase;
   color: var(--graphite);
 }
-.node__body h5:first-child{ margin-top: var(--sp-2xs); }
+.node__body .node__h:first-child{ margin-top: var(--sp-2xs); }
 /* (0,1,1) to beat .prose p, which would space a card like an article; the
    component paragraphs and lists further down are .node__body .x, (0,2,0) */
 .node__body p{ margin: 0 0 var(--sp-xs); }
@@ -1634,8 +1707,8 @@ a:focus-visible, button:focus-visible{
 @media (max-width: 560px){
   .sheet-frame{ inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
   .masthead{ padding-top: var(--sp-m); }
-  /* five items since the Tree link: 12px gaps fit one line at 360, and
-     below that the nav wraps rather than pushing the page sideways */
+  /* 12px gaps fit the four items on one line at 360; below that the nav
+     wraps rather than pushing the page sideways */
   .masthead__nav{ gap: var(--sp-2xs) var(--sp-xs); flex-wrap: wrap; }
 
 }
@@ -1684,7 +1757,11 @@ a:focus-visible, button:focus-visible{
     color-scheme: light;
   }
   /* chrome, not content: the scroll bar would print at wherever the page was */
-  .sheet-frame, .masthead__nav, .skip, .plot-progress{ display: none !important; }
+  .sheet-frame, .masthead__nav, .skip, .plot-progress, .view{ display: none !important; }
+  /* on paper there is no switch to say which view this is: the graph keeps its heading */
+  .work.has-view .work__title{ position: static; width: auto; height: auto; overflow: visible;
+                               clip-path: none; white-space: normal; margin: 0 0 var(--sp-s); }
+  .work.has-view.is-graph .sec__count{ display: none; }
   body{ background: #fff; background-image: none; }
   .wrap{ max-width: none; padding-inline: 0; }
 
@@ -1703,36 +1780,6 @@ a:focus-visible, button:focus-visible{
   .rise{ clip-path: none; }
   .sec__head::after, .dim__bar{ transform: scaleX(1); }
   .spec{ position: static; }
-
-  /* The fan is six absolutely-positioned, overlapping, rotated sheets. On
-     screen that is the point; on paper it is one illegible smear. Paper gets
-     the grid, which is what the markup is anyway. */
-  .index--fan{
-    display: grid !important;
-    width: auto !important;
-    height: auto !important;
-    margin-left: 0 !important;
-    perspective: none;
-  }
-  .index--fan .dwg{
-    position: static; width: auto; aspect-ratio: auto;
-    transform: none; border-color: var(--rule);
-  }
-  .index--fan .dwg::after{ display: none; }
-  .index--fan .dwg__fig{
-    position: relative; inset: auto; aspect-ratio: 4 / 3; border: 0;
-  }
-  .index--fan .tb{ position: static; padding: var(--sp-s); }
-  /* Explicit values, not `revert`: revert rolls back to the USER-AGENT origin,
-     which threw away .tb__grid{ display: grid } and left the title block as a
-     plain block with its two columns collapsed. */
-  .index--fan .tb__grid{ display: grid; }
-  .index--fan .tb__no{ display: inline; }
-  .index--fan .tb__head{ display: flex; width: auto; height: auto; margin: 0 0 var(--sp-xs); }
-  .index--fan .tb__name{
-    writing-mode: horizontal-tb; transform: none; height: auto; padding-left: 0;
-  }
-  .index--fan .fig--pending > span{ opacity: 1; }
 
   /* The tree on paper: the drawing whole on one sheet, then the parts list,
      every card open. The panel, halos and soft lines are screen-only. */
@@ -1804,184 +1851,6 @@ a:focus-visible, button:focus-visible{
 .fig-well--motor{ padding: var(--sp-m); background: var(--film-3); }
 .fig-well--motor .stator{ max-height: 100%; }
 
-
-/* ---------- the drawing set, fanned ----------
-   The same six cards as the grid, re-laid out. Script adds .index--fan; with no
-   JS, on a narrow screen, or under reduced motion the grid stands and none of
-   this applies.
-
-   Geometry: sheets pushed across a table, not a hand of cards. Stacking runs
-   left-to-right so every sheet reveals a strip of its left edge — and that
-   strip is the sheet's BINDING MARGIN, carrying the drawing number and the
-   project name running up the spine. That is how drawings sit in a flat file,
-   and it is why the fan stays scannable: the first pass showed six clipped
-   titles, which is worse than a grid. Depth is occlusion; no shadows. */
-@media (min-width: 900px){
-  .index--fan{
-    display: block;
-    position: relative;
-    height: clamp(420px, 46vh, 500px);   /* script refits to the tallest sheet */
-    /* No perspective, and no translateZ on the sheets. Depth used to be sold
-       with a Z stagger, which under an 1600px perspective rendered the outer
-       sheets 9% smaller than the middle ones — they read as different-sized
-       drawings rather than as the same drawing further back. Occlusion and the
-       edge do the depth work, which is what the design said all along. */
-    --sheet-w: 300px;
-    --margin-w: 116px;   /* binding edge — the strip left showing at rest */
-    --step: 126px;       /* revealed strip; script bounds it to the stage */
-    --tilt: 1.9deg;      /* per sheet, about a pivot below the stage */
-  }
-  .index--fan .dwg{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: var(--sheet-w);
-    aspect-ratio: 1 / 1.34;
-    margin: 0;
-    --part: 0px;
-    /* Depth here is carried by occlusion and edge alone — there are no shadows
-       by design — so the sheet edge has to be legible in both themes. --rule
-       against the dark sheet measures about 1.6:1 and the stack read as one
-       flat mass at night. Mixed from --graphite instead, which lands close to
-       --rule on paper and clearly above it in the dark. */
-    border-color: color-mix(in srgb, var(--graphite) 55%, transparent);
-    transform-origin: 50% 190%;
-    transform:
-      translate(-50%, -50%)
-      translateX(calc(var(--i) * var(--step) + var(--part)))
-      rotate(calc(var(--i) * var(--tilt)));
-    /* short, so cursor input reads as a damped follow rather than a lag */
-    transition: transform .22s var(--ease-plot), border-color .18s ease;
-    will-change: transform;
-  }
-  .index--fan .dwg:nth-child(1){ --i: -2.5; z-index: 1; }
-  .index--fan .dwg:nth-child(2){ --i: -1.5; z-index: 2; }
-  .index--fan .dwg:nth-child(3){ --i: -0.5; z-index: 3; }
-  .index--fan .dwg:nth-child(4){ --i:  0.5; z-index: 4; }
-  .index--fan .dwg:nth-child(5){ --i:  1.5; z-index: 5; }
-  .index--fan .dwg:nth-child(6){ --i:  2.5; z-index: 6; }
-
-  /* The chosen sheet is pulled out: square, forward, above its neighbours —
-     and the stack PARTS around it. Squaring a 300px sheet up otherwise buried
-     the next sheet's margin completely, so the neighbour lost its identity
-     rather than merely being overlapped. One inherited custom property does it,
-     which keeps the transform declared in exactly one place. */
-  .index--fan .dwg:hover ~ .dwg,
-  .index--fan .dwg:focus-within ~ .dwg{ --part: 52px; }
-  /* :has gives the previous-sibling half; without it the parting is one-sided,
-     which degrades quietly rather than breaking */
-  .index--fan .dwg:has(~ .dwg:hover),
-  .index--fan .dwg:has(~ .dwg:focus-within){ --part: -52px; }
-
-  .index--fan .dwg:hover,
-  /* Keyboard focus rings the SHEET, not the link. The global a:focus-visible
-     outline would otherwise draw a small ring around the vertical spine text —
-     technically present, but it does not say "this drawing is selected". */
-  .index--fan .dwg:has(a:focus-visible){
-    outline: 2px solid var(--construct);
-    outline-offset: 3px;
-  }
-  .index--fan .tb__name a:focus-visible{ outline: none; }
-
-  .index--fan .dwg:focus-within{
-    transform:
-      translate(-50%, -50%)
-      translateX(calc(var(--i) * var(--step) + var(--part)))
-      translateY(-16px)
-      rotate(0deg)
-      scale(1.02);
-    z-index: 9;
-    border-color: var(--ink);
-  }
-
-  /* the figure is inset, leaving the binding margin as sheet, not image */
-  .index--fan .dwg__fig{
-    position: absolute;
-    inset: 10px 10px 10px var(--margin-w);
-    aspect-ratio: auto;
-    border: 1px solid var(--rule);
-  }
-
-  /* the title block becomes the margin: number at the head, name up the spine */
-  .index--fan .tb{ position: absolute; inset: 0; padding: 0; }
-  .index--fan .tb__grid{ display: none; }   /* rev/year/discipline: on the sheet itself */
-  .index--fan .tb__no{ display: none; }     /* replaced by the large number below */
-  /* Deliberately NOT absolutely positioned. The whole-card click target is
-     `.tb__name a::after { inset: 0 }`, which resolves against its nearest
-     POSITIONED ancestor — making this absolute silently shrank the clickable
-     area of every sheet to this 104px strip, and clicks on the figure did
-     nothing at all. Left static, the overlay resolves against .tb, which is
-     inset 0 over the whole sheet. */
-  .index--fan .tb__head{
-    display: block;
-    margin: 86px 0 14px 0;
-    width: calc(var(--margin-w) - 12px);
-    height: calc(100% - 100px);
-  }
-  .index--fan .tb__name{
-    /* Reads top-to-bottom, like a book spine.
-       It must NOT carry a transform. The whole-sheet click target is
-       `.tb__name a::after { inset: 0 }`, and a transform makes the element the
-       containing block for its absolutely positioned descendants — with
-       `rotate(180deg)` here for a bottom-to-top spine, that overlay collapsed
-       onto this ~38px strip and the only clickable part of a sheet was its
-       title. Dropping the rotation costs the ISO reading direction and buys
-       back the entire sheet as a link, with no script involved. */
-    writing-mode: vertical-rl;
-    height: 100%;
-    padding-top: 2px;
-    font-size: 1rem;
-    line-height: 1.2;
-  }
-
-  /* The drawing number, set large at the head of the margin. For five of the
-     six sheets the margin is all that shows, so this is the label. */
-  .index--fan .dwg::after{
-    content: attr(data-no);
-    position: absolute;
-    left: 14px;
-    top: 16px;
-    font-family: var(--cond);
-    font-size: 2.2rem;
-    font-weight: 300;
-    line-height: 1;
-    letter-spacing: -.01em;
-    color: var(--ink);
-    opacity: .72;
-    pointer-events: none;
-    transition: opacity .18s ease;
-  }
-  .index--fan .dwg:hover::after,
-  .index--fan .dwg:focus-within::after{ opacity: .9; }
-
-  /* The pending chip is centred in the figure well, which in the fan lands on
-     the overlap edge — six half-cut "FIGURE PEND" labels. It shows only on the
-     sheet you have pulled out. */
-  .index--fan .fig--pending > span{ opacity: 0; transition: opacity .18s ease; }
-  .index--fan .dwg:hover .fig--pending > span,
-  .index--fan .dwg:focus-within .fig--pending > span{ opacity: 1; }
-}
-
-/* Belt and braces: the script only tests reduced motion at load, so if the
-   preference flips afterwards the class is still on the container. */
-@media (prefers-reduced-motion: reduce){
-  .index--fan{ display: grid; height: auto !important; perspective: none;
-               width: auto !important; margin-left: 0 !important; }
-  .index--fan .dwg{ position: static; width: auto; aspect-ratio: auto;
-                    transform: none; transition: none; }
-  .index--fan .dwg::after{ display: none; }
-  .index--fan .dwg__fig{ position: relative; inset: auto; aspect-ratio: 4 / 3; border: 0; }
-  .index--fan .tb{ position: static; padding: var(--sp-s); }
-  /* Explicit values, not `revert`: revert rolls back to the USER-AGENT origin,
-     which threw away .tb__grid{ display: grid } and left the title block as a
-     plain block with its two columns collapsed. */
-  .index--fan .tb__grid{ display: grid; }
-  .index--fan .tb__no{ display: inline; }
-  .index--fan .tb__head{ position: static; width: auto; display: flex; }
-  .index--fan .tb__name{ writing-mode: horizontal-tb; transform: none;
-                         height: auto; padding-left: 0; }
-  .index--fan .fig--pending > span{ opacity: 1; }
-}
 
 /* The project page's figure is the other half of the sheet hand-off: same
    view-transition-name, so the browser morphs the card into it. */
