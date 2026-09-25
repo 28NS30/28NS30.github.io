@@ -52,7 +52,7 @@ sections when writing a stub up properly.
 
 ## Tech tree
 
-`tree.html` is every project as a tech tree, drawn the way Polytopia draws one:
+`tree.html` is the robotics projects as a tech tree, drawn the way Polytopia draws one:
 a hub, rings outward by tier, one circle per project. Built work is solid ink,
 what can start now carries the construction-blue ring, what is in progress is
 hazard yellow, and what is still waiting on something unbuilt is hollow. A
@@ -69,22 +69,29 @@ python3 consistency.py       # must say "everything agrees" before a commit
 Where it comes from:
 
 - **Farm** (`~/Farm`) owns every project's status, scores, dependencies, plan
-  and log. The built projects on the index are Farm nodes too, with
-  `status: done` and `site: {drawing: "E-01", page: "p-bldc.html"}`; the tree
-  shows the index card's own status word for them (Complete, Flown, Competed).
+  and log. The projects drawn on the index are Farm nodes too, carrying
+  `site: {drawing: "E-01", page: "p-bldc.html"}`; Farm owns their status. Where
+  Farm says done, the tree shows the index card's own word (Complete, Flown);
+  where the two disagree, the generator and consistency.py print a note.
 - **The index** owns the drawings. Every drawing card needs a Farm node, except
-  those listed in `OUTSIDE_FARM` in `gen_tree.py` (B-01: Farm is the robotics
-  tree), which join the tree from their card alone. A new drawing with neither
-  stops the generator, because the tree claims every project.
+  those listed in `gen_tree.py`: `LEFT_OUT` (B-01, the iGEM dry lab, is not a
+  step in the build and is not on the tree) and `OUTSIDE_FARM` (drawings that
+  join the tree from their card alone; none today). A new drawing with neither
+  stops the generator, because the tree claims every project it shows.
+- **What is public** is Farm's `public:` flag: RoboCup Junior is `public: false`,
+  so it is on the local page and not the published one.
 
 The drawing is laid out by `gen_tree.py` and baked into the page, so it reads
 with script off and prints. The names are fitted inside the circles with the
 site's own font metrics (it needs `fonttools` and `brotli`). The layout is held
 where it was from one run to the next: a finished project changes colour and
 nothing moves; adding or relinking projects lays it out again, as close to the
-old drawing as the new structure allows (`--reflow` starts afresh). Lines never
-pass through a circle they do not join; ones that would are routed along the
-empty band between rings.
+old drawing as the new structure allows (`--reflow` starts afresh). At rest
+the drawing is a tree: each circle has one line in, from the prerequisite
+nearest it, and a `+1` or `+2` in the circle counts the others, which are drawn
+with the rest of the chain when the project is hovered, focused or chosen.
+Lines never pass through a circle they do not join and never run along an
+unrelated line; ones that would are routed along the empty band between rings.
 
 `tree.js` adds what only a script can: hovering or focusing a project lights
 its whole chain, both ways; choosing one puts its title block in the panel

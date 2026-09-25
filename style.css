@@ -93,6 +93,10 @@
   --d-pole-s-tint:    rgba(225, 121, 92, .22);
   --l-hazard:         #D99B0B;
   --d-hazard:         #E0AC38;
+  /* hazard as a line, not a fill: #D99B0B is 1.98:1 on the light film, too
+     faint to follow as a stroke; this darker cut of it is 3.46:1 */
+  --l-hazard-line:    #9E740F;
+  --d-hazard-line:    #E0AC38;
   --l-grid-line:      rgba(21, 25, 23, .030);
   --d-grid-line:      rgba(228, 232, 227, .035);
 
@@ -111,6 +115,7 @@
   --pole-n-tint:    var(--l-pole-n-tint);
   --pole-s-tint:    var(--l-pole-s-tint);
   --hazard:         var(--l-hazard);
+  --hazard-line:    var(--l-hazard-line);
   --grid-line:      var(--l-grid-line);
 
   color-scheme: light dark;
@@ -240,6 +245,7 @@
     --pole-n-tint:    var(--d-pole-n-tint);
     --pole-s-tint:    var(--d-pole-s-tint);
     --hazard:         var(--d-hazard);
+    --hazard-line:    var(--d-hazard-line);
     --grid-line:      var(--d-grid-line);
   }
 }
@@ -261,6 +267,7 @@
     --pole-n-tint:    var(--d-pole-n-tint);
     --pole-s-tint:    var(--d-pole-s-tint);
     --hazard:         var(--d-hazard);
+    --hazard-line:    var(--d-hazard-line);
     --grid-line:      var(--d-grid-line);
 }
 :root[data-theme="light"]{ color-scheme: light; }
@@ -1164,7 +1171,7 @@ body{
 .tt__count{ color: var(--ink); }
 .tt__swatch{ width: var(--sp-m); height: var(--sp-m); overflow: visible; flex: none; }
 .tt__sample{ width: var(--sp-l); height: var(--sp-2xs); overflow: visible; flex: none; }
-.tt__sample line{ stroke: var(--graphite); stroke-width: 1.5; }
+.tt__sample line{ stroke: var(--graphite); stroke-width: 2.5; }
 .tt__sample--soft line{ stroke-dasharray: 5 4; }
 .tree__note{
   margin: 0;
@@ -1248,15 +1255,26 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
 .tt__tier{ text-anchor: middle; }
 .tt__dim{ fill: none; stroke: var(--construct); stroke-width: 1; }
 
-/* lines take the state of the circle they lead into, as Polytopia's do */
-.tt__edge{ fill: none; stroke: var(--rule); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.tt__edge.is-built{ stroke: var(--ink); stroke-width: 2.5; }
-.tt__edge.is-active{ stroke: var(--hazard); stroke-width: 2.5; }
-.tt__edge.is-ready{ stroke: var(--graphite); }
+/* lines take the state of the circle they lead into, as Polytopia's do, and
+   are drawn at a weight that reads across the room: --rule alone (1.8:1)
+   was too faint to follow, so even a locked line is graphite, thinned */
+.tt__edge{
+  fill: none;
+  stroke: color-mix(in srgb, var(--graphite) 75%, transparent);    /* 3.3:1 light, 4.7:1 dark */
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tt__edge.is-built{ stroke: var(--ink); stroke-width: 3; }
+.tt__edge.is-active{ stroke: var(--hazard-line); stroke-width: 3; }
+.tt__edge.is-ready{ stroke: var(--graphite); stroke-width: 2.5; }
+/* a second or third prerequisite: drawn with its chain, not at rest (the
+   circle's +N says it is there); at rest the drawing is a tree */
+.tt__edge--also{ display: none; }
 .tt__edge--proposed{ stroke: var(--graphite); stroke-width: 1.5; stroke-dasharray: 1 4; }
 .tt__q{ font-family: var(--mono); font-size: 11.2px; fill: var(--construct); text-anchor: middle;
         paint-order: stroke; stroke: var(--film); stroke-width: 4px; }
-.tt__soft{ display: none; fill: none; stroke: var(--graphite); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.tt__soft{ display: none; fill: none; stroke: var(--graphite); stroke-width: 2; stroke-dasharray: 6 4; }
 .tt__soft.is-shown{ display: inline; }
 
 .tt__hub circle{ fill: var(--ink); }
@@ -1267,15 +1285,22 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
    carries the construction-blue ring (it can start now); locked is hollow */
 a.tt__node{ cursor: pointer; }
 .tt__node:focus{ outline: none; }
-.tt__disc{ fill: var(--film-2); stroke: var(--rule); stroke-width: 1.2; }
+.tt__disc{ fill: var(--film-2); stroke: color-mix(in srgb, var(--graphite) 60%, transparent); stroke-width: 1.5; }
 .tt__halo{ fill: none; stroke: none; }
 .tt__name{ font-family: var(--cond); font-size: 11.2px; letter-spacing: .02em; fill: var(--graphite); text-anchor: middle; }
 .tt__code{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; }
+.tt__more{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--construct); text-anchor: middle; }
+.tt__more-key{ font-family: var(--mono); color: var(--construct); letter-spacing: .06em; }
+.tt__top{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; text-anchor: middle; }
+/* the legend promises a line drawn on focus only where focus can draw it */
+.tt__key-screen{ display: none; }
+html.js .tt__key-screen{ display: inline; }
+@media (max-width: 699px){ html.js .tt__key-screen{ display: none; } }
 :is(.tt__node, .tt__key-node).is-built .tt__disc{ fill: var(--ink); stroke: var(--ink); }
-.tt__node.is-built .tt__name, .tt__node.is-built .tt__code{ fill: var(--film); }
+.tt__node.is-built :is(.tt__name, .tt__code, .tt__more){ fill: var(--film); }
 /* hazard against the film is 1.98:1 in light; the ink outline carries the edge */
 :is(.tt__node, .tt__key-node).is-active .tt__disc{ fill: var(--hazard); stroke: var(--ink); }
-.tt__node.is-active .tt__name, .tt__node.is-active .tt__code{ fill: var(--l-ink); }
+.tt__node.is-active :is(.tt__name, .tt__code, .tt__more){ fill: var(--l-ink); }
 .tt__prog{ fill: none; stroke: var(--ink); stroke-width: 3; }
 :is(.tt__node, .tt__key-node).is-ready .tt__disc{ stroke: var(--construct); stroke-width: 2.5; }
 .tt__node.is-ready .tt__name, .tt__node.is-ready .tt__code{ fill: var(--ink); }
@@ -1298,7 +1323,8 @@ a.tt__node{ cursor: pointer; }
   /* chosen and focused at once: the focus has to show over the choice */
   .tt__node.is-sticky:focus-visible .tt__halo{ stroke: var(--ink); stroke-width: 3; }
   .tt.is-tracing .tt__edge{ opacity: .15; }
-  .tt.is-tracing .tt__edge.is-hi{ opacity: 1; stroke: var(--construct); stroke-width: 2; }
+  .tt.is-tracing .tt__edge.is-hi{ opacity: 1; stroke: var(--construct); stroke-width: 3; }
+  .tt.is-tracing .tt__edge--also.is-hi{ display: inline; }
 }
 /* scaled down on a phone the blue focus halo reads as the ready ring: ink */
 @media screen and (max-width: 699px){
@@ -1652,6 +1678,7 @@ a:focus-visible, button:focus-visible{
     --rule: #999; --rule-soft: #ccc;
     --construct: #00379e; --construct-tint: transparent;
     --hazard: #D99B0B; --grid-line: transparent;
+    --hazard-line: var(--l-hazard-line);
     --pole-n: var(--l-pole-n); --pole-s: var(--l-pole-s);
     --pole-n-tint: var(--l-pole-n-tint); --pole-s-tint: var(--l-pole-s-tint);
     color-scheme: light;
@@ -1713,7 +1740,7 @@ a:focus-visible, button:focus-visible{
   .tt__key{ break-inside: avoid; break-after: avoid; }     /* the key stays with its drawing */
   /* !important beats the wipe without cancelling it, so nothing replays after */
   .tt__svg{ clip-path: none !important; }
-  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__up, .tt__key-soft{ display: none !important; }
+  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__up, .tt__key-soft, .tt__key-screen{ display: none !important; }
   .tier{ margin: 0 0 var(--sp-l); }
   .tier__list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tier__head{ break-after: avoid; }

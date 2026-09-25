@@ -152,6 +152,12 @@
     var block = document.createElement('article');
     block.className = 'node';
     block.appendChild(card.querySelector('.tb').cloneNode(true));
+    // the panel is for reading what a project is and why it is where it is:
+    // tier, complexity and the unlock count stay on the card
+    [].slice.call(block.querySelectorAll('.tb__cell')).forEach(function (cell) {
+      var dt = cell.querySelector('dt');
+      if (dt && /^(tier|complexity|unlocks)$/i.test(dt.textContent.trim())) cell.parentNode.removeChild(cell);
+    });
     // the page's own h2 comes after the panel: the clone's title is a line, not a heading
     var head = block.querySelector('.tb__name');
     if (head) {
