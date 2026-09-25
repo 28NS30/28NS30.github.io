@@ -201,39 +201,13 @@
 }
 
 /* ---------- text animations ----------
-   Subtle entrance animations for text elements. Text arrives and settles,
-   like content being plotted, not faded in. These respect prefers-reduced-motion. */
+   Text is wiped on left to right, the way the cards are, never faded or slid:
+   those were the one motion this system does not use. Filled backwards only,
+   so the text is hidden for its delay and carries no clip once it has landed.
+   These respect prefers-reduced-motion. */
 @keyframes text-in{
-  from{
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to{
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes text-draw{
-  from{
-    opacity: 0.6;
-    letter-spacing: .08em;
-  }
-  to{
-    opacity: 1;
-    letter-spacing: inherit;
-  }
-}
-
-@keyframes underline-draw{
-  from{
-    transform: scaleX(0);
-    opacity: 0;
-  }
-  to{
-    transform: scaleX(1);
-    opacity: 1;
-  }
+  from{ clip-path: inset(0 100% 0 0); }
+  to{ clip-path: inset(0 0 0 0); }
 }
 
 /* ---------- choosing the theme ----------
@@ -347,7 +321,7 @@ body{
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
   opacity: 0;
-  animation: ink .4s ease 1.2s forwards;
+  animation: ink .4s step-end 1.2s forwards;
 }
 @keyframes plot{ to{ stroke-dashoffset: 0; } }
 @keyframes ink{ to{ opacity: 1; } }
@@ -362,7 +336,7 @@ body{
   text-anchor: middle;
   dominant-baseline: middle;
   opacity: 0;
-  animation: ink .4s ease 1.35s forwards;
+  animation: ink .4s step-end 1.35s forwards;
 }
 
 /* Scroll position, drawn as a dimension down the right edge. Pure chrome, so it
@@ -630,7 +604,7 @@ body{
   text-transform: uppercase;
   color: var(--graphite);
   margin: 0 0 var(--sp-m);
-  animation: text-draw var(--t-text-in) var(--ease-plot) forwards;
+  animation: text-in var(--t-text-in) var(--ease-plot) backwards;
 }
 
 /* Dimension line — annotation layer, drawn once. Label above its line, as on a
@@ -644,8 +618,7 @@ body{
   align-items: stretch;
   gap: var(--sp-3xs);
   color: var(--construct);
-  animation: text-in .6s var(--ease-plot) .35s forwards;
-  opacity: 0;
+  animation: text-in .6s var(--ease-plot) .35s backwards;
 }
 .dim__bar{
   width: 100%;
@@ -695,8 +668,7 @@ body{
   letter-spacing: .04em;
   text-transform: uppercase;
   margin: 0;
-  animation: text-in .6s var(--ease-plot) .15s forwards;
-  opacity: 0;
+  animation: text-in .6s var(--ease-plot) .15s backwards;
 }
 .sec__count{
   margin-left: auto;
@@ -720,13 +692,10 @@ body{
   color: inherit;
   border: 1px solid var(--edge);
   background: var(--film-2);
-  transition: border-color var(--t-tap) ease, transform var(--t-tap) ease, box-shadow .24s ease;
+  transition: border-color var(--t-tap) ease;
 }
-.dwg:hover{ 
-  border-color: var(--ink); 
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
+/* hover is the ink edge alone: a lift is not one of the four motion verbs */
+.dwg:hover{ border-color: var(--ink); }
 .dwg:focus-within{ border-color: var(--ink); }
 
 /* The anchor sits on the title, not the whole card: a screen reader announces
@@ -928,8 +897,7 @@ body{
   text-transform: uppercase;
   margin: 0 0 var(--sp-s);
   max-width: 18ch;
-  animation: text-in .7s var(--ease-plot) .1s forwards;
-  opacity: 0;
+  animation: text-in .7s var(--ease-plot) .1s backwards;
 }
 .proj__standfirst{
   font-size: 1.16rem;
@@ -937,8 +905,7 @@ body{
   max-width: var(--readw);
   margin: 0;
   color: var(--graphite);
-  animation: text-in .7s var(--ease-plot) .2s forwards;
-  opacity: 0;
+  animation: text-in .7s var(--ease-plot) .2s backwards;
 }
 .proj__standfirst a{ color: var(--construct); }
 
