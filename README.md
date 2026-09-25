@@ -23,11 +23,11 @@ work on its own.
 index.html         drawing index (homepage): grid, or graph   ← two blocks generated from ~/Farm
 about.html         about
 404.html           designed not-found sheet
-p-bldc.html        E-01  brushless DC motor        ← written
-p-cycloidal.html   M-01  cycloidal gearbox         ← stub
-p-drone.html       C-01  quadrotor                 ← stub
-p-shooter.html     M-02  FRC shooter subsystem     ← real geometry, write-up pending
-p-umv.html         C-02  ultra-mobility vehicle    ← stub, leads the index
+p-bldc.html        brushless DC motor              ← written
+p-cycloidal.html   cycloidal gearbox               ← stub
+p-drone.html       quadrotor                       ← stub
+p-shooter.html     FRC shooter subsystem           ← real geometry, write-up pending
+p-umv.html         ultra-mobility vehicle          ← stub, leads the index
 tree.js            the grid/graph switch; tracing, panel and keys for the graph
 style.css          the whole design system
 theme.js           the Auto / Light / Dark control
@@ -51,32 +51,35 @@ sections when writing a stub up properly.
 ## Grid and graph
 
 The Work page shows the projects two ways, switched in the section head. The
-grid is the drawing cards: every public project done or under way, newest
-first. The
-graph is the same projects plus what each one directly unlocks, drawn as a tech
-tree the way Polytopia draws one: a hub, rings outward by tier, one circle per
-project. Built work is solid ink, what is in progress is hazard yellow, what can
-start now carries the construction-blue ring, and what is still waiting on
-something unbuilt is hollow. A project sits one ring out from the furthest thing
-it needs; the lines take the state of the circle they lead into. A `+1` in a
-circle counts a prerequisite not drawn; the project's card names it.
+grid is the project cards: every public project done or under way, newest
+first, each with its year and status. The graph is the same projects plus the
+planned projects that directly build on them: a hub, rings outward, one circle
+per project, each one ring further out than the furthest project it needs, and
+a line into each circle from one it needs. A circle takes its project's status:
+done is solid ink, in progress is hazard yellow, planned is hollow, an idea is
+hollow and dashed. The lines take the status of the circle they lead into.
+
+It is not a game's tech tree and never says so: no tiers, nothing locked or
+unlocked, no counts in the circles. consistency.py fails on those words on any
+page, in any label a screen reader hears, and in the local page's lettering
+(Farm's own notes there are left alone), and on a project number (the site
+dropped E-01, M-01 and the rest) on any page, in any label or on the share card.
 
 With no script the switch is hidden and both views stand, the graph under its
 own heading. The address says which view is showing: `index.html#graph`, or
 `#` and the id of any project in the graph, opens on the graph.
 
-Most of the grid is written by hand: a drawing card is the project's page on the
-index. The rest is generated, between `<!-- generated:... -->` markers that must
-not be edited:
+Most of the grid is written by hand: a card is the project's page on the index.
+The rest is generated, between `<!-- generated:... -->` markers that must not be
+edited:
 
 - **grid**: a card for each public project Farm has done or under way that has
-  no drawing card yet (PCB Motor today), after C-02: under way first, then done.
-  It has no number, revision, year or discipline, because Farm has none; it
-  links to the project in the graph. When the project gets a page and a drawing
-  card, it drops out of this block.
+  no page yet (PCB Motor today), after the UMV: under way first, then done. Its
+  year is a dash, because Farm has none; it links to the project in the graph.
+  When the project gets a page and a card, it drops out of this block.
 - **graph**: the figure, its legend, and a card per project below it, grouped by
-  tier. The cards are what a screen reader, a phone and paper read, and what the
-  panel beside the figure shows.
+  status. The cards are what a screen reader, a phone and paper read, and what
+  the panel beside the figure shows.
 
 ```bash
 python3 gen_tree.py          # runs Farm's build, then rewrites both blocks + tree.local.html
@@ -88,19 +91,21 @@ Where it comes from:
 
 - **Farm** (`~/Farm`) owns every project's status, scores, dependencies, plan
   and log. The projects on the index are Farm nodes too, carrying
-  `site: {drawing: "E-01", page: "p-bldc.html"}`.
-- **The index** owns the drawings. On the Work page a drawing's card wins: the
-  graph takes its title and its status (a card in progress draws in progress;
-  any other status word draws built, and is the word shown), so the grid and
-  the graph never disagree. Where Farm says otherwise, the generator prints a
-  note. Every drawing card needs a public Farm node, or the generator stops.
+  `site: {page: "p-bldc.html"}` (a `drawing:` code beside it is no longer read).
+- **The index** owns its cards. On the Work page a card wins: the graph takes
+  its title and its status (a card in progress draws in progress; any other
+  status word draws done, and is the word shown), so the grid and the graph
+  never disagree. Where Farm says otherwise, the generator prints a note. Every
+  card needs a public Farm node with its page, or the generator stops.
 - **What is public** is Farm's `public:` flag, and only a project's Summary and
   Goals are published.
 
 The generator also keeps two things outside the blocks in step: the "6 builds"
 on the hero's dimension and the "6 projects" in the section head (every card in
 the grid), and the home page's `lastmod` in `sitemap.xml`, moved to the day
-`index.html` changes. `--check` reports either when it is out of date.
+`index.html` changes. `--check` reports either when it is out of date. The
+share card says the same count; it comes from `gen_og.py`, and consistency.py
+fails when the two drift (run `gen_og.py`, then re-render `og.png`).
 
 The drawing is laid out by `gen_tree.py` and baked into the page, so it reads
 with script off and prints. The names are fitted inside the circles with the
@@ -109,6 +114,8 @@ where it was from one run to the next: a finished project changes colour and
 nothing moves; adding or relinking projects lays it out again, as close to the
 old drawing as the new structure allows (`--reflow` starts afresh). Lines never
 pass through a circle they do not join and never run along an unrelated line.
+Each circle has one line in at rest; a second project it needs is drawn when the
+project is hovered, focused or chosen, and its label and card name every one.
 
 `tree.js` adds what only a script can: the switch; hovering or focusing a
 project lights its whole chain, both ways; choosing one puts its title block in
@@ -124,10 +131,10 @@ refuses to write from a public export older than the full one (a plain
 http(s) or mailto; it prints a `note:` when public prose names a hidden project
 or a private file, or when a name only fits its circle set smaller.
 
-`tree.local.html` is the whole tree, every project Farm has: plans, next
-actions, open questions, decisions, logs, cost, time as each circle's "price",
-progress arcs, all five scores, links into the Farm folder, and links proposed
-but not yet confirmed (an open question that reads ``To confirm: needs `id` ``
+`tree.local.html` is every project Farm has, drawn the same way: plans, next
+actions, open questions, decisions, logs, cost and time, progress in the circles
+of work under way, all five scores, the Farm id above each card's title, links
+into the Farm folder, and links proposed but not yet confirmed (an open question that reads ``To confirm: needs `id` ``
 in node.md, drawn dotted with a ?). It is gitignored; open it from Finder.
 
 ---
@@ -181,16 +188,9 @@ put calipers in frame for scale.
 ## Adding a project
 
 Duplicate the closest existing page, rename it, edit the content, then copy an
-`<a class="dwg">` block into the index in `index.html`.
-
-Drawing numbers encode discipline, not sequence, so they stay meaningful as the
-list grows:
-
-```
-E-  electromechanical      M-  mechanical
-C-  controls               B-  modeling / bio
-T-  teams, roles, work     R-  competition
-```
+`<article class="dwg">` card into the grid in `index.html` and give its Farm node
+`site: {page: ...}`. Projects are not numbered; the page's title names it in
+the crumb and the footer.
 
 ---
 
@@ -247,7 +247,7 @@ The camera fits the geometry's bounding **sphere** — `r / sin(fov/2)` — beca
 the part rotates, so a bounding-box fit would frame the opening pose and clip a
 corner-on one.
 
-### Live on M-02
+### Live on the shooter page
 
 `p-shooter.html` draws the real Onshape export: 87,786 triangles, 42,532
 vertices and 31,731 drawn edges, **573 KB** over the wire. It arrived as 129

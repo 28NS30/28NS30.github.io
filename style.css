@@ -452,7 +452,7 @@ body{
    needs the extra class to win. */
 
 
-/* The drawing beside the title is E-01, not the featured build. Label it, so it
+/* The drawing beside the title is the brushless motor, not the featured build. Label it, so it
    reads as a second entry into the index rather than a picture of the UMV. */
 
 
@@ -708,7 +708,6 @@ body{
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 .dwg:focus-within{ border-color: var(--ink); }
-.dwg:hover .tb__no{ color: var(--construct); }
 
 /* The anchor sits on the title, not the whole card: a screen reader announces
    "Cycloidal gearbox", not the card's entire text. The overlay restores the
@@ -751,8 +750,8 @@ body{
 }
 
 /* ---------- the Work page: grid or graph ----------
-   One section, two views of it: the drawing cards, and the graph of what they
-   unlock. The switch is a pair of pressed-state buttons in the section head,
+   One section, two views of it: the project cards, and the graph of how they
+   connect. The switch is a pair of pressed-state buttons in the section head,
    set like two title-block cells; tree.js shows it. With no script it stays
    hidden and both views stand, the graph under its own heading. */
 .work .sec__head{ flex-wrap: wrap; row-gap: var(--sp-2xs); }
@@ -1190,19 +1189,18 @@ body{
   animation: draw-x var(--t-draw) var(--ease-plot) .25s both;
 }
 
-/* ---------- the graph (tech tree) ----------
+/* ---------- the graph ----------
    The Work page's graph and tree.local.html, rendered by gen_tree.py from
-   Farm's data and the index's own drawing cards. The figure is a tech tree the way Polytopia
-   draws one: a hub, rings outward by tier, one circle per project, lines that
-   take the state of the circle they lead into. Built work is solid ink; what
-   can start now carries the construction-blue ring; what is waiting on
-   something unbuilt is hollow. The geometry and lettering are baked in by the
-   generator, so the figure reads with script off; tree.js only traces chains
-   and fills the title-block panel.
+   Farm's data and the index's own drawing cards: a hub, rings outward, one
+   circle per project, each one ring further out than the furthest project it
+   needs, and lines that take the status of the circle they lead into. Done
+   work is solid ink, work under way is hazard, planned work is hollow. The
+   geometry and lettering are baked in by the generator, so the figure reads
+   with script off; tree.js traces chains and fills the title-block panel.
 
    Below the figure is the parts list: every project in it as a title block,
-   grouped by tier. It is the reading path with no script, on a phone and on
-   paper. */
+   grouped by status. It is the reading path with no script, on a phone and
+   on paper. */
 .tt__key{
   display: flex;
   flex-wrap: wrap;
@@ -1305,18 +1303,17 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
    pitch circle, and only over the span each ring uses */
 /* construction weight, so a short piece between two circles cannot pass for a link */
 .tt__ring{ fill: none; stroke: var(--rule-soft); stroke-width: .75; stroke-dasharray: 16 4 3 4; }
-.tt__tier, .tt__dimtext{
+.tt__dimtext{
   font-family: var(--mono);
   font-size: 11.2px;
   letter-spacing: .08em;
   fill: var(--construct);
 }
-.tt__tier{ text-anchor: middle; }
 .tt__dim{ fill: none; stroke: var(--construct); stroke-width: 1; }
 
-/* lines take the state of the circle they lead into, as Polytopia's do, and
-   are drawn at a weight that reads across the room: --rule alone (1.8:1)
-   was too faint to follow, so even a locked line is graphite, thinned */
+/* lines take the state of the circle they lead into, and are drawn at a
+   weight that reads across the room: --rule alone (1.8:1) was too faint to
+   follow, so even a line into a planned project is graphite, thinned */
 .tt__edge{
   fill: none;
   stroke: color-mix(in srgb, var(--graphite) 75%, transparent);    /* 3.3:1 light, 4.7:1 dark */
@@ -1324,11 +1321,11 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.tt__edge.is-built{ stroke: var(--ink); stroke-width: 3; }
+.tt__edge.is-done{ stroke: var(--ink); stroke-width: 3; }
 .tt__edge.is-active{ stroke: var(--hazard-line); stroke-width: 3; }
-.tt__edge.is-ready{ stroke: var(--graphite); stroke-width: 2.5; }
-/* a second or third prerequisite: drawn with its chain, not at rest (the
-   circle's +N says it is there); at rest the drawing is a tree */
+/* a second or third project a circle needs: drawn with its chain when the
+   project is in focus, not at rest -- each circle has one line in, and its
+   label and card name every project it needs */
 .tt__edge--also{ display: none; }
 .tt__edge--proposed{ stroke: var(--graphite); stroke-width: 1.5; stroke-dasharray: 1 4; }
 .tt__q{ font-family: var(--mono); font-size: 11.2px; fill: var(--construct); text-anchor: middle;
@@ -1338,36 +1335,28 @@ html.js .tt__cap-kbd{ display: inline; }       /* the keys exist only with scrip
 
 .tt__hub circle{ fill: var(--ink); }
 .tt__hubname{ font-family: var(--cond); font-size: 17px; letter-spacing: .12em; fill: var(--film); text-anchor: middle; }
-.tt__hubsub{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .1em; fill: var(--film); text-anchor: middle; }
 
-/* a circle: built is solid ink (researched); in progress is hazard; ready
-   carries the construction-blue ring (it can start now); locked is hollow */
+/* a circle takes its project's status: done is solid ink, in progress is
+   hazard, planned is hollow, an idea is hollow and dashed (not drawn yet) */
 a.tt__node{ cursor: pointer; }
 .tt__node:focus{ outline: none; }
-.tt__disc{ fill: var(--film-2); stroke: color-mix(in srgb, var(--graphite) 60%, transparent); stroke-width: 1.5; }
+/* graphite at 75%, as the lines: 3.3:1 on the film in light, 4.7:1 in dark */
+.tt__disc{ fill: var(--film-2); stroke: color-mix(in srgb, var(--graphite) 75%, transparent); stroke-width: 1.5; }
 .tt__halo{ fill: none; stroke: none; }
 .tt__name{ font-family: var(--cond); font-size: 11.2px; letter-spacing: .02em; fill: var(--graphite); text-anchor: middle; }
+/* the local page's progress figure, above the name of work under way */
 .tt__code{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--graphite); text-anchor: middle; }
-.tt__more{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; fill: var(--construct); text-anchor: middle; }
-.tt__more-key{ font-family: var(--mono); color: var(--construct); letter-spacing: .06em; }
 .tt__top{ font-family: var(--mono); font-size: 11.2px; letter-spacing: .06em; text-anchor: middle; }
-/* the legend promises a line drawn on focus only where focus can draw it */
-.tt__key-screen{ display: none; }
-html.js .tt__key-screen{ display: inline; }
-@media (max-width: 699px){ html.js .tt__key-screen{ display: none; } }
-:is(.tt__node, .tt__key-node).is-built .tt__disc{ fill: var(--ink); stroke: var(--ink); }
-.tt__node.is-built :is(.tt__name, .tt__code, .tt__more){ fill: var(--film); }
+:is(.tt__node, .tt__key-node).is-done .tt__disc{ fill: var(--ink); stroke: var(--ink); }
+.tt__node.is-done :is(.tt__name, .tt__code){ fill: var(--film); }
 /* hazard against the film is 1.98:1 in light; the ink outline carries the edge */
 :is(.tt__node, .tt__key-node).is-active .tt__disc{ fill: var(--hazard); stroke: var(--ink); }
-.tt__node.is-active :is(.tt__name, .tt__code, .tt__more){ fill: var(--l-ink); }
+.tt__node.is-active :is(.tt__name, .tt__code){ fill: var(--l-ink); }
 .tt__prog{ fill: none; stroke: var(--ink); stroke-width: 3; }
-:is(.tt__node, .tt__key-node).is-ready .tt__disc{ stroke: var(--construct); stroke-width: 2.5; }
-.tt__node.is-ready .tt__name, .tt__node.is-ready .tt__code{ fill: var(--ink); }
-:is(.tt__node, .tt__key-node).is-locked .tt__disc{ fill: var(--film); }
-:is(.tt__node, .tt__key-node).is-idea .tt__disc{ stroke-dasharray: 5 3; }
+:is(.tt__node, .tt__key-node):is(.is-planned, .is-idea, .is-dropped) .tt__disc{ fill: var(--film); }
 /* --rule is 1.79:1; a dashed ring needs the heavier line to read as a ring */
-:is(.tt__node, .tt__key-node).is-locked.is-idea .tt__disc{ stroke: var(--graphite); }
-:is(.tt__node, .tt__key-node).is-dropped .tt__disc{ fill: var(--film); stroke-dasharray: 2 3; }
+:is(.tt__node, .tt__key-node).is-idea .tt__disc{ stroke: var(--graphite); stroke-dasharray: 5 3; }
+:is(.tt__node, .tt__key-node).is-dropped .tt__disc{ stroke-dasharray: 2 3; }
 
 /* focus and tracing: halos and lines, never faded circles -- a dimmed name
    would drop under AA in every state. Screen only: paper shows the tree, not
@@ -1385,7 +1374,7 @@ html.js .tt__key-screen{ display: inline; }
   .tt.is-tracing .tt__edge.is-hi{ opacity: 1; stroke: var(--construct); stroke-width: 3; }
   .tt.is-tracing .tt__edge--also.is-hi{ display: inline; }
 }
-/* scaled down on a phone the blue focus halo reads as the ready ring: ink */
+/* scaled down on a phone the thin blue focus halo is hard to see: ink, heavier */
 @media screen and (max-width: 699px){
   .tt__node:focus-visible .tt__halo{ stroke: var(--ink); stroke-width: 2.5; }
 }
@@ -1430,24 +1419,23 @@ html.js .tt__key-screen{ display: inline; }
 }
 .tt__hint{ margin: 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .06em; color: var(--graphite); }
 .tt__panel .node{ scroll-margin: 0; }
-.tt__panel .node__up{ display: none; }
-.node__state a, .tt__panel .node__rel a, .tt__pgo a{
+.tt__panel .node__nav{ display: none; }
+.tt__panel .node__rel a, .tt__pgo a{
   color: var(--construct);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
   transition: color var(--t-tap) ease;
 }
-.node__state a:hover, .tt__panel .node__rel a:hover, .tt__pgo a:hover{ color: var(--ink); }
+.tt__panel .node__rel a:hover, .tt__pgo a:hover{ color: var(--ink); }
 .tt__psum{ margin: var(--sp-s) 0 0; font-size: var(--t-meta); line-height: 1.55; }
 .tt__panel .node__rel{ font-size: var(--t-meta); }
 .tt__pgo{ display: flex; flex-wrap: wrap; gap: var(--sp-2xs) var(--sp-m); margin: var(--sp-s) 0 0;
           font-family: var(--mono); font-size: var(--t-micro); letter-spacing: .08em; text-transform: uppercase; }
 
-/* ---- the parts list ---- */
+/* ---- the parts list: a group for each status ---- */
 .tree{ margin: 0 0 var(--sp-xl); }
-.tree__tiers{ list-style: none; margin: 0; padding: 0; }
-.tier{ margin: 0 0 var(--sp-xl); }
-.tier__head{
+.parts__group{ margin: 0 0 var(--sp-xl); }
+.parts__head{
   display: flex;
   align-items: baseline;
   gap: var(--sp-xs);
@@ -1460,15 +1448,15 @@ html.js .tt__key-screen{ display: inline; }
   letter-spacing: .04em;
   text-transform: uppercase;
 }
-.tier__head .sec__mark{ min-width: 2ch; }
-.tier__n{
+.parts__head .node__swatch{ align-self: center; margin-right: 0; }
+.parts__n{
   margin-left: auto;
   font-family: var(--mono);
   font-size: var(--t-micro);
   letter-spacing: .1em;
   color: var(--graphite);
 }
-.tier__list{
+.parts__list{
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1523,24 +1511,30 @@ html:not(.js) .node:target, .node.is-sticky{ outline: 2px solid var(--construct)
   background: var(--film);
 }
 .node__swatch{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.node__swatch.is-built{ background: var(--ink); border-color: var(--ink); }
+.node__swatch.is-done{ background: var(--ink); border-color: var(--ink); }
 .node__swatch.is-active{ background: var(--hazard); border-color: var(--ink); }
-.node__swatch.is-ready{ background: var(--film-2); border: 2px solid var(--construct); }
-/* why it is in that state, in words: the colour is never the only signal */
-.node__state{
+.node__swatch:is(.is-planned, .is-idea, .is-dropped){ border-color: color-mix(in srgb, var(--graphite) 75%, transparent); }
+.node__swatch.is-idea{ border-style: dashed; }
+/* the swatch is a mark beside the name, not part of the link */
+.node .tb__name .node__swatch{ vertical-align: .05em; }
+.node__nav{
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3xs) var(--sp-xs);
+  justify-content: flex-end;
   margin: var(--sp-2xs) 0 0;
   font-family: var(--mono);
   font-size: var(--t-micro);
   letter-spacing: .06em;
-  color: var(--graphite);
 }
-/* above the title's whole-block overlay, or these links could not be clicked */
-.node__state a{ position: relative; z-index: 1; }
-.node__why{ flex: 1 1 auto; }
-.node__up{ margin-left: auto; }
+/* above the title's whole-block overlay, or the link could not be clicked */
+.node__nav a{
+  position: relative;
+  z-index: 1;
+  color: var(--construct);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  transition: color var(--t-tap) ease;
+}
+.node__nav a:hover{ color: var(--ink); }
 
 .node__bar{ height: 3px; margin-top: var(--sp-xs); background: var(--rule-soft); }
 .node__bar span{ display: block; height: 100%; background: var(--construct); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -1787,10 +1781,10 @@ a:focus-visible, button:focus-visible{
   .tt__key{ break-inside: avoid; break-after: avoid; }     /* the key stays with its drawing */
   /* !important beats the wipe without cancelling it, so nothing replays after */
   .tt__svg{ clip-path: none !important; }
-  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__up, .tt__key-soft, .tt__key-screen{ display: none !important; }
-  .tier{ margin: 0 0 var(--sp-l); }
-  .tier__list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tier__head{ break-after: avoid; }
+  .tt__panel, .tt__softs, .tt .skip, .tt__cap-wide, .tt__cap-kbd, .node__nav, .tt__key-soft{ display: none !important; }
+  .parts__group{ margin: 0 0 var(--sp-l); }
+  .parts__list{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .parts__head{ break-after: avoid; }
   .node{ break-inside: avoid; opacity: 1 !important; border-color: var(--rule) !important;
          box-shadow: none !important; outline: none !important; }
   .node__more > summary{ display: none; }

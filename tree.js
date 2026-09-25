@@ -38,7 +38,7 @@
   // no prototype, so a hash like #constructor finds nothing rather than a function
   function map() { return Object.create(null); }
   var cards = map(), circles = map(), needs = map(), uses = map(), neededBy = map(), usedBy = map();
-  var order = [].slice.call(svg.querySelectorAll('.tt__node'));     // tier, then clockwise
+  var order = [].slice.call(svg.querySelectorAll('.tt__node'));     // ring by ring, clockwise
   order.forEach(function (a) { circles[a.getAttribute('data-id')] = a; });
   [].slice.call(document.querySelectorAll('.tree .node')).forEach(function (c) {
     cards[c.id] = c; neededBy[c.id] = []; usedBy[c.id] = [];
@@ -217,24 +217,25 @@
     var block = document.createElement('article');
     block.className = 'node';
     block.appendChild(card.querySelector('.tb').cloneNode(true));
-    // the panel is for reading what a project is and why it is where it is:
-    // tier, complexity and the unlock count stay on the card
+    // the panel is for reading what a project is and where it stands: the
+    // complexity scores stay on the card
     [].slice.call(block.querySelectorAll('.tb__cell')).forEach(function (cell) {
       var dt = cell.querySelector('dt');
-      if (dt && /^(tier|complexity|unlocks)$/i.test(dt.textContent.trim())) cell.parentNode.removeChild(cell);
+      if (dt && /^complexity$/i.test(dt.textContent.trim())) cell.parentNode.removeChild(cell);
     });
     // the page's own h2 comes after the panel: the clone's title is a line, not a heading
     var head = block.querySelector('.tb__name');
     if (head) {
       var line = document.createElement('p');
       line.className = 'tb__name';
+      // a title that links to its own card says so as plain text here
       var link = head.querySelector('a');
-      if (link && link.getAttribute('href') === '#' + id) line.textContent = link.textContent;
-      else while (head.firstChild) line.appendChild(head.firstChild);
+      if (link && link.getAttribute('href') === '#' + id) link.parentNode.replaceChild(document.createTextNode(link.textContent), link);
+      while (head.firstChild) line.appendChild(head.firstChild);
       head.parentNode.replaceChild(line, head);
     }
     out.appendChild(block);
-    // the first paragraph of the Summary, then what it needs and unlocks
+    // the first paragraph of the Summary, then what it needs and what needs it
     var body = card.querySelector('.node__body');
     var heads = body ? [].slice.call(body.querySelectorAll('.node__h')) : [];
     for (var k = 0; k < heads.length; k++) {
@@ -249,23 +250,7 @@
       }
     }
     var rel = body && body.querySelector('.node__rel');
-    if (rel) {
-      rel = rel.cloneNode(true);
-      // a locked card's state line already links what it needs
-      var said = [].slice.call(block.querySelectorAll('.node__why a')).map(function (x) { return x.getAttribute('href'); });
-      [].slice.call(rel.querySelectorAll('dt')).forEach(function (dt) {
-        if (!/^needs$/i.test(dt.textContent.trim())) return;
-        var dd = dt.nextElementSibling;
-        if (!dd) return;
-        var links = [].slice.call(dd.querySelectorAll('a'));
-        var fresh = links.filter(function (x) { return said.indexOf(x.getAttribute('href')) < 0; });
-        if (!fresh.length) { rel.removeChild(dd); rel.removeChild(dt); return; }
-        // keep the built prerequisites the state line does not name
-        dd.innerHTML = '';
-        fresh.forEach(function (x, k) { if (k) dd.appendChild(document.createTextNode(', ')); dd.appendChild(x); });
-      });
-      if (rel.children.length) out.appendChild(rel);
-    }
+    if (rel) out.appendChild(rel.cloneNode(true));
     var go = document.createElement('p');
     go.className = 'tt__pgo';
     var more = document.createElement('a');
