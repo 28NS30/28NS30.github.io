@@ -681,7 +681,10 @@ body{
 /* ---------- drawing index ---------- */
 .index{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  /* 300px keeps a card's half-width cell wide enough for its longest label
+     ("TARGET STATOR") and a status chip on one line, so the cards in a row end
+     level; min() keeps one card inside the narrowest screen */
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
   gap: var(--sp-m);
 }
 
@@ -863,6 +866,7 @@ body{
   line-height: 1.5;
   padding: 0 var(--sp-2xs);
   border: 1px solid var(--rule);
+  white-space: nowrap;
 }
 /* --l-ink in both themes: dark text on hazard reads 7.3:1 light, 8.6:1 dark */
 .chip--live{ background: var(--hazard); border-color: var(--hazard); color: var(--l-ink); }
@@ -1697,6 +1701,9 @@ a:focus-visible, button:focus-visible{
   .spec{ position: static; }
 }
 
+/* the narrowest phones: a title-block cell gives its label a little more room */
+@media (max-width: 359px){ .tb__cell{ padding-inline: var(--sp-2xs); } }
+
 @media (max-width: 560px){
   .sheet-frame{ inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); }
   .masthead{ padding-top: var(--sp-m); }
@@ -1847,25 +1854,26 @@ a:focus-visible, button:focus-visible{
 .fig-well--motor .stator{ max-height: 100%; }
 
 
-/* The project page's title block is the other half of the hand-off from the
-   Work page: a grid card's title block, or the graph's panel, carries the
-   same view-transition-name at click time, so the browser moves it into the
-   page's head. The head, not the figure: it is always on the first screen,
-   where a figure lower on the page would have the sheet fly off the bottom. */
-.proj__head{ view-transition-name: head; }
-
-/* The move is the browser's, on the drafting easing. What arrives is wiped on
-   over what left, as the page itself is: the browser's own cross-fade is the
-   one verb this system does not use. A head that leaves with nothing to meet
-   it (Back to the index) is wiped away; one that arrives alone is wiped on. */
-::view-transition-group(head){
+/* The hand-off from the Work page. A project page's first figure -- right under
+   its title, on the first screen -- carries the name a grid card's figure, or
+   the graph's panel, takes at click time, and the browser moves that box into
+   it. The box is a window, not a picture: what shows through it is the page's
+   own figure at its own size, so nothing is stretched (the old snapshot, scaled
+   up to fill the new box, was the title and status jumping out), and it opens
+   out from where the card was. A page that opens on prose has no such figure
+   and simply wipes on. */
+.proj__layout .prose > figure:first-child .fig-well{ view-transition-name: sheet; }
+::view-transition-group(sheet){
   animation-duration: .42s;
   animation-timing-function: var(--ease-plot);
+  overflow: clip;
 }
-::view-transition-old(head){ animation: none; }
-::view-transition-new(head){ animation: wipe-in .42s var(--ease-plot) both; }
-::view-transition-old(head):only-child{ animation: wipe-out .34s var(--ease-plot) both; }
-@keyframes wipe-out{ to{ clip-path: inset(0 0 0 100%); } }
+::view-transition-old(sheet),
+::view-transition-new(sheet){ height: 100%; object-fit: none; animation: none; }
+/* alone, it is wiped as the page is: away when leaving, on when arriving */
+::view-transition-old(sheet):only-child{ animation: wipe-out .34s var(--ease-plot) both; }
+::view-transition-new(sheet):only-child{ animation: wipe-in .34s var(--ease-plot) both; }
+@keyframes wipe-out{ from{ clip-path: inset(0 0 0 0); } to{ clip-path: inset(0 0 0 100%); } }
 
 /* ---------- the part, drawn ----------
    The figure well on a project page holds a real exported assembly instead of
@@ -2009,7 +2017,7 @@ html.js .theme{ display: inline-flex; }
   /* not a handle: it answers the pointer wherever it is on the page */
   pointer-events: none;
 }
-/* the stator stands in only when WebGL2 or the fetch fails */
+/* the stator stands in only when the assembly cannot be drawn (see below) */
 .hero__standin{
   position: absolute;
   inset: 0;
@@ -2041,6 +2049,20 @@ html.js .theme{ display: inline-flex; }
   .hero__plot{ aspect-ratio: 4 / 3; max-height: 46vh; }
 }
 
-/* No script, no WebGL: the stand-in is the figure and it should not be squeezed
-   into a 16:9 letterbox meant for the assembly. */
-.hero__plot:not(:has(.plot:not([hidden]))){ aspect-ratio: auto; min-height: 380px; }
+/* The stator is the figure only when the assembly cannot be drawn: no script,
+   no WebGL2, or the file did not come (html.no-mesh, set by the page on
+   mesh:failed). While the assembly loads, its own 16:9 well is held empty. The
+   stator used to stand in during loading, but at its fallback size in a
+   shorter well: it flashed up on a fast load, sat small on a slow one, and
+   everything below jumped when the assembly replaced it. */
+html.js:not(.no-mesh) .hero__standin{ display: none; }
+/* With no script it is the figure from the start, and is not squeezed into a
+   16:9 letterbox meant for the assembly. With script the well is already
+   painted by the time the assembly fails, so it keeps its size (nothing below
+   moves) and the stator is fitted to its height. */
+html:not(.js) .hero__plot{ aspect-ratio: auto; min-height: 380px; }
+html.no-mesh .hero__standin{ grid-template-rows: 100%; }   /* a definite row, so the % below resolves */
+html.no-mesh .hero__standin .stator{ width: auto; height: min(360px, 90%); }
+/* the caption says what is shown: the stator with no script, until script
+   has something to report */
+html:not(.js) .cap-js, html.js .cap-nojs{ display: none; }

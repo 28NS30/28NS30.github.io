@@ -28,6 +28,7 @@ p-cycloidal.html   cycloidal gearbox               ← stub
 p-drone.html       quadrotor                       ← stub
 p-shooter.html     FRC shooter subsystem           ← real geometry, write-up pending
 p-umv.html         ultra-mobility vehicle          ← stub, leads the index
+p-pcb-motor.html   PCB motor                       ← stub
 tree.js            the grid/graph switch; tracing, panel and keys for the graph
 style.css          the whole design system
 theme.js           the Auto / Light / Dark control
@@ -52,7 +53,12 @@ sections when writing a stub up properly.
 
 The Work page shows the projects two ways, switched in the section head. The
 grid is the project cards: every public project done or under way, newest
-first, each with its year and status. The graph is the same projects plus the
+first. Each card has four fields: Year, Status, Team ("Solo" or the team), and
+one that fits the project best -- a key figure (a ratio, a flight time), a role
+on a team build, or the number of iterations; for work under way, a target. A
+value not known yet is a placeholder (`<dd class="fill">[N]:1</dd>`) until it is
+written in, on the card and on the page's parameters alike; consistency.py
+holds every field a card shares with its page to the same value. The graph is the same projects plus the
 planned projects that directly build on them: a hub, rings outward, one circle
 per project, each one ring further out than the furthest project it needs, and
 a line into each circle from one it needs. A circle takes its project's status:
@@ -74,9 +80,9 @@ The rest is generated, between `<!-- generated:... -->` markers that must not be
 edited:
 
 - **grid**: a card for each public project Farm has done or under way that has
-  no page yet (PCB Motor today), after the UMV: under way first, then done. Its
-  year is a dash, because Farm has none; it links to the project in the graph.
-  When the project gets a page and a card, it drops out of this block.
+  no page yet (none today), after the UMV: under way first, then done. Its year
+  is a dash, because Farm has none; it links to the project in the graph. Give
+  such a project a page and a hand-written card and it drops out of this block.
 - **graph**: the figure, its legend, and a card per project below it, grouped by
   status. The cards are what a screen reader, a phone and paper read, and what
   the panel beside the figure shows.
@@ -294,6 +300,13 @@ magic bytes rather than a header, since `fetch` does not reliably expose
 <div id="stand-in" class="fig--pending">…</div>   <!-- stays if WebGL2 or the fetch fails -->
 <script src="mesh.js" defer></script>
 ```
+
+On the home page the stand-in is the stator drawing, and it is never a loading
+placeholder: while the assembly loads its 16:9 well is held empty, so nothing
+flashes and nothing below moves when it arrives. The stator shows only with no
+script, or when the assembly cannot be drawn (`html.no-mesh`, set on
+`mesh:failed`, which mesh.js's `onerror` also sends if the script itself does
+not load).
 
 Failures are not silent: the pending panel states the reason and the console
 carries the detail. The most common one is opening the page as a `file://`

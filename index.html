@@ -23,7 +23,7 @@ document.documentElement.classList.add('js');
 try{var t=localStorage.getItem('theme');
 if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <script src="theme.js" defer></script>
-<script src="mesh.js" defer></script>
+<script src="mesh.js" defer onerror="document.dispatchEvent(new Event('mesh:failed'))"></script>
 <script src="tree.js" defer></script>
 <script>
 /* The edge count is read off the mesh the page actually loaded. Typing it in
@@ -33,15 +33,21 @@ document.addEventListener('mesh:ready', function (e) {
   var el = document.querySelector('[data-hero-stat]');
   if (el) el.textContent = e.detail.edges.toLocaleString('en') + ' edges \u00b7 no libraries';
 });
-/* If the geometry never arrives the stator stands in, and the caption must stop
-   claiming to be a CAD drawing rendered in the browser — it would be describing
-   something that is not on the screen. */
+/* If the geometry never arrives -- no WebGL2, the file did not come, or
+   mesh.js itself did not (its onerror sends the same event) -- the stator
+   stands in (html.no-mesh; see .hero__standin), and the caption must stop
+   claiming to be a CAD drawing rendered in the browser: it would be describing
+   something that is not on the screen. Until then nothing stands in. */
 document.addEventListener('mesh:failed', function () {
-  var cap = document.querySelector('.hero__caption');
-  if (!cap) return;
-  cap.querySelector('.hero__caption-lead').textContent = 'Stator, 12N14P.';
-  var sub = cap.querySelector('[data-hero-stat]');
-  if (sub) sub.textContent = 'schematic';
+  document.documentElement.classList.add('no-mesh');
+  function say() {
+    var cap = document.querySelector('.hero__caption');
+    if (!cap) return;
+    cap.querySelector('.hero__caption-lead').textContent = 'Stator, 12N14P.';
+    var sub = cap.querySelector('[data-hero-stat]');
+    if (sub) sub.textContent = 'schematic';
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', say); else say();
 });
 </script>
 <script type="application/ld+json">
@@ -135,7 +141,8 @@ document.addEventListener('mesh:failed', function () {
                 data-mesh-pan-x="0" data-mesh-pan-y="0"
                 data-mesh-replaces="#hero-stand-in"></canvas>
 
-        <!-- shown only if WebGL2 is missing or the geometry cannot load -->
+        <!-- shown only with no script, or if WebGL2 is missing or the geometry
+             cannot load (html.no-mesh); never as a placeholder while it loads -->
         <div id="hero-stand-in" class="hero__standin">
           <svg class="stator" viewBox="0 0 400 400" role="img"
              aria-label="Cross-section of a twelve-slot, fourteen-pole outrunner stator and rotor">
@@ -187,8 +194,9 @@ document.addEventListener('mesh:failed', function () {
       </div>
 
       <p class="hero__caption">
-        <span class="hero__caption-lead">Drawn from the CAD, in the browser.</span>
-        <span class="hero__caption-sub" data-hero-stat>no libraries</span>
+        <!-- with no script the stator is the figure, and the caption says so -->
+        <span class="hero__caption-lead"><span class="cap-js">Drawn from the CAD, in the browser.</span><span class="cap-nojs">Stator, 12N14P.</span></span>
+        <span class="hero__caption-sub" data-hero-stat><span class="cap-js">no libraries</span><span class="cap-nojs">schematic</span></span>
       </p>
 
       <div class="dim">
@@ -221,23 +229,28 @@ document.addEventListener('mesh:failed', function () {
             <dl class="tb__grid">
               <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
               <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div>
+              <div class="tb__cell"><dt>Target mass</dt><dd>&asymp; 3.4 kg</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="dwg rise">
+          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
+          <div class="tb">
+            <div class="tb__head">
+              <h3 class="tb__name"><a href="p-pcb-motor.html">PCB motor</a></h3>
+            </div>
+            <dl class="tb__grid">
+              <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
+              <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div>
+              <div class="tb__cell"><dt>Target stator</dt><dd>25&ndash;40 mm</dd></div>
             </dl>
           </div>
         </article>
 
         <!-- generated:grid by gen_tree.py from Farm; do not edit -->
-        <article class="dwg dwg--farm rise" data-id="pcb-motor">
-          <div class="dwg__fig fig--pending"><span>Figure pending</span></div>
-          <div class="tb">
-            <div class="tb__head">
-              <h3 class="tb__name"><a href="#pcb-motor">PCB Motor</a></h3>
-            </div>
-            <dl class="tb__grid">
-              <div class="tb__cell"><dt>Year</dt><dd>&mdash;</dd></div>
-              <div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div>
-            </dl>
-          </div>
-        </article>
         <!-- /generated:grid -->
 
         <article class="dwg rise">
@@ -249,6 +262,8 @@ document.addEventListener('mesh:failed', function () {
             <dl class="tb__grid">
               <div class="tb__cell"><dt>Year</dt><dd>2026</dd></div>
               <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Competed</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>FRC 4253</dd></div>
+              <div class="tb__cell"><dt>Role</dt><dd class="fill">[role]</dd></div>
             </dl>
           </div>
         </article>
@@ -263,6 +278,8 @@ document.addEventListener('mesh:failed', function () {
             <dl class="tb__grid">
               <div class="tb__cell"><dt>Year</dt><dd>2025</dd></div>
               <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div>
+              <div class="tb__cell"><dt>Iterations</dt><dd>3</dd></div>
             </dl>
           </div>
         </article>
@@ -276,6 +293,8 @@ document.addEventListener('mesh:failed', function () {
             <dl class="tb__grid">
               <div class="tb__cell"><dt>Year</dt><dd>2025</dd></div>
               <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div>
+              <div class="tb__cell"><dt>Ratio</dt><dd class="fill">[N]:1</dd></div>
             </dl>
           </div>
         </article>
@@ -289,6 +308,8 @@ document.addEventListener('mesh:failed', function () {
             <dl class="tb__grid">
               <div class="tb__cell"><dt>Year</dt><dd>2024</dd></div>
               <div class="tb__cell"><dt>Status</dt><dd><span class="chip">Flown</span></dd></div>
+              <div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div>
+              <div class="tb__cell"><dt>Flight time</dt><dd class="fill">[N] min</dd></div>
             </dl>
           </div>
         </article>
@@ -308,7 +329,7 @@ document.addEventListener('mesh:failed', function () {
 <g class="tt__lines" aria-hidden="true"><path class="tt__edge tt__spoke is-done" data-to="bldc-motor" d="M0.0 0.0L49.4 -152.2"/><path class="tt__edge tt__spoke is-active" data-to="pcb-motor" d="M0.0 0.0L160.0 0.0"/><path class="tt__edge tt__spoke is-done" data-to="quadrotor" d="M0.0 0.0L-129.4 94.0"/><path class="tt__edge tt__spoke is-done" data-to="shooter-2026" d="M0.0 0.0L-129.4 -94.0"/><path class="tt__edge tt__spoke is-active" data-to="umv" d="M0.0 0.0L49.4 152.2"/><path class="tt__edge is-done" data-from="bldc-motor" data-to="cycloidal-gearbox" d="M49.4 -152.2L87.8 -270.1"/><path class="tt__edge is-planned" data-from="pcb-motor" data-to="pcb-drone" d="M160.0 0.0L284.0 0.0"/><path class="tt__edge is-planned" data-from="umv" data-to="wheel-leg" d="M49.4 152.2L87.8 270.1"/></g>
 <g class="tt__softs" aria-hidden="true"></g>
 <g class="tt__hub" aria-hidden="true"><circle r="48"/><text class="tt__hubname" y="6">NEO SU</text></g>
-<g class="tt__conn" role="list" aria-label="Projects that connect, 6 projects"><g role="listitem"><a class="tt__node is-done" id="fig-bldc-motor" href="#bldc-motor" data-id="bldc-motor" data-a="-72.0" data-parent="__hub__" data-short="Brushless DC motor" aria-label="Brushless DC motor, complete" transform="translate(49.4 -152.2)"><desc>Needed by Cycloidal gearbox</desc><title>Brushless DC motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Brushless</tspan><tspan x="0" y="9.8">DC motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-pcb-motor" href="#pcb-motor" data-id="pcb-motor" data-a="0.0" data-parent="__hub__" data-short="PCB Motor" aria-label="PCB Motor, in progress" transform="translate(160.0 0.0)"><desc>Needed by PCB Drone</desc><title>PCB Motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB Motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-umv" href="#umv" data-id="umv" data-a="72.0" data-parent="__hub__" data-short="Ultra-Mobility Vehicle" aria-label="Ultra-Mobility Vehicle, scaled, in progress" transform="translate(49.4 152.2)"><desc>Needed by Wheel-Leg (Beni-class)</desc><title>Ultra-Mobility Vehicle, scaled</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">Ultra-</tspan><tspan x="0" y="3.5">Mobility</tspan><tspan x="0" y="16.1">Vehicle</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-done" id="fig-cycloidal-gearbox" href="#cycloidal-gearbox" data-id="cycloidal-gearbox" data-a="-72.0" data-parent="bldc-motor" data-short="Cycloidal gearbox" aria-label="Cycloidal gearbox, complete; needs Brushless DC motor" transform="translate(87.8 -270.1)"><desc>Nothing needs it yet</desc><title>Cycloidal gearbox</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Cycloidal</tspan><tspan x="0" y="9.8">gearbox</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-planned" id="fig-pcb-drone" href="#pcb-drone" data-id="pcb-drone" data-a="0.0" data-parent="pcb-motor" data-short="PCB Drone" aria-label="PCB Drone, planned; needs PCB Motor" transform="translate(284.0 0.0)"><desc>Nothing needs it yet</desc><title>PCB Drone</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB Drone</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-planned" id="fig-wheel-leg" href="#wheel-leg" data-id="wheel-leg" data-a="72.0" data-parent="umv" data-short="Wheel-Leg" aria-label="Wheel-Leg (Beni-class), planned; needs Ultra-Mobility Vehicle, scaled and QDD Actuator Module" transform="translate(87.8 270.1)"><desc>Nothing needs it yet</desc><title>Wheel-Leg (Beni-class)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Wheel-Leg</tspan></text></g></a></g></g>
+<g class="tt__conn" role="list" aria-label="Projects that connect, 6 projects"><g role="listitem"><a class="tt__node is-done" id="fig-bldc-motor" href="#bldc-motor" data-id="bldc-motor" data-a="-72.0" data-parent="__hub__" data-short="Brushless DC motor" aria-label="Brushless DC motor, complete" transform="translate(49.4 -152.2)"><desc>Needed by Cycloidal gearbox</desc><title>Brushless DC motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Brushless</tspan><tspan x="0" y="9.8">DC motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-pcb-motor" href="#pcb-motor" data-id="pcb-motor" data-a="0.0" data-parent="__hub__" data-short="PCB motor" aria-label="PCB motor, in progress" transform="translate(160.0 0.0)"><desc>Needed by PCB Drone</desc><title>PCB motor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB motor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-active" id="fig-umv" href="#umv" data-id="umv" data-a="72.0" data-parent="__hub__" data-short="Ultra-Mobility Vehicle" aria-label="Ultra-Mobility Vehicle, scaled, in progress" transform="translate(49.4 152.2)"><desc>Needed by Wheel-Leg (Beni-class)</desc><title>Ultra-Mobility Vehicle, scaled</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-9.0">Ultra-</tspan><tspan x="0" y="3.5">Mobility</tspan><tspan x="0" y="16.1">Vehicle</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-done" id="fig-cycloidal-gearbox" href="#cycloidal-gearbox" data-id="cycloidal-gearbox" data-a="-72.0" data-parent="bldc-motor" data-short="Cycloidal gearbox" aria-label="Cycloidal gearbox, complete; needs Brushless DC motor" transform="translate(87.8 -270.1)"><desc>Nothing needs it yet</desc><title>Cycloidal gearbox</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">Cycloidal</tspan><tspan x="0" y="9.8">gearbox</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-planned" id="fig-pcb-drone" href="#pcb-drone" data-id="pcb-drone" data-a="0.0" data-parent="pcb-motor" data-short="PCB Drone" aria-label="PCB Drone, planned; needs PCB motor" transform="translate(284.0 0.0)"><desc>Nothing needs it yet</desc><title>PCB Drone</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">PCB Drone</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-planned" id="fig-wheel-leg" href="#wheel-leg" data-id="wheel-leg" data-a="72.0" data-parent="umv" data-short="Wheel-Leg" aria-label="Wheel-Leg (Beni-class), planned; needs Ultra-Mobility Vehicle, scaled and QDD Actuator Module" transform="translate(87.8 270.1)"><desc>Nothing needs it yet</desc><title>Wheel-Leg (Beni-class)</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Wheel-Leg</tspan></text></g></a></g></g>
 <g class="tt__alone" role="list" aria-label="Standalone: needs nothing and nothing needs it, 2 projects"><g role="listitem"><a class="tt__node is-done" id="fig-quadrotor" href="#quadrotor" data-id="quadrotor" data-a="144.0" data-parent="__hub__" data-short="Quadrotor" aria-label="Quadrotor, flown" transform="translate(-129.4 94.0)"><desc>Standalone: nothing needs it</desc><title>Quadrotor</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="3.5">Quadrotor</tspan></text></g></a></g><g role="listitem"><a class="tt__node is-done" id="fig-shooter-2026" href="#shooter-2026" data-id="shooter-2026" data-a="-144.0" data-parent="__hub__" data-short="FRC shooter subsystem" aria-label="FRC shooter subsystem, competed" transform="translate(-129.4 -94.0)"><desc>Standalone: nothing needs it</desc><title>FRC shooter subsystem</title><circle class="tt__halo" r="46"/><circle class="tt__disc" r="40"/><g aria-hidden="true"><text class="tt__name"><tspan x="0" y="-2.8">FRC shooter</tspan><tspan x="0" y="9.8">subsystem</tspan></text></g></a></g></g>
 </svg>
               <figcaption class="tt__cap">The work that is done or under way, and the planned projects that build on it. A line joins each project to one it needs, one ring further in. <span class="tt__cap-js">Choose a circle to read about the project.</span><span class="tt__cap-kbd"> From the keyboard: Tab to the graph, arrow keys between circles, Enter to choose.</span><span class="tt__cap-nojs">Each project has a card below.</span></figcaption>
@@ -328,7 +349,7 @@ document.addEventListener('mesh:failed', function () {
             <div class="tb__head">
               <h5 class="tb__name"><span class="node__swatch is-done" aria-hidden="true"></span><a href="p-bldc.html">Brushless DC motor</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2025</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div><div class="tb__cell"><dt>Iterations</dt><dd>3</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-bldc-motor">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -348,7 +369,7 @@ document.addEventListener('mesh:failed', function () {
             <div class="tb__head">
               <h5 class="tb__name"><span class="node__swatch is-done" aria-hidden="true"></span><a href="p-drone.html">Quadrotor</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Flown</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2024</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Flown</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div><div class="tb__cell"><dt>Flight time</dt><dd class="fill">[N] min</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-quadrotor">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -367,7 +388,7 @@ document.addEventListener('mesh:failed', function () {
             <div class="tb__head">
               <h5 class="tb__name"><span class="node__swatch is-done" aria-hidden="true"></span><a href="p-shooter.html">FRC shooter subsystem</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Competed</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2026</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Competed</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>FRC 4253</dd></div><div class="tb__cell"><dt>Role</dt><dd class="fill">[role]</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-shooter-2026">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -386,7 +407,7 @@ document.addEventListener('mesh:failed', function () {
             <div class="tb__head">
               <h5 class="tb__name"><span class="node__swatch is-done" aria-hidden="true"></span><a href="p-cycloidal.html">Cycloidal gearbox</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2025</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip">Complete</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div><div class="tb__cell"><dt>Ratio</dt><dd class="fill">[N]:1</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-cycloidal-gearbox">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -409,9 +430,9 @@ document.addEventListener('mesh:failed', function () {
             <li><article class="node" id="pcb-motor" data-status="active" data-state="active">
           <div class="tb">
             <div class="tb__head">
-              <h5 class="tb__name"><span class="node__swatch is-active" aria-hidden="true"></span><a href="#pcb-motor">PCB Motor</a></h5>
+              <h5 class="tb__name"><span class="node__swatch is-active" aria-hidden="true"></span><a href="p-pcb-motor.html">PCB motor</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2026</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div><div class="tb__cell"><dt>Target stator</dt><dd>25&ndash;40 mm</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-pcb-motor">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -423,6 +444,7 @@ document.addEventListener('mesh:failed', function () {
           <ul><li>A 25–40 mm stator on a 6–8 layer, 2 oz board that spins a rotor with measured Kt, Km and a thermal curve on the dyno.</li><li>Test both rotor styles: back-iron disc and Halbach array (Halbach is the one the drone needs).</li><li>Characterize copper loss vs. PWM frequency with the FOC board to settle the 100 kHz question with data.</li><li>A rim-drive variant (annular coil band at large radius, cut-out center) as the second board, since that is the geometry the drone wants.</li></ul>
           <dl class="node__rel"><dt>Needed by</dt><dd><a href="#pcb-drone">PCB Drone</a></dd></dl>
           <p class="node__links"><a href="https://www.youtube.com/@CarlBugeja" rel="noopener">Carl Bugeja&#x27;s PCB motors (reference)</a></p>
+          <p class="node__page"><a href="p-pcb-motor.html">Project page →</a></p>
             </div>
           </details>
         </article></li>
@@ -431,7 +453,7 @@ document.addEventListener('mesh:failed', function () {
             <div class="tb__head">
               <h5 class="tb__name"><span class="node__swatch is-active" aria-hidden="true"></span><a href="p-umv.html">Ultra-Mobility Vehicle, scaled</a></h5>
             </div>
-            <dl class="tb__grid"><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div></dl>
+            <dl class="tb__grid"><div class="tb__cell"><dt>Year</dt><dd>2026</dd></div><div class="tb__cell"><dt>Status</dt><dd><span class="chip chip--live">In progress</span></dd></div><div class="tb__cell"><dt>Team</dt><dd>Solo</dd></div><div class="tb__cell"><dt>Target mass</dt><dd>&asymp; 3.4 kg</dd></div></dl>
             <p class="node__nav"><a class="node__up" href="#fig-umv">In the graph ↑</a></p>
           </div>
           <details class="node__more">
@@ -468,7 +490,7 @@ document.addEventListener('mesh:failed', function () {
           <p>A whoop-sized quad where one PCB is the frame, the four stators, the ESCs and the flight controller — plus four printed hubs and props. Two motor geometries are candidates: a hub stator under a Halbach prop hub (simpler; marginal at 16–18 mm stator), and a rim drive with magnets on the prop tips and an annular coil band around each duct opening (much better copper loss at large radius; centrifugal retention and rotor inertia are the problems). Physics is marginal, which is exactly why the thrust-stand gate exists. If it flies, it is something that does not exist yet.</p>
           <h6 class="node__h">Goals</h6>
           <ul><li>Thrust-stand gate: ≥ 12–15 g thrust per motor, added rotor + copper mass ≤ 3 g, stator ≤ 80 °C after 3 min at hover thrust, ≥ 2 g/W at hover.</li><li>75–85 mm wheelbase, 40–45 mm props, 1S 450 mAh or 2S 300 mAh, 30–40 g all-up.</li><li>ESC: four AM32-style channels on the board (or the FOC board&#x27;s 100 kHz mode); bidirectional DShot for RPM filtering.</li><li>Flies like a whoop, not just hovers: ~4 × 15–20 g at full throttle.</li><li>TPU ducts bolt on as bumpers and magnet shields; soft-mounted IMU island.</li></ul>
-          <dl class="node__rel"><dt>Needs</dt><dd><a href="#pcb-motor">PCB Motor</a></dd></dl>
+          <dl class="node__rel"><dt>Needs</dt><dd><a href="#pcb-motor">PCB motor</a></dd></dl>
             </div>
           </details>
         </article></li>
@@ -551,25 +573,23 @@ document.addEventListener('mesh:failed', function () {
 
 </script>
 <script>
-/* Opening a project carries its card's title block into the project page's
-   head: a cross-document view transition, so the browser animates the
-   hand-off (style.css names the page's .proj__head the same). Named only at
-   click time, because a name must be unique in the document. */
+/* Opening a project carries its card's figure into the project page's first
+   figure: a cross-document view transition, so the browser animates the
+   hand-off (style.css gives that figure the same name). Named only at click
+   time, and taken off every other card first, because a name must be unique. */
 (function () {
-  var cards = [].slice.call(document.querySelectorAll('.index .dwg:not(.dwg--farm)'));
-  cards.forEach(function (card) {
-    card.addEventListener('click', function () {
+  var figs = [].slice.call(document.querySelectorAll('.index .dwg:not(.dwg--farm) .dwg__fig'));
+  function none() { figs.forEach(function (f) { f.style.viewTransitionName = ''; }); }
+  figs.forEach(function (fig) {
+    fig.closest('.dwg').addEventListener('click', function (e) {
+      // a new tab or window is not this page leaving: nothing to carry
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       if (!document.startViewTransition) return;
-      var tb = card.querySelector('.tb');
-      if (tb) tb.style.viewTransitionName = 'head';
+      none();
+      fig.style.viewTransitionName = 'sheet';
     });
   });
-  addEventListener('pageshow', function () {
-    cards.forEach(function (c) {
-      var tb = c.querySelector('.tb');
-      if (tb) tb.style.viewTransitionName = '';
-    });
-  });
+  addEventListener('pageshow', none);
 })();
 </script>
 </body>

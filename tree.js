@@ -376,12 +376,12 @@
       else mark(id);                 // the link goes on to its card, marked
       return;
     }
-    // leaving for a project's page from the panel: the panel's title block
-    // moves into the page's head (a cross-document view transition; the page's
-    // .proj__head carries the same name), so the move reads as one piece
+    // leaving for a project's page from the panel: the panel opens out into
+    // the page's first figure (a cross-document view transition; style.css
+    // names that figure the same), as a grid card's figure does
     if (a && onWork && panel && panel.contains(a) && (a.getAttribute('href') || '').charAt(0) !== '#') {
       var block = panel.querySelector('.node');
-      if (block) block.style.viewTransitionName = 'head';
+      if (block) block.style.viewTransitionName = 'sheet';
       return;
     }
     if (a && a.classList.contains('node__up')) {
